@@ -1,0 +1,61 @@
+#content-viewrow{
+    display: grid;
+    grid-template-columns: 20px auto 20px;
+    grid-template-rows: 20px auto 20px;
+    width: calc(100vw - 150px);
+    height: 100vh;
+    position: relative;
+    left: 150px;
+
+    #field-data-containers{
+        width: fit-content;
+        height: fit-content;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+
+        #header{
+            display: flex;
+            flex-direction: row;
+
+            h1{
+                margin: 0;
+            }
+
+            .btn{
+                margin-left: auto;
+                width: fit-content;
+                height: fit-content;
+                padding: 15px;
+            }
+        }
+
+        .field-display-container{
+            background-color: white;
+            box-shadow: 0px 0px 10px #00000040;
+            margin: 10px 15px;
+            border-radius: 10px;
+            width: fit-content;
+            height: fit-content;
+            padding: 20px;
+
+            &:first-child{
+                margin-left: 0;
+            }
+
+            &:last-child{
+                margin-right: 0;
+            }
+    
+            ul{
+                list-style: none;
+                padding: 0;
+    
+                li{
+                    padding: 10px 5px;
+                }
+            }
+        }
+    }
+
+}
