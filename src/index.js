@@ -7,11 +7,19 @@ import Register from './Register'
 import {ViewRow} from './ViewRow'
 import { isSessionCookieSet, USER_TOKEN, ORG_TOKEN } from './helpers/session/auth.js'
 import { Route, Link, BrowserRouter as Router, Redirect } from 'react-router-dom'
+
 import {Provider} from 'react-redux'
 import {createStore} from 'redux'
-import {userData} from './reducers/userData.js'
+import rootReducer from './reducers/index'
+import {loadState, saveState} from './localStorage.js'
 
-const store = createStore(userData)
+const store = createStore(rootReducer, loadState())
+
+store.subscribe(() => {
+    saveState(store.getState())
+})
+
+console.log("STATE",store.getState())
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={(props) => (

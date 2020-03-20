@@ -112,8 +112,8 @@ class Login extends React.Component{
                                         <input type="password" className="txt-field" value={this.state.userPassword} onChange={this.userPasswordHandlerOnChange} placeholder="User Password"/>
                 
                                         <input type="submit" className="btn auth-submit" value="Log in organization"/>
+                                        <button className="button-label" onClick={() => {window.location.href = "/register"}}>New to the app? Register your organization now!</button>
                                     </form>
-                                    <button className="button-label" onClick={() => {window.location = "/register"}}>New to the app? Register your organization now!</button>
                                 </div>
                             : ""
     

@@ -3,10 +3,12 @@ import './css/App.css';
 import './css/Dashboard.scss';
 import {Navbar} from './components/Navbar'
 import CustomTable from './components/CustomTable'
-import TablesManage from './components/TablesManage'
+import {TablesManage} from './components/TablesManage'
 
 import {connect} from 'react-redux'
-import {updateUserData} from './actions/updateUserData.js'
+import {updateUserData, updateTablesData} from './actions.js'
+import { deleteState } from './localStorage.js'
+import { deleteSessionCookies, getSessionCookie, ORG_TOKEN, USER_TOKEN } from './helpers/session/auth.js'
 
 function getUrlParams(url) {
 	var params = {};
@@ -29,6 +31,38 @@ class App extends React.Component {
     this.state = {
       tableId: params.table,
     }
+
+    if((this.state.tableId === 'manage_tables' || this.state.tableId === 'manage_users') && this.props.userData.admin === false)
+      window.location = "/"
+
+    console.log(this.state.tableId)
+    if(this.state.tableId === undefined)
+      if(this.props.tablesData[0] === undefined)
+        fetch('https://us-central1-multi-manage.cloudfunctions.net/getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN))
+          .then(res => res.json())
+          .then(res => {
+              console.log(res)
+              if(res.status === "deauth"){
+                  deleteSessionCookies()
+                  window.location.reload(false)
+                  deleteState()
+              }
+              return res
+          })
+          .then(res => {
+              this.props.updateTables(res)
+              window.location.reload(false)
+          })
+          .catch(err => {
+              if(err.status === "deauth"){
+                  deleteSessionCookies()
+                  deleteState()
+              }else
+                  throw err
+          })
+      else
+        window.location = "/?table="+this.props.tablesData[0].tableId
+
   }
 
   render(){
@@ -36,13 +70,6 @@ class App extends React.Component {
       <div className="App">
    
         <Navbar />
-
-       { /*
-
-        USE REDUX TO SAVE THE TABLES REQUESTS IN NAVBAR COMPONENT AND OUTSIDE :D
-
-        */}
-  
         {
           (this.state.tableId === 'manage_tables') ?
             <TablesManage/>
@@ -51,8 +78,6 @@ class App extends React.Component {
           :
             <CustomTable tableId={this.state.tableId}/>
         }
-  
-  
       </div>
     );
   }
@@ -61,13 +86,15 @@ class App extends React.Component {
 const mapStateToProps = state => {
   console.log(state)
   return {
-    userData: state
+    userData: state.userData,
+    tablesData: state.tablesData
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    updateUser: () => dispatch(updateUserData('userDataTest heheheh'))
+    updateUser: (newUserData) => dispatch(updateUserData(newUserData)),
+    updateTables: (newTableData) => dispatch(updateTablesData(newTableData))
   }
 }
 

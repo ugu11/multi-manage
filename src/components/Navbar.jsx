@@ -2,7 +2,9 @@ import React from 'react'
 import { deleteSessionCookies, getSessionCookie, ORG_TOKEN, USER_TOKEN } from '../helpers/session/auth.js'
 
 import {connect} from 'react-redux'
-import {updateUserData} from '../actions/updateUserData.js'
+import {updateUserData, updateTablesData} from '../actions.js'
+import '../localStorage.js'
+import { deleteState } from '../localStorage.js'
 
 class NavbarComponent extends React.Component{
     constructor(){
@@ -13,42 +15,62 @@ class NavbarComponent extends React.Component{
     }
 
     componentDidMount(){
-        updateUserData("h")
+        // updateUserData("h")
         // if(this.props.userData === undefined || ((new Date().getTime()) - this.props.userData.lastUserDataRequest)/1000 >= 240){
-            const reqData = {
-                orgIdToken: getSessionCookie(ORG_TOKEN),
-                userTokenId: getSessionCookie(USER_TOKEN)
-            }
-            fetch('https://us-central1-multi-manage.cloudfunctions.net/getLoggedInUserData', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(reqData)})
-                    .then(resp => resp.json())
-                    .then(resp => {
-                        console.log(resp)
-                        this.props.updateUser(resp)
-                    })
-                    .catch(err => {
-                        if(err.status === "deauth")
-                            deleteSessionCookies()
-                        else
-                            throw err
-                    })
-        // }
+        const reqData = {
+            orgIdToken: getSessionCookie(ORG_TOKEN),
+            userTokenId: getSessionCookie(USER_TOKEN)
+        }
+        fetch('https://us-central1-multi-manage.cloudfunctions.net/getLoggedInUserData', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reqData)})
+                .then(resp => resp.json())
+                .then(res => {
+                    console.log(res)
+                    if(res.status === "deauth"){
+                        deleteSessionCookies()
+                        deleteState()
+                        window.location.reload(false)
+                    }else
+                        return res
+                })
+                .then(resp => {
+                    console.log(resp)
+                    this.props.updateUser(resp)
+                })
+                .catch(err => {
+                    if(err.status === "deauth"){
+                        deleteSessionCookies()
+                        deleteState()
+                        window.location.reload(false)
+                    }else
+                        throw err
+                })
+            
         fetch('https://us-central1-multi-manage.cloudfunctions.net/getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN))
             .then(res => res.json())
             .then(res => {
                 console.log(res)
-                this.setState({
-                    navbarData: res
-                })
+                if(res.status === "deauth"){
+                    deleteSessionCookies()
+                    window.location.reload(false)
+                    deleteState()
+                }
+                return res
+            })
+            .then(res => {
+                this.props.updateTables(res)
             })
             .catch(err => {
-                if(err.status === "deauth")
+                if(err.status === "deauth"){
                     deleteSessionCookies()
-                else
+                    deleteState()
+                    window.location.reload(false)
+                }else
                     throw err
             })
+        // }
     }
 
     render(){
@@ -67,13 +89,16 @@ class NavbarComponent extends React.Component{
                                 <li> <a href="/?table=manage_users"> Users </a></li> : ""}
                         <li> </li>
                         {
-                            this.state.navbarData.map(table => 
-                                <li> <a href={"/?table="+table.tableId}>{table.tableName}</a></li>
+                            this.props.tablesData.map(table => 
+                                <li key={table.tableId}> <a href={"/?table="+table.tableId}>{table.tableName}</a></li>
                             )
                         }
                         
                         <li> <a href="/login" onClick={
-                            () => deleteSessionCookies()
+                            () => {
+                                deleteSessionCookies()
+                                deleteState()
+                            }
                         }> Log out </a></li>
                     </ul>
                 : ""
@@ -87,13 +112,15 @@ class NavbarComponent extends React.Component{
 const mapStateToProps = state => {
     console.log(state)
     return {
-        userData: state
+        userData: state.userData,
+        tablesData: state.tablesData
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        updateUser: (newUserData) => dispatch(updateUserData(newUserData))
+        updateUser: (newUserData) => dispatch(updateUserData(newUserData)),
+        updateTables: (newTableData) => dispatch(updateTablesData(newTableData))
     }
 }
 

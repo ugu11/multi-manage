@@ -120,6 +120,14 @@ class AddFields extends React.Component{
                 tokenId: getSessionCookie(USER_TOKEN),
                 tableData: tableModel,
             }),
+        })
+        .then(res => {
+            console.log(res)
+            if(res.json().status === "deauth"){
+                deleteSessionCookies()
+                window.location.reload(false)
+            }
+            return res
         }).then(e => {
             window.location.reload(false)
         }).catch(err => {

@@ -28,13 +28,30 @@
                 height: fit-content;
                 padding: 15px;
             }
+
+            .remove-btn{
+                background: transparent;
+                border: 0;
+                color: #e43f3f;
+                font-size: 24px;
+                transition: .2s;
+                width: 30px;
+                height: 30px;
+                padding: 10px;
+                margin:0;
+            
+                &:hover{
+                    font-size: 26px;
+                    cursor: pointer;
+                }
+            }
         }
 
         .field-display-container{
             background-color: white;
             box-shadow: 0px 0px 10px #00000040;
             margin: 10px 15px;
-            border-radius: 10px;
+            border-radius: 5px;
             width: fit-content;
             height: fit-content;
             padding: 20px;
@@ -56,6 +73,91 @@
                 }
             }
         }
+
+    
+        .table-data-ul{
+            list-style: none;
+            padding: 0;
+
+            li{
+                margin: 10px 5px;
+
+                .table-data-field-display-container{
+                    background-color: white;
+                    box-shadow: 0px 0px 10px #00000040;
+                    border-radius: 5px;
+                    margin: 0;
+                    width: fit-content;
+                    height: fit-content;
+                    padding: 20px;
+        
+                    &:first-child{
+                        margin-left: 0;
+                    }
+        
+                    &:last-child{
+                        margin-right: 0;
+                    }
+
+                    h2{
+                        margin: 0;
+                        margin-bottom: 10px;
+                    }
+
+                    .content-header{
+                        display: flex;
+                        flex-flow: row;
+
+                        &:first-child{
+                            margin-left: 0;
+                        }
+            
+                        &:last-child{
+                            margin-right: 0;
+                        }
+                        
+                        .btn{
+                            font-size: 14px;
+                            padding: 0 10px;
+                            margin-left: 40px
+                        }
+
+
+                        .remove-btn{
+                            align-items: flex-end;
+                            background: transparent;
+                            border: 0;
+                            color: #e43f3f;
+                            font-size: 24px;
+                            transition: .2s;
+                            width: 30px;
+                            grid-column: 4;
+            
+                            &:hover{
+                                font-size: 26px;
+                                cursor: pointer;
+                            }
+                        }
+                    }
+
+                    .content{
+                        display: flex;
+                        flex-flow: column;
+
+                        label{
+                            font-size: 14px;
+                            margin: 2px 0;
+                        }
+
+                        li{
+                            font-size: 14px;
+                            margin: 5px 0;
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
 }

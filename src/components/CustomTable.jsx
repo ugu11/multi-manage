@@ -19,6 +19,14 @@ class CustomTable extends React.Component{
             .then(res => res.json())
             .then(res => {
                 console.log(res)
+                if(res.status === "deauth"){
+                    deleteSessionCookies()
+                    window.location.reload(false)
+                }
+                return res
+            })
+            .then(res => {
+                console.log(res)
                 let fieldController = {}
 
                 res.fields.forEach(field => {
@@ -50,6 +58,14 @@ class CustomTable extends React.Component{
                                             tableId: this.props.tableId,
                                             tableData: JSON.stringify(this.state.fieldController)
                                         }),
+                                    })
+                                    .then(res => {
+                                        console.log(res)
+                                        if(res.json().status === "deauth"){
+                                            deleteSessionCookies()
+                                            window.location.reload(false)
+                                        }
+                                        return res
                                     }).then(e => {
                                         window.location.reload(false)
                                     }).catch(err => {
@@ -75,12 +91,12 @@ class CustomTable extends React.Component{
                         ),
                 })
             }).catch(err => {
-                console.log(err.status)
+                // console.log(err)
                 if(err.status === "deauth"){
                     deleteSessionCookies()
                     window.location.reload(false)
                 }
-                throw err
+                // throw err
             })
     }
     

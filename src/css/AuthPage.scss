@@ -75,6 +75,32 @@
     }
 }
 
+.secondary-btn{
+    width: auto;
+    color: #7182EF;
+    background: transparent;//linear-gradient(256.64deg, #7182EF -9.9%, rgba(11, 16, 48, 0) 119.49%), #0B1030;
+    padding: 10px 40px;
+    border-radius: 10px;
+    border: 0;
+    transition: .1s;
+    font-size: 14px;
+    font-weight: 700;
+
+    &:hover{
+        opacity: .8;
+        cursor: pointer;
+        color: #0B1030;
+    }
+
+    &:disabled{
+        opacity: .7;
+
+        &:hover{
+            cursor: default;
+        }
+    }
+}
+
 .button-label{
     background: transparent;
     border: 0;
