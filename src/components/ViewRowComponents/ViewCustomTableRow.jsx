@@ -1,12 +1,12 @@
 import React from 'react'
-import {Navbar} from './Navbar'
-import '../css/ViewRow.scss'
+import {Navbar} from '../Navbar'
+import '../../css/ViewRow.scss'
 import { MdEdit } from "react-icons/md";
-import ModalBox from './ModalBox'
-import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../helpers/session/auth'
+import ModalBox from '../ModalBox'
+import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 
 import {connect} from 'react-redux'
-import {updateUserData} from '../actions/updateUserData.js'
+import {updateUserData} from '../../actions/updateUserData.js'
 
 function getUrlParams(url) {
 	var params = {};
@@ -41,7 +41,6 @@ class ViewCustomTableRowComponent extends React.Component{
         fetch('https://us-central1-multi-manage.cloudfunctions.net/getOrgTableRowData?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+params.tableId+'&rowIndex='+params.rowIndex+'&tokenId='+getSessionCookie(USER_TOKEN))
             .then(res => res.json())
             .then(res => {
-                console.log(res)
                 if(res.status === "deauth"){
                     deleteSessionCookies()
                     window.location.reload(false)
@@ -49,7 +48,6 @@ class ViewCustomTableRowComponent extends React.Component{
                 return res
             })
             .then(res => {
-                console.log(res)
                 let fieldData = []
 
                 for(let field in res.data){
@@ -60,8 +58,6 @@ class ViewCustomTableRowComponent extends React.Component{
                         })
                 }
 
-                console.log(fieldData)
-
                 this.setState({
                     tableName: res.data.tableName,
                     fieldData: fieldData,
@@ -69,22 +65,17 @@ class ViewCustomTableRowComponent extends React.Component{
                     fields: res.fieldsData
                 })
 
-                console.log("=> ", this.state.fieldValue)
-
-
                 if(this.state.fieldData.length > 10){
                     let {fieldData} = this.state
                     let splitFieldData = []
                     splitFieldData[1] = fieldData.splice(10)
                     splitFieldData[0] = fieldData
-                    console.log("split", splitFieldData)
                     this.setState({
                         fieldData: splitFieldData
                     })
                     // console.log(this.state.fieldData)
                 }else{
                     const {fieldData} = this.state
-
                     
                     this.setState({
                         fieldData: [fieldData]
@@ -110,9 +101,8 @@ class ViewCustomTableRowComponent extends React.Component{
                         <h1>Add new item</h1>
                         <form onSubmit={async (e) =>  {
                             e.preventDefault()
-                            console.log(this.state.modalFieldData)
                             this.setState({dataSubmited: true})
-                            const response = await fetch('https://us-central1-multi-manage.cloudfunctions.net/updateTableRow', {
+                            fetch('https://us-central1-multi-manage.cloudfunctions.net/updateTableRow', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
@@ -124,7 +114,6 @@ class ViewCustomTableRowComponent extends React.Component{
                                 }),
                             })
                             .then(res => {
-                                console.log(res)
                                 if(res.json().status === "deauth"){
                                     deleteSessionCookies()
                                     window.location.reload(false)
@@ -142,16 +131,14 @@ class ViewCustomTableRowComponent extends React.Component{
                         }}>
                             {state.modalFieldData.map((field, i) => {
                                 let fieldData = this.state.fields.filter(f => f.name === field.fieldName)[0]
-                                console.log(fieldData)
-                                console.log(this.state.modalFieldData)
 
                                 return (fieldData.type === 'select') ?
-                                    <select className="txt-field" onChange={this.updateFieldValue} name={i}>
-                                        {fieldData.select_data.map(selectValue => 
-                                            <option value={selectValue} selected={selectValue === field.fieldValue}>{selectValue}</option>)}
+                                    <select key={fieldData.name} className="txt-field" onChange={this.updateFieldValue} name={i} defaultValue={field.fieldValue}>
+                                        {fieldData.select_data.map((selectValue, selectIndex) => 
+                                            <option key={selectValue+"-"+selectIndex} value={selectValue} >{selectValue}</option>)}
                                     </select>
                                 :
-                                    <input type={fieldData.type} className="txt-field"
+                                    <input key={fieldData.name} type={fieldData.type} className="txt-field"
                                         name={i} placeholder={field.fieldName}
                                         value={field.fieldValue} onChange={this.updateFieldValue} />
                             }
@@ -169,7 +156,6 @@ class ViewCustomTableRowComponent extends React.Component{
         this.setState({
             showModal: !showModal
         })
-        console.log(this.state)
     }
 
     updateFieldValue = (e) => {
@@ -180,7 +166,6 @@ class ViewCustomTableRowComponent extends React.Component{
             fieldData[1][i-10].fieldValue = e.target.value
         else
             fieldData[0][i].fieldValue = e.target.value
-        console.log(fieldData)
 
         this.setState({
             fieldData:  fieldData
@@ -190,7 +175,6 @@ class ViewCustomTableRowComponent extends React.Component{
     }
 
     render(){
-        console.log(this.state.fieldData)
         return (
             <div>
                 <ModalBox dataFields={this.state.modalContent} isShown={this.state.showModal} toggleModal={this.toggleModal}/>
@@ -204,11 +188,11 @@ class ViewCustomTableRowComponent extends React.Component{
                             <button className="btn" onClick={this.toggleModal}><MdEdit /></button>
                         </div>
                         <div style={{display: "flex"}}>
-                            {this.state.fieldData.map(section => 
-                                <div className="field-display-container">
+                            {this.state.fieldData.map((section, sectionIndex) => 
+                                <div className="field-display-container" key={sectionIndex}>
                                     <ul>
                                         {Array.from(section).map(field => 
-                                            <li><b>{field.fieldName}</b>: {field.fieldValue}</li>
+                                            <li key={field.fieldName}><b>{field.fieldName}</b>: {field.fieldValue}</li>
                                         )}
                                         {/* {JSON.stringify(section)} */}
                                     </ul>
@@ -222,10 +206,7 @@ class ViewCustomTableRowComponent extends React.Component{
     }
 }
 
-// export default ViewRow
-
 const mapStateToProps = state => {
-  console.log(state)
   return {
     userData: state
   }

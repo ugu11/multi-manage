@@ -1,15 +1,11 @@
 import React from 'react'
-import {Navbar} from './components/Navbar'
 import './css/ViewRow.scss'
-import { MdEdit } from "react-icons/md";
-import ModalBox from './components/ModalBox'
-import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from './helpers/session/auth'
 
 import {connect} from 'react-redux'
 import {updateUserData} from './actions/updateUserData.js'
-import { ViewCustomTableRow } from './components/ViewCustomTableRow';
-import { ViewTablesManageRow } from './components/ViewTablesManageRow';
-import { ViewUsersManageRow } from './components/ViewUsersManageRow';
+import { ViewCustomTableRow } from './components/ViewRowComponents/ViewCustomTableRow';
+import { ViewTablesManageRow } from './components/ViewRowComponents/ViewTablesManageRow';
+import { ViewUsersManageRow } from './components/ViewRowComponents/ViewUsersManageRow';
 
 function getUrlParams(url) {
 	var params = {};
@@ -41,9 +37,8 @@ class ViewRowComponent extends React.Component{
     }
 
     render(){
-        console.log(this.state.fieldData)
         return (
-            <div>
+            <div id="dashboard-content">
                 {(this.state.params.type === 'manage_tables') ?
                   <ViewTablesManageRow />
                 : (this.state.params.type === 'manage_users') ? 
@@ -54,10 +49,7 @@ class ViewRowComponent extends React.Component{
     }
 }
 
-// export default ViewRow
-
 const mapStateToProps = state => {
-  console.log(state)
   return {
     userData: state
   }

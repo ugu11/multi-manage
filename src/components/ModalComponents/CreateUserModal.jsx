@@ -1,5 +1,5 @@
 import React from 'react'
-import { deleteSessionCookies, getSessionCookie, ORG_TOKEN, USER_TOKEN } from '../helpers/session/auth.js'
+import { deleteSessionCookies, getSessionCookie, ORG_TOKEN, USER_TOKEN } from '../../helpers/session/auth.js'
 
 class CreateUserModal extends React.Component{
     constructor(props){
@@ -20,14 +20,12 @@ class CreateUserModal extends React.Component{
         e.preventDefault()
         if(this.state.password === this.state.confPassword){
             this.setState({dataSubmited: true})
-            const response = await fetch('https://us-central1-multi-manage.cloudfunctions.net/registerUser', {
+            fetch('https://us-central1-multi-manage.cloudfunctions.net/registerUser', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     orgId: getSessionCookie(ORG_TOKEN),
                     tokenId: getSessionCookie(USER_TOKEN),
-                    // tableId: this.props.tableId,
-                    // tableData: JSON.stringify(this.state.fieldController),
                     fullName: this.state.name,
                     username: this.state.username,
                     phone: this.state.phone,
@@ -68,16 +66,6 @@ class CreateUserModal extends React.Component{
             <div>
                 <h1>Create new user</h1>
                 <form onSubmit={this.submitUserCreationReq}>
-                    {/* {res.fields.map(field => 
-                        (field.type === 'select') ?
-                            <select className="txt-field" onChange={this.handleInputChange} name={field.name}>
-                                {field.select_data.map((selectValue, i) => 
-                                    <option value={selectValue}>{selectValue}</option>)}
-                            </select>
-                        :
-                            <input type={field.type} value={this.state.fieldController[field.name]} onChange={this.handleInputChange} name={field.name} className="txt-field" placeholder={field.name}/>
-
-                    )} */}
                     <input type="text" onChange={this.handleInputChange} className="txt-field" name="name" placeholder="Name" />
                     <input type="text" onChange={this.handleInputChange} className="txt-field" name="username" placeholder="Username" />
                     <input type="email" onChange={this.handleInputChange} className="txt-field" name="email" placeholder="Email" />

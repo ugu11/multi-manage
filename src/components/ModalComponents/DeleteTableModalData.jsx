@@ -1,5 +1,5 @@
 import React from 'react'
-import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../helpers/session/auth'
+import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 
 function getUrlParams(url) {
 	var params = {};
@@ -52,6 +52,8 @@ class DeleteTableModalData extends React.Component{
                         }else
                             window.location = "/?table=manage_tables"
                         break
+                    default:
+                        window.location = "/"
                 }
             })
             .catch(err => {

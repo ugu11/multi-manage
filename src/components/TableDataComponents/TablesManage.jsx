@@ -1,7 +1,6 @@
 import React from 'react'
-import AddFields from './AddFields'
-import ModalBox from './ModalBox'
-import { getSessionCookie, ORG_TOKEN, deleteSessionCookies, USER_TOKEN } from '../helpers/session/auth.js'
+import AddFields from '../ModalComponents/AddFields'
+import ModalBox from '../ModalBox'
 
 import {connect} from 'react-redux'
 
@@ -14,7 +13,7 @@ class TablesManageComponent extends React.Component{
     }
     
     handleRowClick = (tableId) => {
-      window.location.href = "/viewrow?type=manage_tables&tableId="+tableId
+        window.location.href = "/viewrow?type=manage_tables&tableId="+tableId
     }
 
     toggleModal = () => {
@@ -22,7 +21,6 @@ class TablesManageComponent extends React.Component{
         this.setState({
             showModal: !showModal
         })
-        console.log(this.state)
     }
     
     render(){
@@ -35,30 +33,29 @@ class TablesManageComponent extends React.Component{
                     <button className="btn" onClick={this.toggleModal}>Add item</button>
                     <input type="text" className="txt-field" placeholder="search"/>
                 </div>
-                <table>
-                    <thead>
-                        <th>Table name</th>
-                    </thead>
 
-                    <tbody>
-                        {(this.props.tablesData !== undefined) ?
-                            this.props.tablesData.map((table, i) => 
-                                <tr onClick={() => this.handleRowClick(table.tableId, table.tableName)}>
+                {(this.props.tablesData !== undefined && this.props.tablesData !== null) ?
+                    <table>
+                        <thead>
+                            <tr><th>Table name</th></tr>
+                        </thead>
+
+                        <tbody>
+                            {this.props.tablesData.map((table, i) => 
+                                <tr key={table.tableName} onClick={() => this.handleRowClick(table.tableId, table.tableName)}>
                                     <td>{table.tableName}</td>
                                 </tr>
-                            )
-                        : ""}
-                    </tbody>
-                </table>
+                            )}
+                        </tbody>
+                    </table>
+                : ""}
+
             </div>
         )
     }
 }
 
-// export default TablesManage
-
 const mapStateToProps = state => {
-  console.log(state)
   return {
     userData: state.userData,
     tablesData: state.tablesData

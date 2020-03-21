@@ -16,7 +16,6 @@ export const setSessionCookie = (cookieName, session) => {
 
 export const getSessionCookie = (cookieName) => {
     const sessionCookie = Cookies.get(cookieName)
-    console.log("=> ",sessionCookie)
     if(sessionCookie === undefined)
         return {}
     else

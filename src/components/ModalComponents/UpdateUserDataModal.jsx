@@ -1,22 +1,22 @@
 import React from 'react'
-import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../helpers/session/auth'
+import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 
 class UpdateUserDataModal extends React.Component{
     constructor(props){
         super(props)
         
         this.state = {
-            userData: null
+            userData: null,
+            dataSubmited: false
         }
     }
 
-    componentWillReceiveProps(){
-        this.setState({
-            userData: this.props.userData,
-            dataSubmited: false
-        })
+    componentDidUpdate(prevProps, prevState){
+        if(prevState.userData == null && prevState.userData !== this.props.userData)
+            this.setState({
+                userData: this.props.userData,
+            })
     }
-
     submitUpdate = (e) => {
         e.preventDefault()
 
@@ -36,17 +36,17 @@ class UpdateUserDataModal extends React.Component{
                     case 401:
                         window.location = "/"
                         break
+                    default:
+                        window.reload(false)
                 }
             })
             .then(res => {
-                console.log(res)
                 if(res.status === "deauth"){
                     deleteSessionCookies()
                     window.location.reload(false)
                 }else if(res === 'success'){
                     this.props.toggleModal()
                 }
-                console.log("NOTHING")
             })
             .catch(err => {
                 window.location.reload(false)
@@ -72,10 +72,11 @@ class UpdateUserDataModal extends React.Component{
                             <div>
                                 <input type="text" className="txt-field" onChange={this.handleFieldUpdate} name="name" placeholder="Name" value={this.state.userData.name}/>
                                 <input type="text" className="txt-field" onChange={this.handleFieldUpdate} name="username" placeholder="Username" value={this.state.userData.username}/>
-                                <input type="text" className="txt-field" onChange={this.handleFieldUpdate} name="phone" placeholder="Phone" value={this.state.userData.phone}/>
-                                <select className="txt-field" onChange={this.handleFieldUpdate} name="admin">
-                                    <option value={true} selected={(this.state.userData.admin === true)}>Yes</option>
-                                    <option value={false} selected={(this.state.userData.admin === false)}>No</option>
+                                <input type="text" className="txt-field" onChange={this.handleFieldUpdate} name="jobRole" placeholder="Job Role" value={this.state.userData.jobRole}/>
+                                <input type="tel" className="txt-field" onChange={this.handleFieldUpdate} name="phone" placeholder="Phone" value={this.state.userData.phone}/>
+                                <select className="txt-field" onChange={this.handleFieldUpdate} name="admin" defaultValue={this.state.userData.admin}>
+                                    <option value={true}>Yes</option>
+                                    <option value={false}>No</option>
                                 </select>
                             </div>
                         : ""

@@ -1,9 +1,9 @@
 import React from 'react'
-import { deleteSessionCookies, getSessionCookie, ORG_TOKEN, USER_TOKEN } from '../helpers/session/auth.js'
-import { deleteState } from '../localStorage.js'
+import { deleteSessionCookies, getSessionCookie, ORG_TOKEN, USER_TOKEN } from '../../helpers/session/auth.js'
+import { deleteState } from '../../localStorage.js'
 import {connect} from 'react-redux'
-import ModalBox from './ModalBox'
-import CreateUserModal from './CreateUserModal'
+import ModalBox from '../ModalBox'
+import CreateUserModal from '../ModalComponents/CreateUserModal'
 
 class UsersManageComponent extends React.Component{
     constructor(props){
@@ -18,17 +18,17 @@ class UsersManageComponent extends React.Component{
     componentDidMount(){
         fetch('https://us-central1-multi-manage.cloudfunctions.net/getOrgUsers?orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN))
             .then(res => {
-                // console.log("STATEEEE", res.body)
                 switch(res.status){
                     case 200:
                         return res.json()
                     case 401:
                         window.location = "/"
                         break
+                    default:
+                        window.location = "/"
                 }
             })
             .then(res => {
-                console.log("STATE USER ", res)
                 if(res.status === "deauth"){
                     deleteSessionCookies()
                     window.location.reload(false)
@@ -57,7 +57,6 @@ class UsersManageComponent extends React.Component{
         this.setState({
             showModal: !showModal
         })
-        console.log(this.state)
     }
     
     render(){
@@ -70,34 +69,35 @@ class UsersManageComponent extends React.Component{
                     <button className="btn" onClick={this.toggleModal}>Add item</button>
                     <input type="text" className="txt-field" placeholder="search"/>
                 </div>
-                <table>
-                    <thead>
-                        <th>User</th>
-                        <th>Username</th>
-                        <th>Phone</th>
-                        <th>Admin</th>
-                    </thead>
+                {(this.state.usersData !== null && this.state.usersData !== undefined) ?
+                    <table>
+                        <thead>
+                            <tr>
+                            <th>User</th>
+                            <th>Username</th>
+                            <th>Job Role</th>
+                            <th>Admin</th>
+                            </tr>
+                        </thead>
 
-                    <tbody>
-                        {(this.state.usersData !== null && this.state.usersData !== undefined) ?
-                            this.state.usersData.map((user, i) => 
-                                <tr onClick={() => this.handleRowClick(user._id)}>
-                                    <td>{user.name}</td>
-                                    <td>{user.username}</td>
-                                    <td>{user.phone}</td>
-                                    <td>{(user.admin === true) ? "Yes" : "No"}</td>
-                                </tr>
-                            )
-                        : ""}
-                    </tbody>
-                </table>
+                            <tbody>
+                                    {this.state.usersData.map((user, i) => 
+                                        <tr key={user.username} onClick={() => this.handleRowClick(user._id)}>
+                                            <td>{user.name}</td>
+                                            <td>{user.username}</td>
+                                            <td>{user.jobRole}</td>
+                                            <td>{(user.admin === true) ? "Yes" : "No"}</td>
+                                        </tr>
+                                    )}
+                            </tbody>
+                    </table>
+                : ""}
             </div>
         )
     }
 }
 
 const mapStateToProps = state => {
-  console.log(state)
   return {
     userData: state.userData,
     tablesData: state.tablesData

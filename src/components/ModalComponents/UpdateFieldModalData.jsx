@@ -1,8 +1,8 @@
 import React from 'react';
-import { MdEdit } from "react-icons/md";
-import {IoIosRemoveCircleOutline, IoIosAdd} from 'react-icons/io'
+import {IoIosRemoveCircleOutline} from 'react-icons/io'
 import Checkbox from 'react-checkbox-component'
-import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../helpers/session/auth'
+import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
+import { deleteState } from '../../localStorage';
 
 function getUrlParams(url) {
 	var params = {};
@@ -20,17 +20,17 @@ class UpdateFieldModalData extends React.Component{
     constructor(props){
         super(props)
 
-        console.log(props)
-
         this.state = {
-            tableFields: null,
+            // tableFields: null,
             selectFieldValue: "",
             dataSubmited: false,
+            tableFields: null
         }
     }
 
-    componentWillReceiveProps(){
-        this.setState({tableFields: this.props.tableFields})
+    componentDidUpdate(prevProps, prevState){
+        if(prevState.tableFields === null & prevState.tableFields !== this.props.tableFields)
+            this.setState({tableFields: this.props.tableFields})
     }
     
     addSelectValue = () => {
@@ -66,30 +66,24 @@ class UpdateFieldModalData extends React.Component{
     }
  
     submitUpdate = () => {
-        console.log(this.state.modalFieldData)
         this.setState({dataSubmited: true})
-        let tableFields = (this.state.tableFields.length == 2) ? [...this.state.tableFields[0], ...this.state.tableFields[1]] : this.state.tableFields[0]
+        let tableFields = (this.state.tableFields.length === 2) ? [...this.state.tableFields[0], ...this.state.tableFields[1]] : this.state.tableFields[0]
         fetch('https://us-central1-multi-manage.cloudfunctions.net/updateTableFields', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     orgId: getSessionCookie(ORG_TOKEN),
                     tableId: getUrlParams(window.location.href).tableId,
-                    // rowData: JSON.stringify(this.state.modalFieldData),
                     tokenId: getSessionCookie(USER_TOKEN),
-                    // rowIndex: parseInt(getUrlParams(window.location.href).rowIndex)
                     fieldsData: JSON.stringify(tableFields)
                 }),
             })
             .then(res => {
-                console.log(res)
                 if(res.json().status === "deauth"){
                     deleteSessionCookies()
                     window.location.reload(false)
+                    deleteState()
                 }
-                return res
-            })
-            .then(res => {
                 this.props.toggleModal()
             })
             .catch(err => {
@@ -102,25 +96,15 @@ class UpdateFieldModalData extends React.Component{
         tableFields[sectionIndex][index].type = e.target.value
         if(tableFields[sectionIndex][index].type === 'select')
             tableFields[sectionIndex][index].select_data = []
-        console.log(tableFields)
 
         this.setState({
             tableFields: tableFields
         })
-        // this.handleEditField(sectionIndex, index)
     }
 
-    handleSelectFieldValueInputChange = (e) => {
-        // let {selectFieldValue} = this.state
-        this.setState({
-            selectFieldValue: e.target.value
-        })
-        // this.handleEditField(sectionIndex, i)
-    }
+    handleSelectFieldValueInputChange = (e) => this.setState({selectFieldValue: e.target.value})
     
     handleSelectValueKeyDown = (e) => {
-        console.log("appending")
-
         if(e.key === 'Enter' && this.state.selectFieldValue !== '')
             this.addSelectValue(e)
     }
@@ -138,22 +122,22 @@ class UpdateFieldModalData extends React.Component{
                             <div id="field-type-radio-group">
                                 <input type="radio" onChange={(e) => (this.handleRadioButtonsChange(e, this.props.sectionIndex, this.props.index))}
                                     checked={(this.state.tableFields[this.props.sectionIndex][this.props.index].type === 'text')} value="text" id="text" name="field-type"/>
-                                <label for="text">Text</label>
+                                <label htmlFor="text">Text</label>
                                 <input type="radio" onChange={(e) => (this.handleRadioButtonsChange(e, this.props.sectionIndex, this.props.index))}
                                     checked={(this.state.tableFields[this.props.sectionIndex][this.props.index].type === 'date')} value="date" id="date" name="field-type"/>
-                                <label for="date">Date</label>
+                                <label htmlFor="date">Date</label>
                                 <input type="radio" onChange={(e) => (this.handleRadioButtonsChange(e, this.props.sectionIndex, this.props.index))}
                                     checked={(this.state.tableFields[this.props.sectionIndex][this.props.index].type === 'time')} value="time" id="time" name="field-type"/>
-                                <label for="time">Time</label>
+                                <label htmlFor="time">Time</label>
                                 <input type="radio" onChange={(e) => (this.handleRadioButtonsChange(e, this.props.sectionIndex, this.props.index))}
                                     checked={(this.state.tableFields[this.props.sectionIndex][this.props.index].type === 'number')} value="number" id="number" name="field-type"/>
-                                <label for="number">Number</label>
+                                <label htmlFor="number">Number</label>
                                 <input type="radio" onChange={(e) => (this.handleRadioButtonsChange(e, this.props.sectionIndex, this.props.index))}
                                     checked={(this.state.tableFields[this.props.sectionIndex][this.props.index].type === 'select')} value="select" id="select" name="field-type"/>
-                                <label for="select">Select</label>
+                                <label htmlFor="select">Select</label>
                                 <input type="radio" onChange={(e) => (this.handleRadioButtonsChange(e, this.props.sectionIndex, this.props.index))}
                                     checked={(this.state.tableFields[this.props.sectionIndex][this.props.index].type === 'checkbox')} value="checkbox" id="checkbox" name="field-type"/>
-                                <label for="checkbox">Checkbox</label>
+                                <label htmlFor="checkbox">Checkbox</label>
                             </div>
     
                             {

@@ -1,6 +1,6 @@
 import React from 'react'
-import ModalBox from './ModalBox'
-import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../helpers/session/auth'
+import ModalBox from '../ModalBox'
+import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 
 class CustomTable extends React.Component{
     constructor(props){
@@ -18,7 +18,6 @@ class CustomTable extends React.Component{
         fetch('https://us-central1-multi-manage.cloudfunctions.net/getOrgTableData?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+this.props.tableId+'&tokenId='+getSessionCookie(USER_TOKEN))
             .then(res => res.json())
             .then(res => {
-                console.log(res)
                 if(res.status === "deauth"){
                     deleteSessionCookies()
                     window.location.reload(false)
@@ -26,7 +25,6 @@ class CustomTable extends React.Component{
                 return res
             })
             .then(res => {
-                console.log(res)
                 let fieldController = {}
 
                 res.fields.forEach(field => {
@@ -35,8 +33,6 @@ class CustomTable extends React.Component{
                     else
                         fieldController[field.name] = ""
                 })
-
-                console.log(res.fields)
 
                 this.setState({
                     dataSubmited: false,
@@ -49,7 +45,7 @@ class CustomTable extends React.Component{
                                 <form onSubmit={async (e) =>  {
                                     e.preventDefault()
                                     this.setState({dataSubmited: true})
-                                    const response = await fetch('https://us-central1-multi-manage.cloudfunctions.net/addTableRow', {
+                                    fetch('https://us-central1-multi-manage.cloudfunctions.net/addTableRow', {
                                         method: 'POST',
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify({
@@ -60,7 +56,6 @@ class CustomTable extends React.Component{
                                         }),
                                     })
                                     .then(res => {
-                                        console.log(res)
                                         if(res.json().status === "deauth"){
                                             deleteSessionCookies()
                                             window.location.reload(false)
@@ -77,12 +72,12 @@ class CustomTable extends React.Component{
                                 }}>
                                     {res.fields.map(field => 
                                         (field.type === 'select') ?
-                                            <select className="txt-field" onChange={this.handleInputChange} name={field.name}>
+                                            <select key={field.name} className="txt-field" onChange={this.handleInputChange} name={field.name}>
                                                 {field.select_data.map((selectValue, i) => 
-                                                    <option value={selectValue}>{selectValue}</option>)}
+                                                    <option key={selectValue+"-"+i} value={selectValue}>{selectValue}</option>)}
                                             </select>
                                         :
-                                            <input type={field.type} value={this.state.fieldController[field.name]} onChange={this.handleInputChange} name={field.name} className="txt-field" placeholder={field.name}/>
+                                            <input key={field.name} type={field.type} value={this.state.fieldController[field.name]} onChange={this.handleInputChange} name={field.name} className="txt-field" placeholder={field.name}/>
 
                                     )}
                                     <input type="submit" className="btn" disabled={this.state.dataSubmited} value="Add new item"/>
@@ -132,30 +127,31 @@ class CustomTable extends React.Component{
                     <button className="btn" onClick={this.toggleModal}>Add item</button>
                     <input type="text" className="txt-field" placeholder="search"/>
                 </div>
-                    <table>
-                        <thead>
-                            {
-                                (this.state.tableData !== null) ?
-                                    this.state.tableData.fields.map(field => 
-                                        (field.display_table) ? <th>{field.name}</th> : "")
-                                : ""
-                            }
-                        </thead>
 
-                        <tbody>
-                            {
-                            (this.state.tableData !== null) ?
-                                this.state.tableData.data.map((row, i) => 
-                                <tr onClick={() => this.handleRowClick(i)}>
+                {
+                    (this.state.tableData !== null) ?
+                        <table>
+                            <thead>
+                                <tr>
                                     {this.state.tableData.fields.map(field => 
-                                        (field.display_table) ?<td>{row[field.name]}</td> : ""
-                                    )}
+                                        (field.display_table) ?
+                                            <th key={field.name}>{field.name}</th> : "")
+                                    }
                                 </tr>
-                                )
-                            : ""
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+
+                            <tbody>
+                                {this.state.tableData.data.map((row, i) => 
+                                    <tr key={i} onClick={() => this.handleRowClick(i)}>
+                                        {this.state.tableData.fields.map(field => 
+                                            (field.display_table) ? 
+                                                <td key={row[field.name]+"-"+i}>{row[field.name]}</td> : "")}
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    : ""
+                }
 
             </div>
 

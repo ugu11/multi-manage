@@ -2,8 +2,8 @@ import React from 'react'
 import { MdAdd } from "react-icons/md";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import Checkbox from 'react-checkbox-component'
-import TableModel from '../models/tableModel'
-import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies} from '../helpers/session/auth.js'
+import TableModel from '../../models/tableModel'
+import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies} from '../../helpers/session/auth.js'
 
 class AddFields extends React.Component{
     constructor(){
@@ -15,7 +15,7 @@ class AddFields extends React.Component{
             newFieldsData : [],
             selectValues: [],
             selectFieldValue: "",
-            cbChecked: false
+            cbChecked: true
         }
     }
 
@@ -32,7 +32,7 @@ class AddFields extends React.Component{
                 newFieldsData: [newField, ...prevState.newFieldsData],
                 fieldName: "",
                 fieldType: "text",
-                cbChecked: false,
+                cbChecked: true,
                 selectValues: []
             }))
         }
@@ -110,9 +110,9 @@ class AddFields extends React.Component{
     submitNewTable = async () => {
         const tableModel = new TableModel()
         tableModel.setName(this.state.tableName)
-        tableModel.setFields(this.state.newFieldsData)
+        tableModel.setFields(this.state.newFieldsData.reverse())
 
-        const response = await fetch('https://us-central1-multi-manage.cloudfunctions.net/createTable', {
+        fetch('https://us-central1-multi-manage.cloudfunctions.net/createTable', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -122,7 +122,6 @@ class AddFields extends React.Component{
             }),
         })
         .then(res => {
-            console.log(res)
             if(res.json().status === "deauth"){
                 deleteSessionCookies()
                 window.location.reload(false)
@@ -136,7 +135,6 @@ class AddFields extends React.Component{
             else
                 throw err
         })
-        console.log(await response.json())
     }
 
     render(){
@@ -148,7 +146,7 @@ class AddFields extends React.Component{
             <div id="add-fields-container">
               <ul id="fields-list">
                   {this.state.newFieldsData.map((field, i) => 
-                    <li>
+                    <li key={field.fieldName}>
                         <label>{field.fieldName}</label> <label>{field.fieldType} {(field.fieldType === 'select') ? '['+field.selectValues.join(', ')+']' : ""} &nbsp; {(field.displayInTable) ? "Display in table" : ""}</label>
                         <button className="remove-btn" onClick={() => {
                             this.removeItem(i)
@@ -166,22 +164,22 @@ class AddFields extends React.Component{
                     <div id="field-type-radio-group">
                         <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
                             checked={(this.state.fieldType === 'text')} value="text" id="text" name="field-type"/>
-                        <label for="text">Text</label>
+                        <label htmlFor="text">Text</label>
                         <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
                             checked={(this.state.fieldType === 'date')} value="date" id="date" name="field-type"/>
-                        <label for="date">Date</label>
+                        <label htmlFor="date">Date</label>
                         <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
                             checked={(this.state.fieldType === 'time')} value="time" id="time" name="field-type"/>
-                        <label for="time">Time</label>
+                        <label htmlFor="time">Time</label>
                         <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
                             checked={(this.state.fieldType === 'number')} value="number" id="number" name="field-type"/>
-                        <label for="number">Number</label>
+                        <label htmlFor="number">Number</label>
                         <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
                             checked={(this.state.fieldType === 'select')} value="select" id="select" name="field-type"/>
-                        <label for="select">Select</label>
+                        <label htmlFor="select">Select</label>
                         <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
                             checked={(this.state.fieldType === 'checkbox')} value="checkbox" id="checkbox" name="field-type"/>
-                        <label for="checkbox">Checkbox</label>
+                        <label htmlFor="checkbox">Checkbox</label>
                     </div>
                     <div id="table-display">
                         <Checkbox size="small" onChange={this.handleTableDispCheckbox} color="#11152f" isChecked={this.state.cbChecked}/>

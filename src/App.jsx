@@ -2,9 +2,9 @@ import React from 'react';
 import './css/App.css';
 import './css/Dashboard.scss';
 import {Navbar} from './components/Navbar'
-import CustomTable from './components/CustomTable'
-import {TablesManage} from './components/TablesManage'
-import {UsersManage} from './components/UsersManage'
+import CustomTable from './components/TableDataComponents/CustomTable'
+import {TablesManage} from './components/TableDataComponents/TablesManage'
+import {UsersManage} from './components/TableDataComponents/UsersManage'
 
 import {connect} from 'react-redux'
 import {updateUserData, updateTablesData} from './actions.js'
@@ -36,13 +36,11 @@ class App extends React.Component {
     if((this.state.tableId === 'manage_tables' || this.state.tableId === 'manage_users') && this.props.userData.admin === false)
       window.location = "/"
 
-    console.log(this.state.tableId)
     if(this.state.tableId === undefined)
       if(this.props.tablesData[0] === undefined)
         fetch('https://us-central1-multi-manage.cloudfunctions.net/getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN))
           .then(res => res.json())
           .then(res => {
-              console.log(res)
               if(res.status === "deauth"){
                   deleteSessionCookies()
                   window.location.reload(false)
@@ -71,21 +69,23 @@ class App extends React.Component {
       <div className="App">
    
         <Navbar />
-        {
-          (this.state.tableId === 'manage_tables') ?
-            <TablesManage/>
-          : (this.state.tableId === 'manage_users') ?
-            <UsersManage />
-          :
-            <CustomTable tableId={this.state.tableId}/>
-        }
+        
+        <div id="dashboard-content">
+          {
+            (this.state.tableId === 'manage_tables') ?
+              <TablesManage/>
+            : (this.state.tableId === 'manage_users') ?
+              <UsersManage />
+            :
+              <CustomTable tableId={this.state.tableId}/>
+          }
+        </div>
       </div>
     );
   }
 }
 
 const mapStateToProps = state => {
-  console.log(state)
   return {
     userData: state.userData,
     tablesData: state.tablesData

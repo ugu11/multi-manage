@@ -1,6 +1,7 @@
 import React from 'react';
 import { setSessionCookie, USER_TOKEN, ORG_TOKEN, isSessionCookieSet } from './helpers/session/auth.js'
 import './css/AuthPage.scss'
+import ProcessingComponent from './components/ProcessingComponent'
 
 class Login extends React.Component{
     constructor(){
@@ -11,8 +12,10 @@ class Login extends React.Component{
             cred: "",
             userEmail: "",
             userPassword: "",
-            loginState: "org_login"
+            loginState: "org_login",
+            isProcessing: false
         }
+        
     }
 
     orgIdHandlerOnChange = (e) => {
@@ -40,6 +43,12 @@ class Login extends React.Component{
         })
     }
 
+    authTypeHandler = () => {window.location = "/register"}
+
+    goToPrevLoginStep = () => this.setState({
+        loginState: "org_login",
+        cred: ""
+    })
 
     render(){
         return (isSessionCookieSet(USER_TOKEN) && isSessionCookieSet(ORG_TOKEN)) ?
@@ -47,13 +56,17 @@ class Login extends React.Component{
                 :
                 <div className='auth-bg'>
                     <div className="auth-container">
+                        <ProcessingComponent radius="20" display={this.state.isProcessing}/>
+                        
                         {(this.state.loginState === 'org_login')
                             ?
                                 <div>
                                     <h1>Organization Log in</h1>
+
     
                                     <form onSubmit={async e =>  {
                                         e.preventDefault();
+                                        this.setState({isProcessing: true})
                                         const reqData = {
                                             name_id: this.state.orgId,
                                             password: this.state.orgPassword
@@ -69,24 +82,29 @@ class Login extends React.Component{
                                                 if(orgLoginResp.status === 'success'){
                                                     this.setState({
                                                         cred: orgLoginResp.cred,
-                                                        loginState: 'user_login'
+                                                        loginState: 'user_login',
                                                     })
                                                 }
+                                                this.setState({isProcessing: false})
                                             })
-                                    }}>
+                                            .catch(e => this.setState({isProcessing: false}))
+                                        }}>
                                         <input type="text" className="txt-field" value={this.state.orgId} onChange={this.orgIdHandlerOnChange} placeholder="Organization id"/>
                                         <input type="password" className="txt-field" value={this.state.orgPassword} onChange={this.orgPasswordHandlerOnChange} placeholder="Password"/>
                 
                                         <input type="submit" className="btn auth-submit" value="Log in organization"/>
                                     </form>
-                                    <button className="button-label" onClick={this.props.authTypeHandler}>New to the app? Register your organization now!</button>
+                                    <button className="button-label" onClick={this.authTypeHandler}>New to the app? Register your organization now!</button>
                                 </div>
                             : (this.state.loginState === 'user_login') ?
                                 <div>
                                     <h1>User Log in</h1>
+
+
     
                                     <form onSubmit={e => {
                                         e.preventDefault();
+                                        this.setState({isProcessing: true})
                                         const reqData = {
                                             orgId: this.state.cred,
                                             userEmail: this.state.userEmail,
@@ -104,15 +122,22 @@ class Login extends React.Component{
                                                     setSessionCookie(USER_TOKEN, userLoginResp.userIdToken)
                                                     setSessionCookie(ORG_TOKEN, reqData.orgId)
                                                     window.location = "/"
+                                                }else{
+                                                    this.setState({isProcessing: false})
                                                 }
                                                 // Manage session here!!!
                                             })
-                                    }}>
-                                        <input type="email" className="txt-field" value={this.state.userEmail} onChange={this.userEmailHandlerOnChange} placeholder="User email"/>
-                                        <input type="password" className="txt-field" value={this.state.userPassword} onChange={this.userPasswordHandlerOnChange} placeholder="User Password"/>
+                                            .catch(e => this.setState({isProcessing: false}))
+                                        }}>
+                                        <input type="email" className="txt-field" value={this.state.userEmail} onChange={this.userEmailHandlerOnChange} placeholder="User email" required/>
+                                        <input type="password" className="txt-field" value={this.state.userPassword} onChange={this.userPasswordHandlerOnChange} placeholder="User Password" required/>
                 
                                         <input type="submit" className="btn auth-submit" value="Log in organization"/>
-                                        <button className="button-label" onClick={() => {window.location.href = "/register"}}>New to the app? Register your organization now!</button>
+                                        <button className="button-label" onClick={(e) => {
+                                            e.preventDefault()
+                                            window.location.href = "/register"}}>New to the app? Register your organization now!</button>
+
+                                        <button className="secondary-btn voltar-btn" onClick={this.goToPrevLoginStep}>Voltar</button>
                                     </form>
                                 </div>
                             : ""

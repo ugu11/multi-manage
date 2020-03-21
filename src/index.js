@@ -6,7 +6,7 @@ import Login from './Login'
 import Register from './Register'
 import {ViewRow} from './ViewRow'
 import { isSessionCookieSet, USER_TOKEN, ORG_TOKEN } from './helpers/session/auth.js'
-import { Route, Link, BrowserRouter as Router, Redirect } from 'react-router-dom'
+import { Route, BrowserRouter as Router, Redirect } from 'react-router-dom'
 
 import {Provider} from 'react-redux'
 import {createStore} from 'redux'
@@ -19,8 +19,6 @@ store.subscribe(() => {
     saveState(store.getState())
 })
 
-console.log("STATE",store.getState())
-
 const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={(props) => (
         isSessionCookieSet(USER_TOKEN) && isSessionCookieSet(ORG_TOKEN)
@@ -28,17 +26,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
         : <Redirect to='/login' />
     )} />
 )
-
-// const routing = (
-//     <Router>
-//         <div>
-//             <PrivateRoute exact path="/" component={<Provider store={store}> <AppComponent/> </Provider>}/>
-//             <Route path="/login" component={Login}/>
-//             <Route path="/register" component={Register}/>
-//             <PrivateRoute path="/viewrow" component={ViewRow}/>
-//         </div>
-//     </Router>
-// )
 
 function routing() {
     return (

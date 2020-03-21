@@ -15,8 +15,6 @@ class NavbarComponent extends React.Component{
     }
 
     componentDidMount(){
-        // updateUserData("h")
-        // if(this.props.userData === undefined || ((new Date().getTime()) - this.props.userData.lastUserDataRequest)/1000 >= 240){
         const reqData = {
             orgIdToken: getSessionCookie(ORG_TOKEN),
             userTokenId: getSessionCookie(USER_TOKEN)
@@ -27,7 +25,6 @@ class NavbarComponent extends React.Component{
             body: JSON.stringify(reqData)})
                 .then(resp => resp.json())
                 .then(res => {
-                    console.log(res)
                     if(res.status === "deauth"){
                         deleteSessionCookies()
                         deleteState()
@@ -36,7 +33,6 @@ class NavbarComponent extends React.Component{
                         return res
                 })
                 .then(resp => {
-                    console.log(resp)
                     this.props.updateUser(resp)
                 })
                 .catch(err => {
@@ -51,7 +47,6 @@ class NavbarComponent extends React.Component{
         fetch('https://us-central1-multi-manage.cloudfunctions.net/getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN))
             .then(res => res.json())
             .then(res => {
-                console.log(res)
                 if(res.status === "deauth"){
                     deleteSessionCookies()
                     window.location.reload(false)
@@ -110,7 +105,6 @@ class NavbarComponent extends React.Component{
 
 
 const mapStateToProps = state => {
-    console.log(state)
     return {
         userData: state.userData,
         tablesData: state.tablesData

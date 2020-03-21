@@ -1,8 +1,7 @@
 import React from 'react'
-import { MdEdit } from "react-icons/md";
-import {IoIosRemoveCircleOutline, IoIosAdd} from 'react-icons/io'
+import {IoIosRemoveCircleOutline} from 'react-icons/io'
 import Checkbox from 'react-checkbox-component'
-import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../helpers/session/auth'
+import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 
 function getUrlParams(url) {
 	var params = {};
@@ -32,7 +31,7 @@ class AddFieldModalData extends React.Component{
 
     handleSelectFieldValueChange = (e) => this.setState({selectFieldValue: e.target.value})
     handleFieldNameChange = (e) => this.setState({fieldName: e.target.value})
-    handleFielTypeChange = (e) => this.setState({fieldType: e.target.value})
+    handleFieldTypeChange = (e) => this.setState({fieldType: e.target.value})
     handleCheckboxChange = (e) => this.setState((state) => ({displayTable: !state.displayTable}))
     addSelectValue = (e) => (this.state.selectFieldValue !== '') ? this.setState((state) => ({
             selectData: [...state.selectData, state.selectFieldValue],
@@ -89,23 +88,17 @@ class AddFieldModalData extends React.Component{
                         <input type="text" name="fieldName" value={this.state.fieldName} onChange={this.handleFieldNameChange} placeholder="Field name" className="txt-field"/>
                         <h3>Field type</h3>
                         <div id="field-type-radio-group">
-                            <input type="radio" onChange={this.handleTypeChange}
-                                checked={this.state.fieldType === 'text'} onChange={this.handleFielTypeChange} value="text" id="text" name="field-type"/>
+                            <input type="radio" checked={this.state.fieldType === 'text'} onChange={this.handleFieldTypeChange} value="text" id="text" name="field-type"/>
                             <label for="text">Text</label>
-                            <input type="radio" onChange={this.handleTypeChange}
-                                checked={this.state.fieldType === 'date'} onChange={this.handleFielTypeChange} value="date" id="date" name="field-type"/>
+                            <input type="radio" checked={this.state.fieldType === 'date'} onChange={this.handleFieldTypeChange} value="date" id="date" name="field-type"/>
                             <label for="date">Date</label>
-                            <input type="radio" onChange={this.handleTypeChange}
-                                checked={this.state.fieldType === 'time'} onChange={this.handleFielTypeChange} value="time" id="time" name="field-type"/>
+                            <input type="radio" checked={this.state.fieldType === 'time'} onChange={this.handleFieldTypeChange} value="time" id="time" name="field-type"/>
                             <label for="time">Time</label>
-                            <input type="radio" onChange={this.handleTypeChange}
-                                checked={this.state.fieldType === 'number'} onChange={this.handleFielTypeChange} value="number" id="number" name="field-type"/>
+                            <input type="radio" checked={this.state.fieldType === 'number'} onChange={this.handleFieldTypeChange} value="number" id="number" name="field-type"/>
                             <label for="number">Number</label>
-                            <input type="radio" onChange={this.handleTypeChange}
-                                checked={this.state.fieldType === 'select'} onChange={this.handleFielTypeChange} value="select" id="select" name="field-type"/>
+                            <input type="radio" checked={this.state.fieldType === 'select'} onChange={this.handleFieldTypeChange} value="select" id="select" name="field-type"/>
                             <label for="select">Select</label>
-                            <input type="radio" onChange={this.handleTypeChange}
-                                checked={this.state.fieldType === 'checkbox'} onChange={this.handleFielTypeChange} value="checkbox" id="checkbox" name="field-type"/>
+                            <input type="radio" checked={this.state.fieldType === 'checkbox'} onChange={this.handleFieldTypeChange} value="checkbox" id="checkbox" name="field-type"/>
                             <label for="checkbox">Checkbox</label>
                         </div>
 

@@ -25,6 +25,15 @@
         .btn{
             margin-top: 10px;
         }
+
+        .voltar-btn{
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            margin: 5px 0;
+            padding-left: 30px;
+            padding-bottom: 15px;
+        }
     
         .auth-submit{
             margin: 5px;
@@ -110,6 +119,7 @@
     transform: .2s;
     text-align: center;
     width: 100%;
+    margin-bottom: 25px;
 
     &:hover{
         cursor: pointer;

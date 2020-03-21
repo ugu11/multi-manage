@@ -1,17 +1,17 @@
 import React from 'react'
-import {Navbar} from './Navbar'
-import {IoIosRemoveCircleOutline, IoIosAdd} from 'react-icons/io'
+import {Navbar} from '../Navbar'
+import {IoIosAdd} from 'react-icons/io'
 import { MdEdit, MdDelete } from "react-icons/md";
-import '../css/ViewRow.scss'
-import ModalBox from './ModalBox'
-import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../helpers/session/auth'
+import '../../css/ViewRow.scss'
+import ModalBox from '../ModalBox'
+import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 
 import {connect} from 'react-redux'
-import {updateUserData} from '../actions/updateUserData.js'
+import {updateUserData} from '../../actions/updateUserData.js'
 
-import UpdateFieldModalData from './UpdateFieldModalData'
-import AddFieldModalData from './AddFieldModalData'
-import DeleteTableModalData from './DeleteTableModalData'
+import UpdateFieldModalData from '../ModalComponents/UpdateFieldModalData'
+import AddFieldModalData from '../ModalComponents/AddFieldModalData'
+import DeleteTableModalData from '../ModalComponents/DeleteTableModalData'
 
 function getUrlParams(url) {
 	var params = {};
@@ -33,7 +33,6 @@ class ViewTablesManageRowComponent extends React.Component{
         this.state = {
             showModal: false,
             dataSubmited: false,
-            unsaved: null,
             sectionIndex: 0,
             index: 0,
             selectFieldValue: "",
@@ -47,12 +46,9 @@ class ViewTablesManageRowComponent extends React.Component{
 
     requestRowData = () => {
         const params = getUrlParams(window.location.href)
-        console.log("MOUNTEDDDD")
-
         fetch('https://us-central1-multi-manage.cloudfunctions.net/getOrgTableData?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+params.tableId+'&tokenId='+getSessionCookie(USER_TOKEN))
             .then(res => res.json())
             .then(res => {
-                console.log(res)
                 if(res.status === "deauth"){
                     deleteSessionCookies()
                     window.location.reload(false)
@@ -66,10 +62,8 @@ class ViewTablesManageRowComponent extends React.Component{
                     let splitFieldData = []
                     splitFieldData[1] = tableFields.splice(10)
                     splitFieldData[0] = tableFields
-                    console.log("split", splitFieldData)
                     this.setState({
                         tableFields: splitFieldData,
-                        // unsaved: [...splitFieldData],
                     })
                 }else{
                     this.setState({
@@ -87,7 +81,7 @@ class ViewTablesManageRowComponent extends React.Component{
     }
     
     toggleModal = (type) => {
-        const { showModal, unsaved } = this.state
+        const { showModal } = this.state
         let newState = {
             showModal: !showModal
         }
@@ -118,7 +112,6 @@ class ViewTablesManageRowComponent extends React.Component{
                 }),
             })
             .then(res => {
-                console.log(res)
                 if(res.json().status === "deauth"){
                     deleteSessionCookies()
                     window.location.reload(false)
@@ -139,7 +132,7 @@ class ViewTablesManageRowComponent extends React.Component{
                 <ModalBox dataFields={
 
                     (this.state.modalTypeToShow === 'update') ?
-                        <UpdateFieldModalData tableFields={this.state.tableFields}
+                        <UpdateFieldModalData tableFields={this.state.tableFields} toggleModal={this.toggleModal}
                             sectionIndex={this.state.sectionIndex} index={this.state.index} />
                     : (this.state.modalTypeToShow === 'add') ? 
                         <AddFieldModalData />
@@ -172,9 +165,9 @@ class ViewTablesManageRowComponent extends React.Component{
                             
                             {(this.state.tableFields !== null) ?
                                 this.state.tableFields.map((section, sectionIndex) => 
-                                    <ul className="table-data-ul">
+                                    <ul key={sectionIndex} className="table-data-ul">
                                         {Array.from(section).map((field, i) => 
-                                                <li>
+                                                <li key={field.name}>
                                                     <div className="table-data-field-display-container">
                                                         <div className="content-header">
                                                             <h2>{field.name}</h2>
@@ -216,7 +209,6 @@ class ViewTablesManageRowComponent extends React.Component{
 // export default ViewRow
 
 const mapStateToProps = state => {
-  console.log(state)
   return {
     userData: state
   }

@@ -1,14 +1,13 @@
 import React from 'react'
-import {Navbar} from './Navbar'
-import {IoIosRemoveCircleOutline, IoIosAdd} from 'react-icons/io'
-import { MdEdit, MdDelete } from "react-icons/md";
-import '../css/ViewRow.scss'
-import ModalBox from './ModalBox'
-import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../helpers/session/auth'
+import {Navbar} from '../Navbar'
+import { MdEdit } from "react-icons/md";
+import '../../css/ViewRow.scss'
+import ModalBox from '../ModalBox'
+import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 
 import {connect} from 'react-redux'
-import {updateUserData} from '../actions/updateUserData.js'
-import UpdateUserDataModal from './UpdateUserDataModal'
+import {updateUserData} from '../../actions/updateUserData.js'
+import UpdateUserDataModal from '../ModalComponents/UpdateUserDataModal'
 
 function getUrlParams(url) {
 	var params = {};
@@ -35,8 +34,6 @@ class ViewUsersManageRowComponent extends React.Component{
 
     requestRowData = () => {
         const params = getUrlParams(window.location.href)
-        console.log("MOUNTEDDDD")
-
         fetch('https://us-central1-multi-manage.cloudfunctions.net/getOrgUserData?orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN)+"&userId="+params.userId)
             .then(res => {
                 switch(res.status){
@@ -45,10 +42,11 @@ class ViewUsersManageRowComponent extends React.Component{
                     case 401:
                         window.location = "/"
                         break
+                    default:
+                        window.location = "/"
                 }
             })
             .then(res => {
-                console.log(res)
                 if(res.status === "deauth"){
                     deleteSessionCookies()
                     window.location.reload(false)
@@ -69,47 +67,12 @@ class ViewUsersManageRowComponent extends React.Component{
     }
     
     toggleModal = () => {
-        const { showModal, unsaved } = this.state
+        const { showModal } = this.state
         let newState = {
             showModal: !showModal
         }
         this.setState(newState)
     }
-    
-    // handleEditField = (sectionIndex, i) => {
-    //     this.setState({
-    //         sectionIndex: sectionIndex,
-    //         index: i
-    //     })
-    // }
-
-    // handleFieldDeleteRequest = (index) => {
-    //     this.setState({dataSubmited: true})
-    //     fetch('https://us-central1-multi-manage.cloudfunctions.net/deleteTableField', {
-    //             method: 'POST',
-    //             headers: { 'Content-Type': 'application/json' },
-    //             body: JSON.stringify({
-    //                 orgId: getSessionCookie(ORG_TOKEN),
-    //                 tableId: getUrlParams(window.location.href).tableId,
-    //                 tokenId: getSessionCookie(USER_TOKEN),
-    //                 fieldIndex: this.state.fieldToDeleteIndex
-    //             }),
-    //         })
-    //         .then(res => {
-    //             console.log(res)
-    //             if(res.json().status === "deauth"){
-    //                 deleteSessionCookies()
-    //                 window.location.reload(false)
-    //             }
-    //             return res
-    //         })
-    //         .then(res => {
-    //             this.toggleModal()
-    //         })
-    //         .catch(err => {
-    //             throw err
-    //         })
-    // }
 
     render(){
         return (
@@ -151,10 +114,7 @@ class ViewUsersManageRowComponent extends React.Component{
     }
 }
 
-// export default ViewRow
-
 const mapStateToProps = state => {
-  console.log(state)
   return {
     userData: state
   }
