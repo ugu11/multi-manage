@@ -74,6 +74,31 @@
             }
         }
 
+        .user-display-container{
+            background-color: white;
+            box-shadow: 0px 0px 10px #00000040;
+            margin: 10px 15px;
+            border-radius: 5px;
+            width: fit-content;
+            height: fit-content;
+            padding: 20px;
+
+            &:first-child{
+                margin-left: 0;
+            }
+
+            &:last-child{
+                margin-right: 0;
+            }
+    
+            label{
+                margin: 10px 0;
+                font-size: 18px;
+            }
+
+            
+        }
+
     
         .table-data-ul{
             list-style: none;

@@ -9,6 +9,7 @@ import {connect} from 'react-redux'
 import {updateUserData} from './actions/updateUserData.js'
 import { ViewCustomTableRow } from './components/ViewCustomTableRow';
 import { ViewTablesManageRow } from './components/ViewTablesManageRow';
+import { ViewUsersManageRow } from './components/ViewUsersManageRow';
 
 function getUrlParams(url) {
 	var params = {};
@@ -44,7 +45,9 @@ class ViewRowComponent extends React.Component{
         return (
             <div>
                 {(this.state.params.type === 'manage_tables') ?
-                    <ViewTablesManageRow />
+                  <ViewTablesManageRow />
+                : (this.state.params.type === 'manage_users') ? 
+                  <ViewUsersManageRow />
                 : <ViewCustomTableRow />}
             </div>
         )

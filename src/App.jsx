@@ -4,6 +4,7 @@ import './css/Dashboard.scss';
 import {Navbar} from './components/Navbar'
 import CustomTable from './components/CustomTable'
 import {TablesManage} from './components/TablesManage'
+import {UsersManage} from './components/UsersManage'
 
 import {connect} from 'react-redux'
 import {updateUserData, updateTablesData} from './actions.js'
@@ -74,7 +75,7 @@ class App extends React.Component {
           (this.state.tableId === 'manage_tables') ?
             <TablesManage/>
           : (this.state.tableId === 'manage_users') ?
-            <CustomTable tableId={this.state.tableId}/>
+            <UsersManage />
           :
             <CustomTable tableId={this.state.tableId}/>
         }

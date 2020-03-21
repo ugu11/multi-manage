@@ -90,7 +90,7 @@ class UpdateFieldModalData extends React.Component{
                 return res
             })
             .then(res => {
-                this.toggleModal()
+                this.props.toggleModal()
             })
             .catch(err => {
                 throw err
