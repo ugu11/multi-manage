@@ -183,7 +183,7 @@ class ViewTablesManageRowComponent extends React.Component{
                                                                 this.toggleModal('conf_delete_field')}}><MdDelete /></button>
                                                         </div>
                                                         <div className="content">
-                                                            <label><b>Type:</b> {field.type}</label>
+                                                            <label><b>Type:</b> {(field.type === 'tel') ? "phone" : field.type}</label>
                                                             <label><b>Display in table:</b> {(field.display_table) ? "Yes" : "No"}</label>
                                                             {(field.type === 'select') ?
                                                                 <div>

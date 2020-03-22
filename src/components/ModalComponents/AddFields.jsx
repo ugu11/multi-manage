@@ -157,7 +157,7 @@ class AddFields extends React.Component{
                     <ul id="fields-list">
                         {this.state.newFieldsData.map((field, i) => 
                             <li key={field.fieldName}>
-                                <label>{field.fieldName}</label> <label>{field.fieldType} {(field.fieldType === 'select') ? '['+field.selectValues.join(', ')+']' : ""} &nbsp; {(field.displayInTable) ? "Display in table" : ""}</label>
+                                <label>{field.fieldName}</label> <label>{(field.fieldType === 'tel') ? "phone": field.fieldType} {(field.fieldType === 'select') ? '['+field.selectValues.join(', ')+']' : ""} &nbsp; {(field.displayInTable) ? "Display in table" : ""}</label>
                                 <button className="remove-btn" onClick={() => {
                                     this.removeItem(i)
                                 }}><IoIosRemoveCircleOutline /></button>
@@ -190,6 +190,9 @@ class AddFields extends React.Component{
                                 <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
                                     checked={(this.state.fieldType === 'checkbox')} value="checkbox" id="checkbox" name="field-type"/>
                                 <label htmlFor="checkbox">Checkbox</label>
+                                <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
+                                    checked={(this.state.fieldType === 'tel')} value="tel" id="tel" name="field-type"/>
+                                <label htmlFor="tel">Phone</label>
                             </div>
                             <div id="table-display">
                                 <Checkbox size="small" onChange={this.handleTableDispCheckbox} color="#11152f" isChecked={this.state.cbChecked}/>

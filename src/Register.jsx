@@ -2,6 +2,7 @@ import React from 'react';
 import './css/AuthPage.scss'
 import { USER_TOKEN, ORG_TOKEN, isSessionCookieSet } from './helpers/session/auth.js'
 import ProcessingComponent from './components/ProcessingComponent'
+import {validatePhoneField} from './helpers/inputValidation.js'
 
 class Register extends React.Component{
     constructor(){
@@ -69,7 +70,25 @@ class Register extends React.Component{
 
     formHandler = (e) => {
         let {formData} = this.state
-        formData[e.target.name] = e.target.value
+
+        switch(e.target.name){
+            case 'orgId':
+            case 'orgEmail':
+            case 'username':
+            case 'userEmail':
+                if(e.target.value.includes(" ") === false)
+                    formData[e.target.name] = e.target.value
+                break
+            case 'userPhone':
+                const isValid = validatePhoneField(e.target.value)
+                if(isValid === true)
+                    formData[e.target.name] = e.target.value
+
+                break
+            default:
+                formData[e.target.name] = e.target.value
+        }
+
         formData.orgId = formData.orgId.trim()
         formData.username = formData.username.trim()
         
@@ -146,12 +165,12 @@ class Register extends React.Component{
                                     e.preventDefault();
                                     this.setState({registerStep: 'user_register'}
                                 )}}>
-                                    <input type="text" className="txt-field" name="orgId" value={this.state.orgEd} placeholder="Organization id" onChange={this.formHandler} required />
+                                    <input type="text" className="txt-field" name="orgId" value={this.state.formData.orgId} placeholder="Organization id" onChange={this.formHandler} required />
                                     {(this.state.nameIdUnique === false) ? <label className="alert-label">Organization name id already in use</label> : ""}
-                                    <input type="text" className="txt-field" name="orgName" value={this.state.orgName} placeholder="Organization name" onChange={this.formHandler} required />
-                                    <input type="email" className="txt-field" name="orgEmail" value={this.state.orgEmail} placeholder="Organization email" onChange={this.formHandler} required />
-                                    <input type="password" className="txt-field" name="orgPassword" value={this.state.orgPassword} placeholder="Password" onChange={this.formHandler} required />
-                                    <input type="password" className="txt-field" name="orgConfPassword" value={this.state.orgConfPassword} placeholder="Confirm Password" onChange={this.formHandler} required />
+                                    <input type="text" className="txt-field" name="orgName" value={this.state.formData.orgName} placeholder="Organization name" onChange={this.formHandler} required />
+                                    <input type="email" className="txt-field" name="orgEmail" value={this.state.formData.orgEmail} placeholder="Organization email" onChange={this.formHandler} required />
+                                    <input type="password" className="txt-field" name="orgPassword" value={this.state.formData.orgPassword} placeholder="Password" onChange={this.formHandler} required />
+                                    <input type="password" className="txt-field" name="orgConfPassword" value={this.state.formData.orgConfPassword} placeholder="Confirm Password" onChange={this.formHandler} required />
                 
                                     <input type="submit" className="btn auth-submit" disabled={this.state.dataSubmited} value="Register organization"/>
                                     <button className="button-label" onClick={() => {window.location = "/login"}}>New to the app? Register your organization now!</button>

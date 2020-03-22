@@ -71,11 +71,11 @@ class NavbarComponent extends React.Component{
     render(){
         return (
             <nav>
-                {(this.props.userData !== undefined) ?
+                {(this.props.userData !== undefined && this.props.userData !== null) ?
                     <ul>
                         <li>
                             <h3>{this.props.userData.name}</h3>
-                            <h5>{this.props.userData.orgName}</h5>
+                            <h5>{this.props.userData.jobRole}</h5>
                         </li>
 
                         {(this.props.userData.admin) ?
@@ -84,9 +84,11 @@ class NavbarComponent extends React.Component{
                                 <li> <a href="/?table=manage_users"> Users </a></li> : ""}
                         <li> </li>
                         {
-                            this.props.tablesData.map(table => 
-                                <li key={table.tableId}> <a href={"/?table="+table.tableId}>{table.tableName}</a></li>
-                            )
+                            (this.props.tablesData !== null && this.props.tablesData !== undefined) ?
+                                this.props.tablesData.map(table => 
+                                    <li key={table.tableId}> <a href={"/?table="+table.tableId}>{table.tableName}</a></li>
+                                )
+                            : ""
                         }
                         
                         <li> <a href="/login" onClick={

@@ -83,8 +83,6 @@ class ViewCustomTableRowComponent extends React.Component{
                         fieldData: [fieldData]
                     })
                 }
-
-                this.updateModalContent()
             })
             .catch(err => {
                 if(err.status === "deauth")
@@ -93,14 +91,6 @@ class ViewCustomTableRowComponent extends React.Component{
                     throw err
             })
 
-    }
-    
-    updateModalContent = () => {
-        // this.setState((state) => ({
-        //     modalContent: 
-        //         (
-        //         )
-        // }))
     }
 
     toggleModal = () => {
@@ -129,7 +119,11 @@ class ViewCustomTableRowComponent extends React.Component{
     render(){
         return (
             <div>
-                <ModalBox dataFields={<UpdateCustomTableRowModal modalFieldData={this.state.modalFieldData} fields={this.state.fields} />} isShown={this.state.showModal} toggleModal={this.toggleModal}/>
+                {
+                    (this.state.modalFieldData !== null && this.state.modalFieldData !== undefined) ?
+                        <ModalBox dataFields={<UpdateCustomTableRowModal modalFieldData={this.state.modalFieldData} fields={this.state.fields} />} isShown={this.state.showModal} toggleModal={this.toggleModal}/>
+                    : ""
+                }
                 <Navbar />
 
                 <div id="content-viewrow" style={{display: "flex"}}>

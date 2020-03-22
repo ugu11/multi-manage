@@ -3,6 +3,7 @@ import AddFieldModalData from './AddFieldModalData'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 import ProcessingComponent from '../ProcessingComponent'
 import { deleteState } from '../../localStorage'
+import {validatePhoneField} from '../../helpers/inputValidation.js'
 
 class AddNewTableRow extends React.Component{
     constructor(props){
@@ -24,9 +25,25 @@ class AddNewTableRow extends React.Component{
             this.setState({fieldController: this.props.fieldController})
     }
 
-    handleInputChange = (e) => {
+    handleInputChange = (e, type) => {
         let {fieldController} = this.state
-        fieldController[e.target.name] = e.target.value
+
+        switch(type){
+            case 'tel':
+                const isValid = validatePhoneField(e.target.value)
+                if(isValid === true)
+                    fieldController[e.target.name] = e.target.value
+                break
+
+            case 'email':
+                if(e.target.value.includes(" ") === false)
+                    fieldController[e.target.name] = e.target.value
+                break
+            default:
+                fieldController[e.target.name] = e.target.value
+
+                
+        }
 
         this.setState({
             fieldController: fieldController
@@ -75,7 +92,7 @@ class AddNewTableRow extends React.Component{
                                             <option key={selectValue+"-"+i} value={selectValue}>{selectValue}</option>)}
                                     </select>
                                 :
-                                    <input key={field.name} type={field.type} value={this.state.fieldController[field.name]} onChange={this.handleInputChange} name={field.name} className="txt-field" placeholder={field.name}/>
+                                    <input key={field.name} type={field.type} value={this.state.fieldController[field.name]} onChange={e => this.handleInputChange(e, field.type)} name={field.name} className="txt-field" placeholder={field.name}/>
         
                             )
                         : ""

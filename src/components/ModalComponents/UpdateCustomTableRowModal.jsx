@@ -1,9 +1,8 @@
 import React from 'react'
-import AddFieldModalData from './AddFieldModalData'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 import ProcessingComponent from '../ProcessingComponent'
 import { deleteState } from '../../localStorage'
-import { MdTransferWithinAStation } from 'react-icons/md'
+import {validatePhoneField, validateNumberField} from '../../helpers/inputValidation.js'
 
 function getUrlParams(url) {
 	var params = {};
@@ -33,23 +32,58 @@ class UpdateCustomTableRowModal extends React.Component{
     componentDidUpdate(pP, prevState){
         if(prevState.modalFieldData === null && this.props.modalFieldData !== prevState.modalFieldData)
             this.setState({modalFieldData: this.props.modalFieldData})
-        if(prevState.fields === null && this.props.fields !== prevState.fields)
+        if((prevState.fields === null && prevState.fields !== this.props.fields ) || prevState.fields.length === 0)
             this.setState({fields: this.props.fields})
     }
 
-    handleInputChange = (e) => {
-        let {fieldController} = this.state
-        fieldController[e.target.name] = e.target.value
+    // handleInputChange = (e) => {
+    //     let {fieldController} = this.state
 
-        this.setState({
-            fieldController: fieldController
-        })
-    }
+    //     switch(type){
+    //         case 'tel':
+    //             const isValid = validatePhoneField(e.target.value)
+    //             if(isValid === true)
+    //                 fieldController[e.target.name] = e.target.value
+    //             break
+
+    //         case 'email':
+    //             if(e.target.value.includes(" ") === false)
+    //                 fieldController[e.target.name] = e.target.value
+    //             break
+    //         default:
+    //             fieldController[e.target.name] = e.target.value
+    //     }
+
+    //     this.setState({
+    //         fieldController: fieldController
+    //     })
+    // }
     
-    updateFieldValue = (e) => {
+    updateFieldValue = (e, type) => {
         let {modalFieldData} = this.state
         const index = parseInt(e.target.name)
-        modalFieldData[index].fieldValue = e.target.value
+
+        console.log(e.target.value)
+
+        switch(type){
+            case 'tel':
+                const isValid = validatePhoneField(e.target.value)
+                if(isValid === true)
+                    modalFieldData[index].fieldValue  = e.target.value
+                break
+            case 'email':
+                if(e.target.value.includes(" ") === false)
+                    modalFieldData[index].fieldValue  = e.target.value
+                break
+            case 'number':
+                // console.log(validateNumberField(e.target.value), e.target.value)
+                if(e.target.value !== '')
+                    modalFieldData[index].fieldValue  = parseInt(e.target.value)
+                break
+            default:
+                modalFieldData[index].fieldValue  = e.target.value
+        }
+
 
         this.setState({modalFieldData: modalFieldData})
     }
@@ -59,7 +93,7 @@ class UpdateCustomTableRowModal extends React.Component{
         return (
             <div>
                 <ProcessingComponent radius="0" display={this.state.processingRequest} />
-                <h1>Add new item</h1>
+                <h1>Update row</h1>
                 <form onSubmit={async (e) =>  {
                     e.preventDefault()
                     this.setState({dataSubmited: true, processingRequest: true})
@@ -100,14 +134,14 @@ class UpdateCustomTableRowModal extends React.Component{
                                 
                                 if(fieldData !== undefined)
                                     return (fieldData.type === 'select') ?
-                                        <select key={fieldData.name} className="txt-field" onChange={this.updateFieldValue} name={i} defaultValue={field.fieldValue}>
+                                        <select key={fieldData.name} className="txt-field" onChange={e => this.updateFieldValue(e, fieldData.type)} name={i} defaultValue={field.fieldValue}>
                                             {fieldData.select_data.map((selectValue, selectIndex) => 
                                                 <option key={selectValue+"-"+selectIndex} value={selectValue} >{selectValue}</option>)}
                                         </select>
                             :
                                 <input key={fieldData.name} type={fieldData.type} className="txt-field"
-                                    name={i} placeholder={field.fieldName}
-                                    value={field.fieldValue} onChange={this.updateFieldValue} />
+                                    name={i} placeholder={field.fieldName} value={this.state.modalFieldData[i].fieldValue}
+                                    onChange={e => this.updateFieldValue(e, fieldData.type)} />
                         })
                         : ""
                     }

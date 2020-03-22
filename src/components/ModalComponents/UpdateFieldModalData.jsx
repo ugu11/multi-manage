@@ -144,6 +144,9 @@ class UpdateFieldModalData extends React.Component{
                                 <input type="radio" onChange={(e) => (this.handleRadioButtonsChange(e, this.props.sectionIndex, this.props.index))}
                                     checked={(this.state.tableFields[this.props.sectionIndex][this.props.index].type === 'checkbox')} value="checkbox" id="checkbox" name="field-type"/>
                                 <label htmlFor="checkbox">Checkbox</label>
+                                <input type="radio" onChange={(e) => (this.handleRadioButtonsChange(e, this.props.sectionIndex, this.props.index))}
+                                    checked={(this.state.tableFields[this.props.sectionIndex][this.props.index].type === 'tel')} value="tel" id="tel" name="field-type"/>
+                                <label htmlFor="tel">Phone</label>
                             </div>
     
                             {

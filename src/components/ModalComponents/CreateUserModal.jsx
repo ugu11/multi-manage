@@ -2,6 +2,7 @@ import React from 'react'
 import { deleteSessionCookies, getSessionCookie, ORG_TOKEN, USER_TOKEN } from '../../helpers/session/auth.js'
 import ProcessingComponent from '../ProcessingComponent.jsx'
 import { deleteState } from '../../localStorage.js'
+import {validatePhoneField, validateNumberField} from '../../helpers/inputValidation.js'
 
 class CreateUserModal extends React.Component{
     constructor(props){
@@ -59,8 +60,25 @@ class CreateUserModal extends React.Component{
 
     handleInputChange = (e) => {
         let currState = this.state
-        currState[e.target.name] = e.target.value
-        currState.admin = (currState.admin === 'true') ? true : false
+        // currState[e.target.name] = e.target.value
+
+        switch(e.target.name){
+            case 'email':
+            case 'username':
+                if(e.target.value.includes(" ") === false)
+                    currState[e.target.name] = e.target.value
+                break
+            case 'phone':
+                const isValid = validatePhoneField(e.target.value)
+                if(isValid === true)
+                    currState[e.target.name] = e.target.value
+                break
+            case 'admin':
+                currState.admin = (currState.admin === 'true') ? true : false
+                break
+            default:
+                currState[e.target.name] = e.target.value
+        }
 
         this.setState(currState)
     }
@@ -71,15 +89,15 @@ class CreateUserModal extends React.Component{
                 <ProcessingComponent radius="0" display={this.state.processingRequest} />
                 <h1>Create new user</h1>
                 <form onSubmit={this.submitUserCreationReq}>
-                    <input type="text" onChange={this.handleInputChange} className="txt-field" name="name" placeholder="Name" />
-                    <input type="text" onChange={this.handleInputChange} className="txt-field" name="username" placeholder="Username" />
-                    <input type="email" onChange={this.handleInputChange} className="txt-field" name="email" placeholder="Email" />
-                    <input type="text" onChange={this.handleInputChange} className="txt-field" name="phone" placeholder="Phone" />
-                    <input type="text" onChange={this.handleInputChange} className="txt-field" name="jobRole" placeholder="Job Role" />
-                    <input type="password" onChange={this.handleInputChange} className="txt-field" name="password" placeholder="Password" />
-                    <input type="password" onChange={this.handleInputChange} className="txt-field" name="confPassword" placeholder="Confirm Password" />
+                    <input type="text" onChange={this.handleInputChange} value={this.state.name} className="txt-field" name="name" placeholder="Name" />
+                    <input type="text" onChange={this.handleInputChange} value={this.state.username} className="txt-field" name="username" placeholder="Username" />
+                    <input type="email" onChange={this.handleInputChange} value={this.state.email} className="txt-field" name="email" placeholder="Email" />
+                    <input type="text" onChange={this.handleInputChange} value={this.state.phone} className="txt-field" name="phone" placeholder="Phone" />
+                    <input type="text" onChange={this.handleInputChange} value={this.state.jobRole} className="txt-field" name="jobRole" placeholder="Job Role" />
+                    <input type="password" onChange={this.handleInputChange} value={this.state.password} className="txt-field" name="password" placeholder="Password" />
+                    <input type="password" onChange={this.handleInputChange} value={this.state.confPassword} className="txt-field" name="confPassword" placeholder="Confirm Password" />
                     <label style={{float: "left"}}>Admin: </label>
-                    <select onChange={this.handleInputChange} className="txt-field" name="admin" >
+                    <select onChange={this.handleInputChange} value={this.state.admin} className="txt-field" name="admin" >
                         <option value={true}>Yes</option>
                         <option value={false}>No</option>
                     </select>

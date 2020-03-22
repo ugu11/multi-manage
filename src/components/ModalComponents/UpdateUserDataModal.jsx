@@ -2,6 +2,7 @@ import React from 'react'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 import { deleteState } from '../../localStorage'
 import ProcessingComponent from '../ProcessingComponent'
+import {validatePhoneField} from '../../helpers/inputValidation.js'
 
 class UpdateUserDataModal extends React.Component{
     constructor(props){
@@ -62,9 +63,26 @@ class UpdateUserDataModal extends React.Component{
 
     handleFieldUpdate = (e) => {
         let {userData} = this.state
-        userData[e.target.name] = e.target.value
-        userData.admin = (userData.admin === 'true') ? true
-            : (userData.admin === 'false') ? false : false
+        // userData[e.target.name] = e.target.value
+        switch(e.target.name){
+            case 'email':
+            case 'username':
+                if(e.target.value.includes(" ") === false)
+                    userData[e.target.name] = e.target.value
+                break
+            case 'phone':
+                const isValid = validatePhoneField(e.target.value)
+                if(isValid === true)
+                    userData[e.target.name] = e.target.value
+                break
+            case 'admin':
+                userData.admin = (userData.admin === 'true') ? true
+                    : (userData.admin === 'false') ? false : false
+                break
+            default:
+                userData[e.target.name] = e.target.value
+        }
+    
         
         this.setState({userData: userData})
     }

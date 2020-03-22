@@ -106,6 +106,8 @@ class AddFieldModalData extends React.Component{
                             <label for="select">Select</label>
                             <input type="radio" checked={this.state.fieldType === 'checkbox'} onChange={this.handleFieldTypeChange} value="checkbox" id="checkbox" name="field-type"/>
                             <label for="checkbox">Checkbox</label>
+                            <input type="radio" checked={this.state.fieldType === 'tel'} onChange={this.handleFieldTypeChange} value="tel" id="tel" name="field-type"/>
+                            <label for="tel">Phone</label>
                         </div>
 
                         {
