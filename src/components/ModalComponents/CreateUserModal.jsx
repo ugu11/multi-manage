@@ -1,5 +1,7 @@
 import React from 'react'
 import { deleteSessionCookies, getSessionCookie, ORG_TOKEN, USER_TOKEN } from '../../helpers/session/auth.js'
+import ProcessingComponent from '../ProcessingComponent.jsx'
+import { deleteState } from '../../localStorage.js'
 
 class CreateUserModal extends React.Component{
     constructor(props){
@@ -12,14 +14,16 @@ class CreateUserModal extends React.Component{
             password: "",
             confPassword: "",
             admin: false,
-            jobRole: ""
+            jobRole: "",
+            processingRequest: false,
+            dataSubmited: false
         }
     }
 
     submitUserCreationReq = async (e) => {
         e.preventDefault()
-        if(this.state.password === this.state.confPassword){
-            this.setState({dataSubmited: true})
+        if(this.state.password === this.state.confPassword && this.state.dataSubmited === false){
+            this.setState({dataSubmited: true, processingRequest: true})
             fetch('https://us-central1-multi-manage.cloudfunctions.net/registerUser', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -39,15 +43,15 @@ class CreateUserModal extends React.Component{
                 console.log(res)
                 if(res.json().status === "deauth"){
                     deleteSessionCookies()
-                    window.location.reload(false)
+                    deleteState()
                 }
-                return res
-            }).then(e => {
                 window.location.reload(false)
             }).catch(err => {
-                if(err.status === "deauth")
+                if(err.status === "deauth"){
                     deleteSessionCookies()
-                else
+                    deleteState()
+                    window.location.reload(false)
+                }else
                     throw err
             })
         }
@@ -64,6 +68,7 @@ class CreateUserModal extends React.Component{
     render(){
         return (
             <div>
+                <ProcessingComponent radius="0" display={this.state.processingRequest} />
                 <h1>Create new user</h1>
                 <form onSubmit={this.submitUserCreationReq}>
                     <input type="text" onChange={this.handleInputChange} className="txt-field" name="name" placeholder="Name" />

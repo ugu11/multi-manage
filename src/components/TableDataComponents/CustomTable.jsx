@@ -1,6 +1,7 @@
 import React from 'react'
 import ModalBox from '../ModalBox'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
+import AddNewTableRow from '../ModalComponents/AddNewTableRow'
 
 class CustomTable extends React.Component{
     constructor(props){
@@ -10,7 +11,7 @@ class CustomTable extends React.Component{
             tableName: "",
             showModal: false,
             dataFields: "",
-            fieldController: {}
+            fieldController: {},
         }
     }
 
@@ -35,55 +36,9 @@ class CustomTable extends React.Component{
                 })
 
                 this.setState({
-                    dataSubmited: false,
                     tableData: res,
-                    tableName: res.name,
+                    tableName: res.name,  
                     fieldController: fieldController,
-                    dataFields: (
-                            <div>
-                                <h1>Add new item</h1>
-                                <form onSubmit={async (e) =>  {
-                                    e.preventDefault()
-                                    this.setState({dataSubmited: true})
-                                    fetch('https://us-central1-multi-manage.cloudfunctions.net/addTableRow', {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({
-                                            orgId: getSessionCookie(ORG_TOKEN),
-                                            tokenId: getSessionCookie(USER_TOKEN),
-                                            tableId: this.props.tableId,
-                                            tableData: JSON.stringify(this.state.fieldController)
-                                        }),
-                                    })
-                                    .then(res => {
-                                        if(res.json().status === "deauth"){
-                                            deleteSessionCookies()
-                                            window.location.reload(false)
-                                        }
-                                        return res
-                                    }).then(e => {
-                                        window.location.reload(false)
-                                    }).catch(err => {
-                                        if(err.status === "deauth")
-                                            deleteSessionCookies()
-                                        else
-                                            throw err
-                                    })
-                                }}>
-                                    {res.fields.map(field => 
-                                        (field.type === 'select') ?
-                                            <select key={field.name} className="txt-field" onChange={this.handleInputChange} name={field.name}>
-                                                {field.select_data.map((selectValue, i) => 
-                                                    <option key={selectValue+"-"+i} value={selectValue}>{selectValue}</option>)}
-                                            </select>
-                                        :
-                                            <input key={field.name} type={field.type} value={this.state.fieldController[field.name]} onChange={this.handleInputChange} name={field.name} className="txt-field" placeholder={field.name}/>
-
-                                    )}
-                                    <input type="submit" className="btn" disabled={this.state.dataSubmited} value="Add new item"/>
-                                </form>
-                            </div>
-                        ),
                 })
             }).catch(err => {
                 // console.log(err)
@@ -105,22 +60,12 @@ class CustomTable extends React.Component{
             showModal: !showModal
         })
     }
-
-    handleInputChange = (e) => {
-        let {fieldController} = this.state
-        fieldController[e.target.name] = e.target.value
-
-        this.setState({
-            fieldController: fieldController
-        })
-    }
-
     
     render(){
         return (
 
             <div id="content">
-                <ModalBox dataFields={this.state.dataFields} isShown={this.state.showModal} toggleModal={this.toggleModal}/>
+                <ModalBox dataFields={<AddNewTableRow tableData={this.state.tableData} fieldController={this.state.fieldController}/>} isShown={this.state.showModal} toggleModal={this.toggleModal}/>
 
                 <h1>{ this.state.tableName }</h1>
                 <div className="actions">

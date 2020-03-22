@@ -1,5 +1,7 @@
 import React from 'react'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
+import { deleteState } from '../../localStorage'
+import ProcessingComponent from '../ProcessingComponent'
 
 class UpdateUserDataModal extends React.Component{
     constructor(props){
@@ -7,7 +9,8 @@ class UpdateUserDataModal extends React.Component{
         
         this.state = {
             userData: null,
-            dataSubmited: false
+            dataSubmited: false,
+            processingRequest: false
         }
     }
 
@@ -20,37 +23,41 @@ class UpdateUserDataModal extends React.Component{
     submitUpdate = (e) => {
         e.preventDefault()
 
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/updateOrgUser', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    orgId: getSessionCookie(ORG_TOKEN),
-                    tokenId: getSessionCookie(USER_TOKEN),
-                    userData: JSON.stringify(this.state.userData)
-                }),
-            })
-            .then(res => {
-                switch(res.status){
-                    case 200:
-                        return res.json()
-                    case 401:
-                        window.location = "/"
-                        break
-                    default:
-                        window.reload(false)
-                }
-            })
-            .then(res => {
-                if(res.status === "deauth"){
-                    deleteSessionCookies()
+        if(this.state.dataSubmited === false){
+            this.setState({dataSubmited: true, processingRequest: true})
+            fetch('https://us-central1-multi-manage.cloudfunctions.net/updateOrgUser', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orgId: getSessionCookie(ORG_TOKEN),
+                        tokenId: getSessionCookie(USER_TOKEN),
+                        userData: JSON.stringify(this.state.userData)
+                    }),
+                })
+                .then(res => {
+                    switch(res.status){
+                        case 200:
+                            return res.json()
+                        case 401:
+                            window.location = "/"
+                            break
+                        default:
+                            window.reload(false)
+                    }
+                })
+                .then(res => {
+                    if(res.status === "deauth"){
+                        deleteSessionCookies()
+                        deleteState()
+                        window.location.reload(false)
+                    }else if(res === 'success'){
+                        this.props.toggleModal()
+                    }
+                })
+                .catch(err => {
                     window.location.reload(false)
-                }else if(res === 'success'){
-                    this.props.toggleModal()
-                }
-            })
-            .catch(err => {
-                window.location.reload(false)
-            })
+                })
+        }
     }
 
     handleFieldUpdate = (e) => {
@@ -59,12 +66,13 @@ class UpdateUserDataModal extends React.Component{
         userData.admin = (userData.admin === 'true') ? true
             : (userData.admin === 'false') ? false : false
         
-        this.setState({userData: userData, dataSubmited: true})
+        this.setState({userData: userData})
     }
 
     render(){
         return (
             <div>
+                <ProcessingComponent radius="0" display={this.state.processingRequest} />
                 <h1>Update user data</h1>
                 <form onSubmit={this.submitUpdate}>
                     {
@@ -82,7 +90,7 @@ class UpdateUserDataModal extends React.Component{
                         : ""
                     }
 
-                    <input type="submit" className="btn" value="Apply changes" />
+                    <input type="submit" className="btn" value="Apply changes"/>
                 </form>
             </div>
         )

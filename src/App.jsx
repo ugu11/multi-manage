@@ -59,7 +59,7 @@ class App extends React.Component {
               }else
                   throw err
           })
-      else
+      else if(this.props.tablesData.length > 0)
         window.location = "/?table="+this.props.tablesData[0].tableId
 
   }

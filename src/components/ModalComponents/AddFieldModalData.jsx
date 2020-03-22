@@ -2,6 +2,7 @@ import React from 'react'
 import {IoIosRemoveCircleOutline} from 'react-icons/io'
 import Checkbox from 'react-checkbox-component'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
+import ProcessingComponent from '../ProcessingComponent'
 
 function getUrlParams(url) {
 	var params = {};
@@ -25,7 +26,9 @@ class AddFieldModalData extends React.Component{
             fieldType: 'text',
             selectData: [],
             displayTable: true,
-            selectFieldValue: ""
+            selectFieldValue: "",
+            processingRequest: false,
+            dataSubmited: false
         }
     }
 
@@ -49,37 +52,40 @@ class AddFieldModalData extends React.Component{
 
     submitUpdate = (e) => {
         console.log(this.state.modalFieldData)
-        this.setState({dataSubmited: true})
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/addTableField', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    orgId: getSessionCookie(ORG_TOKEN),
-                    tableId: getUrlParams(window.location.href).tableId,
-                    // rowData: JSON.stringify(this.state.modalFieldData),
-                    tokenId: getSessionCookie(USER_TOKEN),
-                    // rowIndex: parseInt(getUrlParams(window.location.href).rowIndex)
-                    fieldName: this.state.fieldName,
-                    fieldType: this.state.fieldType,
-                    selectData: this.state.selectData,
-                    displayTable: this.state.displayTable,
-                }),
-            })
-            .then(res => {
-                console.log(res)
-                if(res.json().status === "deauth"){
-                    deleteSessionCookies()
-                }
-                window.location.reload(false)
-            })
-            .catch(err => {
-                throw err
-            })
+
+        if(this.state.dataSubmited === false){
+            this.setState({dataSubmited: true, processingRequest: true})
+            fetch('https://us-central1-multi-manage.cloudfunctions.net/addTableField', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orgId: getSessionCookie(ORG_TOKEN),
+                        tableId: getUrlParams(window.location.href).tableId,
+                        tokenId: getSessionCookie(USER_TOKEN),
+                        fieldName: this.state.fieldName,
+                        fieldType: this.state.fieldType,
+                        selectData: this.state.selectData,
+                        displayTable: this.state.displayTable,
+                    }),
+                })
+                .then(res => {
+                    console.log(res)
+                    if(res.json().status === "deauth"){
+                        deleteSessionCookies()
+                    }
+                    window.location.reload(false)
+                })
+                .catch(err => {
+                    throw err
+                })
+        }
     }
 
     render(){
         return (
             <div>
+                <ProcessingComponent radius="0" display={this.state.processingRequest}/>
+
                 <h1>Create field</h1>
                 <form onSubmit={async (e) =>  {
                     e.preventDefault()

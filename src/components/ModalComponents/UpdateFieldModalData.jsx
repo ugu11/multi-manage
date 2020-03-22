@@ -3,6 +3,7 @@ import {IoIosRemoveCircleOutline} from 'react-icons/io'
 import Checkbox from 'react-checkbox-component'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 import { deleteState } from '../../localStorage';
+import ProcessingComponent from '../ProcessingComponent';
 
 function getUrlParams(url) {
 	var params = {};
@@ -24,7 +25,8 @@ class UpdateFieldModalData extends React.Component{
             // tableFields: null,
             selectFieldValue: "",
             dataSubmited: false,
-            tableFields: null
+            tableFields: null,
+            processingRequest: false
         }
     }
 
@@ -66,29 +68,32 @@ class UpdateFieldModalData extends React.Component{
     }
  
     submitUpdate = () => {
-        this.setState({dataSubmited: true})
         let tableFields = (this.state.tableFields.length === 2) ? [...this.state.tableFields[0], ...this.state.tableFields[1]] : this.state.tableFields[0]
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/updateTableFields', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    orgId: getSessionCookie(ORG_TOKEN),
-                    tableId: getUrlParams(window.location.href).tableId,
-                    tokenId: getSessionCookie(USER_TOKEN),
-                    fieldsData: JSON.stringify(tableFields)
-                }),
-            })
-            .then(res => {
-                if(res.json().status === "deauth"){
-                    deleteSessionCookies()
-                    window.location.reload(false)
-                    deleteState()
-                }
-                this.props.toggleModal()
-            })
-            .catch(err => {
-                throw err
-            })
+
+        if(this.state.dataSubmited === false){
+            this.setState({dataSubmited: true, processingRequest: true})
+            fetch('https://us-central1-multi-manage.cloudfunctions.net/updateTableFields', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orgId: getSessionCookie(ORG_TOKEN),
+                        tableId: getUrlParams(window.location.href).tableId,
+                        tokenId: getSessionCookie(USER_TOKEN),
+                        fieldsData: JSON.stringify(tableFields)
+                    }),
+                })
+                .then(res => {
+                    if(res.json().status === "deauth"){
+                        deleteSessionCookies()
+                        window.location.reload(false)
+                        deleteState()
+                    }
+                    this.props.toggleModal()
+                })
+                .catch(err => {
+                    throw err
+                })
+        }
     }
 
     handleRadioButtonsChange = (e, sectionIndex, index) => {
@@ -112,6 +117,7 @@ class UpdateFieldModalData extends React.Component{
     render(){
         return (
             <div>
+                <ProcessingComponent radius="0" display={this.state.processingRequest} />
                 <h1>Update field</h1>
                 <form onSubmit={async (e) =>  {
                     e.preventDefault()

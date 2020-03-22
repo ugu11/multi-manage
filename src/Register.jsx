@@ -9,7 +9,7 @@ class Register extends React.Component{
 
         this.state = {
             passwordEqual: false,
-            isSubmitDisabled: true,
+            dataSubmited: true,
             nameIdUnique: true,
             formData: {
                 orgId: '',
@@ -43,11 +43,11 @@ class Register extends React.Component{
 
                 if(isPasswordValid && isOrgIdValid)
                     this.setState({
-                        isSubmitDisabled: false
+                        dataSubmited: false
                     })
                 else
                     this.setState({
-                        isSubmitDisabled: true
+                        dataSubmited: true
                     })
                 break
             case 'user_register':
@@ -55,11 +55,11 @@ class Register extends React.Component{
                 const isUsernameValid = (!username.trim().includes(' '))
                 if(isPasswordValid && isUsernameValid)
                     this.setState({
-                        isSubmitDisabled: false
+                        dataSubmited: false
                     })
                 else
                     this.setState({
-                        isSubmitDisabled: true
+                        dataSubmited: true
                     })
                 break
             default:
@@ -93,6 +93,45 @@ class Register extends React.Component{
             })
     }
 
+    submitUserRegister = (e) => {
+        e.preventDefault();
+        const {formData} = this.state
+
+        const reqData = {
+            name_id: formData.orgId,
+            orgEmail: formData.orgEmail,
+            name: formData.orgName,
+            orgPassword: formData.orgPassword,
+
+            username: formData.username,
+            fullName: formData.userFullName,
+            email: formData.userEmail,
+            password: formData.userPassword,
+            phone: formData.userPhone,
+            jobRole: formData.jobRole
+        }
+        const isPasswordValid = (formData.orgPassword === formData.orgConfPassword && formData.orgPassword.length >= 6)
+        const isOrgIdValid = (!formData.orgId.trim().includes(' '))
+        const isUserIdValid = (!formData.username.trim().includes(' '))
+        const isUserPasswordValid = (formData.userPassword === formData.userConfPassword && formData.userPassword.length >= 6)
+
+        console.log(reqData)
+        if(isPasswordValid && isOrgIdValid && isUserIdValid && isUserPasswordValid && this.state.dataSubmited === false){
+            this.setState({isProcessing: true, dataSubmited: true})
+            fetch('https://us-central1-multi-manage.cloudfunctions.net/registerOrg', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(reqData)})
+                .then(res => {
+                    if(res.status === 200){
+                        window.location = "/login"
+                    }
+                    this.setState({isProcessing: false, dataSubmited: false})
+                })
+                .catch(e => this.setState({isProcessing: false, dataSubmited: false}))}
+    
+    }
+
     render(){
         if(isSessionCookieSet(USER_TOKEN) && isSessionCookieSet(ORG_TOKEN))
                     window.location = "/"
@@ -114,7 +153,7 @@ class Register extends React.Component{
                                     <input type="password" className="txt-field" name="orgPassword" value={this.state.orgPassword} placeholder="Password" onChange={this.formHandler} required />
                                     <input type="password" className="txt-field" name="orgConfPassword" value={this.state.orgConfPassword} placeholder="Confirm Password" onChange={this.formHandler} required />
                 
-                                    <input type="submit" className="btn auth-submit" disabled={this.state.isSubmitDisabled} value="Register organization"/>
+                                    <input type="submit" className="btn auth-submit" disabled={this.state.dataSubmited} value="Register organization"/>
                                     <button className="button-label" onClick={() => {window.location = "/login"}}>New to the app? Register your organization now!</button>
                                 </form>
                             </div>
@@ -126,44 +165,7 @@ class Register extends React.Component{
                             <div class="auth-container">
                                 <ProcessingComponent radius="20" display={this.state.isProcessing}/>
                                 <h1>Create admin user</h1>
-                                <form onSubmit={e => {
-                                    e.preventDefault();
-                                    this.setState({isProcessing: true})
-                                    const {formData} = this.state
-
-                                    const reqData = {
-                                        name_id: formData.orgId,
-                                        orgEmail: formData.orgEmail,
-                                        name: formData.orgName,
-                                        orgPassword: formData.orgPassword,
-
-                                        username: formData.username,
-                                        fullName: formData.userFullName,
-                                        email: formData.userEmail,
-                                        password: formData.userPassword,
-                                        phone: formData.userPhone,
-                                        jobRole: formData.jobRole
-                                    }
-                                    const isPasswordValid = (formData.orgPassword === formData.orgConfPassword && formData.orgPassword.length >= 6)
-                                    const isOrgIdValid = (!formData.orgId.trim().includes(' '))
-                                    const isUserIdValid = (!formData.username.trim().includes(' '))
-                                    const isUserPasswordValid = (formData.userPassword === formData.userConfPassword && formData.userPassword.length >= 6)
-
-                                    console.log(reqData)
-                                    if(isPasswordValid && isOrgIdValid && isUserIdValid && isUserPasswordValid){
-                                        console.log("REQUESTING")
-                                        fetch('https://us-central1-multi-manage.cloudfunctions.net/registerOrg', {
-                                            method: 'POST',
-                                            headers: { 'Content-Type': 'application/json' },
-                                            body: JSON.stringify(reqData)})
-                                            .then(res => {
-                                                if(res.status === 200){
-                                                    window.location = "/login"
-                                                }
-                                                this.setState({isProcessing: false})
-                                            })
-                                            .catch(e => this.setState({isProcessing: false}))}
-                                }}>
+                                <form onSubmit={this.submitUserRegister}>
                                     <input type="text" className="txt-field" name="userFullName" value={this.state.formData.userFullName} placeholder="Full Name" onChange={this.formHandler} required/>
                                     <input type="text" className="txt-field" name="username" value={this.state.formData.username} placeholder="Username" onChange={this.formHandler} required/>
                                     <input type="email" className="txt-field" name="userEmail" value={this.state.formData.userEmail} placeholder="Email" onChange={this.formHandler} required/>
@@ -172,7 +174,7 @@ class Register extends React.Component{
                                     <input type="password" className="txt-field" name="userPassword" value={this.state.formData.userPassword} placeholder="Password" onChange={this.formHandler} required/>
                                     <input type="password" className="txt-field" name="userConfPassword" value={this.state.formData.userConfPassword} placeholder="Confirm Password" onChange={this.formHandler} required/>
             
-                                    <input type="submit" className="btn auth-submit"  disabled={this.state.isSubmitDisabled} value="Create user"/>
+                                    <input type="submit" className="btn auth-submit"  disabled={this.state.dataSubmited} value="Create user"/>
                                     {/* <button className="button-label" onClick={this.props.authTypeHandler}>New to the app? Register your organization now!</button> */}
                                 </form>
                             </div>

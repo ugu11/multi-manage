@@ -1,5 +1,6 @@
 import React from 'react'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
+import ProcessingComponent from '../ProcessingComponent';
 
 function getUrlParams(url) {
 	var params = {};
@@ -20,7 +21,9 @@ class DeleteTableModalData extends React.Component{
         this.state = {
             step: "conf_delete", // ask_for_admin_pass
             adminPassword: "",
-            displayError: false
+            displayError: false,
+            processingRequest: false,
+            dataSubmited: false
         }
     }
 
@@ -28,42 +31,45 @@ class DeleteTableModalData extends React.Component{
     goToAdminPassStep = () => this.setState({step: 'ask_for_admin_pass'})
 
     handleTableDeleteRequest = () => {
-
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/deleteTable', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    orgId: getSessionCookie(ORG_TOKEN),
-                    tableId: getUrlParams(window.location.href).tableId,
-                    tokenId: getSessionCookie(USER_TOKEN),
-                    adminPass: this.state.adminPassword
-                }),
-            })
-            .then(res => {
-                switch(res.status){
-                    case 401:
-                        this.setState({displayError: true})
-                        break
-                    case 200:
-                        console.log(res)
-                        if(res.json().status === "deauth"){
-                            deleteSessionCookies()
-                            window.location.reload(false)
-                        }else
-                            window.location = "/?table=manage_tables"
-                        break
-                    default:
-                        window.location = "/"
-                }
-            })
-            .catch(err => {
-                throw err
-            })
+        if(this.state.dataSubmited === false){
+            this.setState({dataSubmited: true, processingRequest: true})
+            fetch('https://us-central1-multi-manage.cloudfunctions.net/deleteTable', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orgId: getSessionCookie(ORG_TOKEN),
+                        tableId: getUrlParams(window.location.href).tableId,
+                        tokenId: getSessionCookie(USER_TOKEN),
+                        adminPass: this.state.adminPassword
+                    }),
+                })
+                .then(res => {
+                    switch(res.status){
+                        case 401:
+                            this.setState({displayError: true, dataSubmited: false, processingRequest: false})
+                            break
+                        case 200:
+                            console.log(res)
+                            if(res.json().status === "deauth"){
+                                deleteSessionCookies()
+                                window.location.reload(false)
+                            }else
+                                window.location = "/?table=manage_tables"
+                            break
+                        default:
+                            window.location = "/"
+                    }
+                })
+                .catch(err => {
+                    throw err
+                })
+        }
     }
 
     render(){
         return (
             <div id="deleteModalAlert">
+                <ProcessingComponent radius="0" display={this.state.processingRequest} />
                 <h1>Warning</h1>
                 {
                     (this.state.step === 'conf_delete') ? 

@@ -12,6 +12,7 @@ import {updateUserData} from '../../actions/updateUserData.js'
 import UpdateFieldModalData from '../ModalComponents/UpdateFieldModalData'
 import AddFieldModalData from '../ModalComponents/AddFieldModalData'
 import DeleteTableModalData from '../ModalComponents/DeleteTableModalData'
+import ProcessingComponent from '../ProcessingComponent';
 
 function getUrlParams(url) {
 	var params = {};
@@ -40,7 +41,8 @@ class ViewTablesManageRowComponent extends React.Component{
             tableFields: null,
             tableName: "",
             modalTypeToShow: 'update',
-            fieldToDeleteIndex: null
+            fieldToDeleteIndex: null,
+            processingRequest: false
         }
     }
 
@@ -100,37 +102,38 @@ class ViewTablesManageRowComponent extends React.Component{
     }
 
     handleFieldDeleteRequest = (index) => {
-        this.setState({dataSubmited: true})
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/deleteTableField', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    orgId: getSessionCookie(ORG_TOKEN),
-                    tableId: getUrlParams(window.location.href).tableId,
-                    tokenId: getSessionCookie(USER_TOKEN),
-                    fieldIndex: this.state.fieldToDeleteIndex
-                }),
-            })
-            .then(res => {
-                if(res.json().status === "deauth"){
-                    deleteSessionCookies()
-                    window.location.reload(false)
-                }
-                return res
-            })
-            .then(res => {
-                this.toggleModal()
-            })
-            .catch(err => {
-                throw err
-            })
+        if(this.state.dataSubmited === false){
+            this.setState({dataSubmited: true, processingRequest: true})
+            fetch('https://us-central1-multi-manage.cloudfunctions.net/deleteTableField', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orgId: getSessionCookie(ORG_TOKEN),
+                        tableId: getUrlParams(window.location.href).tableId,
+                        tokenId: getSessionCookie(USER_TOKEN),
+                        fieldIndex: this.state.fieldToDeleteIndex
+                    }),
+                })
+                .then(res => {
+                    if(res.json().status === "deauth"){
+                        deleteSessionCookies()
+                        window.location.reload(false)
+                    }
+                    return res
+                })
+                .then(res => {
+                    this.toggleModal()
+                })
+                .catch(err => {
+                    throw err
+                })
+        }
     }
 
     render(){
         return (
             <div>
                 <ModalBox dataFields={
-
                     (this.state.modalTypeToShow === 'update') ?
                         <UpdateFieldModalData tableFields={this.state.tableFields} toggleModal={this.toggleModal}
                             sectionIndex={this.state.sectionIndex} index={this.state.index} />
@@ -138,6 +141,7 @@ class ViewTablesManageRowComponent extends React.Component{
                         <AddFieldModalData />
                     : (this.state.modalTypeToShow === 'conf_delete_field') ? 
                         <div id="deleteModalAlert">
+                            <ProcessingComponent radius="0" display={this.state.processingRequest} />
                             <h1>Warning</h1>
                             <h3>Are you sure you wanna delete this field?</h3>
                             <label><b>ALL THE DATA</b> associated with this field will be <b>DELETED</b>!</label>
