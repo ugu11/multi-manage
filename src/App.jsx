@@ -30,7 +30,7 @@ class App extends React.Component {
     super(props)
     const params = getUrlParams(window.location.href)
     this.state = {
-      tableId: params.table,
+      tableId: params.tableId,
     }
 
     if((this.state.tableId === 'manage_tables' || this.state.tableId === 'manage_users') && this.props.userData.admin === false)
@@ -43,8 +43,8 @@ class App extends React.Component {
           .then(res => {
               if(res.status === "deauth"){
                   deleteSessionCookies()
-                  window.location.reload(false)
                   deleteState()
+                  window.location.reload(false)
               }
               return res
           })
@@ -54,13 +54,14 @@ class App extends React.Component {
           })
           .catch(err => {
               if(err.status === "deauth"){
-                  deleteSessionCookies()
-                  deleteState()
+                deleteSessionCookies()
+                deleteState()
+                window.location.reload(false)
               }else
-                  throw err
+                throw err
           })
       else if(this.props.tablesData.length > 0)
-        window.location = "/?table="+this.props.tablesData[0].tableId
+        window.location = "/?tableId="+this.props.tablesData[0].tableId
 
   }
 

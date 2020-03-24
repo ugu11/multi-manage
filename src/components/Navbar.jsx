@@ -6,11 +6,26 @@ import {updateUserData, updateTablesData} from '../actions.js'
 import '../localStorage.js'
 import { deleteState } from '../localStorage.js'
 
+function getUrlParams(url) {
+	var params = {};
+	var parser = document.createElement('a')
+	parser.href = url
+	var query = parser.search.substring(1)
+	var vars = query.split('&')
+	for (var i = 0; i < vars.length; i++) {
+		var pair = vars[i].split('=')
+		params[pair[0]] = decodeURIComponent(pair[1])
+	}
+	return params
+}
+
 class NavbarComponent extends React.Component{
     constructor(){
         super()
+        const params = getUrlParams(window.location.href)
         this.state = {
-            navbarData: []
+            navbarData: [],
+            tableId: params.tableId
         }
     }
 
@@ -74,19 +89,20 @@ class NavbarComponent extends React.Component{
                 {(this.props.userData !== undefined && this.props.userData !== null) ?
                     <ul>
                         <li>
-                            <h3>{this.props.userData.name}</h3>
-                            <h5>{this.props.userData.jobRole}</h5>
+                            <h3 id="user-navbar">{this.props.userData.name}</h3>
+                            <h5 id="job-role-navbar">{this.props.userData.jobRole}</h5>
                         </li>
 
                         {(this.props.userData.admin) ?
-                            <li> <a href="/?table=manage_tables"> Manage tables </a></li> : ""}
+                            <li className={(this.state.tableId === "manage_tables") ? "checked-section" : ""}> <a href="/?tableId=manage_tables"> Manage tables </a></li> : ""}
                         {(this.props.userData.admin) ?
-                                <li> <a href="/?table=manage_users"> Users </a></li> : ""}
-                        <li> </li>
+                                <li className={(this.state.tableId === "manage_users") ? "checked-section" : ""}> <a href="/?tableId=manage_users"> Users </a></li> : ""}
+                        <li className="separator"></li>
+                            
                         {
                             (this.props.tablesData !== null && this.props.tablesData !== undefined) ?
                                 this.props.tablesData.map(table => 
-                                    <li key={table.tableId}> <a href={"/?table="+table.tableId}>{table.tableName}</a></li>
+                                    <li key={table.tableId} className={(this.state.tableId === table.tableId) ? "checked-section" : ""}> <a href={"/?tableId="+table.tableId}>{table.tableName}</a></li>
                                 )
                             : ""
                         }

@@ -8,6 +8,7 @@ import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '.
 import {connect} from 'react-redux'
 import {updateUserData} from '../../actions/updateUserData.js'
 import UpdateUserDataModal from '../ModalComponents/UpdateUserDataModal'
+import DataContainerField from '../DataContainerField';
 
 function getUrlParams(url) {
 	var params = {};
@@ -94,18 +95,21 @@ class ViewUsersManageRowComponent extends React.Component{
                         </div>
 
                         <div className="content">
-                            <div className="user-display-container">
-                                {(this.state.userData !== null && this.state.userData !== undefined) ?
-                                    <div style={{display: "flex", flexFlow: "column"}}>
-                                        <label className="big-label"><b>Name: </b>{this.state.userData.name}</label>
-                                        <label><b>Username:</b> {this.state.userData.username}</label>
-                                        <label><b>Phone: </b> {this.state.userData.phone}</label>
-                                        <label><b>Email: </b> {this.state.userData.email}</label>
-                                        <label><b>Job Role: </b> {this.state.userData.jobRole}</label>
-                                        <label><b>Admin: </b> {(this.state.userData.admin) ? "Yes" : "No"}</label>
-                                    </div>
-                                : ""}
-                            </div>
+                            {(this.state.userData !== null && this.state.userData !== undefined) ?
+                                <div className="field-display-container">
+                                    <DataContainerField label="Username" value={this.state.userData.username} />
+                                    <DataContainerField label="Phone" value={this.state.userData.phone} />
+                                    <DataContainerField label="Email" value={this.state.userData.email} />
+                                    <DataContainerField label="Job role" value={this.state.userData.jobRole} />
+                                    <DataContainerField label="Admin" value={(this.state.userData.admin === true) ? "Yes" : "No"} />
+                                    {/* <label className="big-label"><b>Name: </b>{this.state.userData.name}</label>
+                                    <label><b>Username:</b> {}</label>
+                                    <label><b>Phone: </b> {this.state.userData.phone}</label>
+                                    <label><b>Email: </b> {this.state.userData.email}</label>
+                                    <label><b>Job Role: </b> {this.state.userData.jobRole}</label>
+                                    <label><b>Admin: </b> {(this.state.userData.) ? "Yes" : "No"}</label> */}
+                                </div>
+                            : ""}
                         </div>
                     </div>
                 </div>

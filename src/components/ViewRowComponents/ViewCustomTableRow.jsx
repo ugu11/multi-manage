@@ -6,6 +6,7 @@ import ModalBox from '../ModalBox'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 
 import UpdateCustomTableRowModal from '../ModalComponents/UpdateCustomTableRowModal'
+import DataContainerField from '../DataContainerField'
 
 import {connect} from 'react-redux'
 import {updateUserData} from '../../actions/updateUserData.js'
@@ -50,6 +51,7 @@ class ViewCustomTableRowComponent extends React.Component{
                 return res
             })
             .then(res => {
+                console.log(res.data)
                 let fieldData = []
 
                 for(let field in res.data){
@@ -62,27 +64,27 @@ class ViewCustomTableRowComponent extends React.Component{
 
                 this.setState({
                     tableName: res.data.tableName,
-                    fieldData: fieldData,
+                    fieldData: [fieldData],
                     modalFieldData: fieldData,
                     fields: res.fieldsData
                 })
 
-                if(this.state.fieldData.length > 10){
-                    let {fieldData} = this.state
-                    let splitFieldData = []
-                    splitFieldData[1] = fieldData.splice(10)
-                    splitFieldData[0] = fieldData
-                    this.setState({
-                        fieldData: splitFieldData
-                    })
-                    // console.log(this.state.fieldData)
-                }else{
-                    const {fieldData} = this.state
+                // if(this.state.fieldData.length > 10){
+                //     let {fieldData} = this.state
+                //     let splitFieldData = []
+                //     splitFieldData[1] = fieldData.splice(10)
+                //     splitFieldData[0] = fieldData
+                //     this.setState({
+                //         fieldData: splitFieldData
+                //     })
+                //     // console.log(this.state.fieldData)
+                // }else{
+                //     const {fieldData} = this.state
                     
-                    this.setState({
-                        fieldData: [fieldData]
-                    })
-                }
+                //     this.setState({
+                //         fieldData: [fieldData]
+                //     })
+                // }
             })
             .catch(err => {
                 if(err.status === "deauth")
@@ -136,12 +138,16 @@ class ViewCustomTableRowComponent extends React.Component{
                         <div style={{display: "flex"}}>
                             {this.state.fieldData.map((section, sectionIndex) => 
                                 <div className="field-display-container" key={sectionIndex}>
-                                    <ul>
+                                    {/* <ul> */}
                                         {Array.from(section).map(field => 
-                                            <li key={field.fieldName}><b>{field.fieldName}</b>: {field.fieldValue}</li>
+                                            // <li key={field.fieldName}>
+                                                <div className="field-display">
+                                                    <label className="field-label">{field.fieldName}</label>
+                                                    <label className="field-value">{field.fieldValue}</label>
+                                                </div>
+                                            // </li>
                                         )}
-                                        {/* {JSON.stringify(section)} */}
-                                    </ul>
+                                    {/* </ul> */}
                                 </div>
                             )}
                         </div>

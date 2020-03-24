@@ -13,6 +13,7 @@ import UpdateFieldModalData from '../ModalComponents/UpdateFieldModalData'
 import AddFieldModalData from '../ModalComponents/AddFieldModalData'
 import DeleteTableModalData from '../ModalComponents/DeleteTableModalData'
 import ProcessingComponent from '../ProcessingComponent';
+import DataContainerField from '../DataContainerField';
 
 function getUrlParams(url) {
 	var params = {};
@@ -171,31 +172,31 @@ class ViewTablesManageRowComponent extends React.Component{
                                 this.state.tableFields.map((section, sectionIndex) => 
                                     <ul key={sectionIndex} className="table-data-ul">
                                         {Array.from(section).map((field, i) => 
-                                                <li key={field.name}>
-                                                    <div className="table-data-field-display-container">
-                                                        <div className="content-header">
-                                                            <h2>{field.name}</h2>
-                                                            <button className="btn" onClick={() => {
-                                                                this.setState({sectionIndex: sectionIndex, index: i})
-                                                                this.toggleModal('update')}}><MdEdit /></button>
-                                                            <button className="remove-btn" onClick={() => {
-                                                                this.setState({fieldToDeleteIndex: i})
-                                                                this.toggleModal('conf_delete_field')}}><MdDelete /></button>
+                                            <li key={field.name} className="table-data-field-display-container">
+                                                <div className="content-header">
+                                                    <h2>{field.name}</h2>
+                                                    <button className="btn" onClick={() => {
+                                                        this.setState({sectionIndex: sectionIndex, index: i})
+                                                        this.toggleModal('update')}}><MdEdit /></button>
+                                                    <button className="remove-btn" onClick={() => {
+                                                        this.setState({fieldToDeleteIndex: i})
+                                                        this.toggleModal('conf_delete_field')}}><MdDelete /></button>
+                                                </div>
+                                                <div className="content">
+                                                    <DataContainerField label="Type" value={(field.type === 'tel') ? "phone" : field.type} />
+                                                    <DataContainerField label="Display in table" value={(field.display_table) ? "Yes" : "No"} />
+                                                    {/* <label><b>Type:</b> </label> */}
+                                                    {/* <label><b>Display in table:</b> {(field.display_table) ? "Yes" : "No"}</label> */}
+                                                    {(field.type === 'select') ?
+                                                        <div>
+                                                            <label><b>Select field values</b></label>
+                                                            <ul>
+                                                                {field.select_data.map(value => <li>{value}</li>)}
+                                                            </ul>
                                                         </div>
-                                                        <div className="content">
-                                                            <label><b>Type:</b> {(field.type === 'tel') ? "phone" : field.type}</label>
-                                                            <label><b>Display in table:</b> {(field.display_table) ? "Yes" : "No"}</label>
-                                                            {(field.type === 'select') ?
-                                                                <div>
-                                                                    <label><b>Select field values</b></label>
-                                                                    <ul>
-                                                                        {field.select_data.map(value => <li>{value}</li>)}
-                                                                    </ul>
-                                                                </div>
-                                                            : ""}
-                                                        </div>
-                                                    </div>
-                                                </li>
+                                                    : ""}
+                                                </div>
+                                            </li>
                                         )}
                                         {/* {JSON.stringify(section)} */}
                                     </ul>

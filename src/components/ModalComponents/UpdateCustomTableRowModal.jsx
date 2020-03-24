@@ -35,29 +35,6 @@ class UpdateCustomTableRowModal extends React.Component{
         if((prevState.fields === null && prevState.fields !== this.props.fields ) || prevState.fields.length === 0)
             this.setState({fields: this.props.fields})
     }
-
-    // handleInputChange = (e) => {
-    //     let {fieldController} = this.state
-
-    //     switch(type){
-    //         case 'tel':
-    //             const isValid = validatePhoneField(e.target.value)
-    //             if(isValid === true)
-    //                 fieldController[e.target.name] = e.target.value
-    //             break
-
-    //         case 'email':
-    //             if(e.target.value.includes(" ") === false)
-    //                 fieldController[e.target.name] = e.target.value
-    //             break
-    //         default:
-    //             fieldController[e.target.name] = e.target.value
-    //     }
-
-    //     this.setState({
-    //         fieldController: fieldController
-    //     })
-    // }
     
     updateFieldValue = (e, type) => {
         let {modalFieldData} = this.state

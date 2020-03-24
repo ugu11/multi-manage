@@ -17,11 +17,26 @@ a{
 nav{
     position: absolute;
     top: 0;
-    height: 100vh;
+    height: 90vh;
+    border-bottom-right-radius: 40px;
+
+    // height: 100vh;
     width: 150px;
     margin: 0;
-    background-color: #11152f;
+    background-color: #191F28;
     box-shadow: 0px 0px 20px #00000040;
+    // box-shadow: 5px 5px 10px #00000021;
+
+    #user-navbar{
+        font-size: 20px;
+        margin-bottom: 5px;
+        font-weight: 800;
+    }
+
+    #job-role-navbar{
+        font-size: 14px;
+        font-weight: 200;
+    }
 
     ul{
         display: flex;
@@ -29,12 +44,16 @@ nav{
         list-style: none;
         color: white;
         padding: 10px;
+        padding-left: 0;
         margin: 0;
         height: calc(100% - 20px);
+        font-size: 14px;
         
         & > li{
             text-align: left;
             padding: 5px 10px;
+            padding-right: 0;
+            margin: 5px 0;
 
             &:first-child{
                 margin-bottom: 20px;
@@ -63,6 +82,28 @@ nav{
                 font-weight: 400;
             }
         }
+
+        .separator{
+            background-color: #4ccbab;
+            box-shadow: 0px 0px 10px #4ccbabb7;
+            height: 1px;
+            width: 70%;
+            padding: 0;
+            margin: auto;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        & > .checked-section{
+            border-left: 5px solid #4ccbab;
+            // background-color: #ffb88c;
+            
+            a{
+                // box-shadow: 0px 0px 4px #ffb88c;
+                color: #4ccbab;
+                text-shadow: #4ccbab81 0px 0 10px;
+            }
+        }
         
     }
 }
@@ -79,23 +120,22 @@ nav{
     padding: 50px;
     display: grid;
     grid-template-columns: 20px auto 20px;
-    grid-template-rows: 20px fit-content(60px) 60px auto 20px;
+    grid-template-rows: fit-content(60px) fit-content(80%) 5%;
 
     & > h1{
         grid-column: 2;
-        grid-row: 2;
+        grid-row: 1;
         margin: 0;
-        margin-bottom: 20px;
         text-align: left;
+        margin-bottom: 30px;
     }
 
 
     .actions{
         width: 100%;
         display: grid;
-        grid-row: 3;
-        grid-column: 2;
         grid-template-columns: 100px auto 200px;
+        margin-bottom: 10px;
 
 
         .txt-field{
@@ -115,63 +155,76 @@ nav{
 
     }
 
-    table{
-        width: 100%;
-        height: 50%;
-        border-collapse:collapse;
-        margin: 0;
-        grid-row: 4;
-        grid-column: 2;
-        box-shadow: 0px 0px 10px #00000040;
-        
 
-        thead{
-            background-color: #11152f;
-            color: white;
-            
-            th{
-                padding: 10px  0;
-                height: 50px;
-
-                &:first-child{
-                    border-top-left-radius: 20px !important;
-                }
-
-                &:last-child{
-                    border-top-right-radius: 20px;
-                }
-            }
+    #pagination-container{
+        .btn{
+            padding: 15px;
+            margin: 10px 10px;
         }
+    }
 
-        tbody{
-            tr{
-                &:nth-child(odd){
-                    background: #f0f0f0;
+    #table-container{
+        width: calc(100% - 40px);
+        height: fit-content;
+        grid-column: 2;
+        grid-row: 2;
+        padding: 20px;
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0px 0px 10px #00000021;
+        
+        #table{
+            height: 50%;
 
-                    &:hover{
-                        background: darken($color: #f0f0f0, $amount: 3);
-                        cursor: pointer;
-                    }
-                }
-
-                &:nth-child(even){
-                    background: #fff;
-
-                    &:hover{
-                        background: darken($color: #fff, $amount: 3);
-                        cursor: pointer;
-                    }
-                }
-
-                td{
-                    height: 40px;
-                    padding: 5px 0;
+            table{
+                width: 100%;
+                border-collapse:collapse;
+                margin: 0;
+                overflow: auto;
+    
+                tr{
+                    border-top: 1px solid #4ccbabaf;
+                    display: table;
+                    table-layout: fixed;
+                    width: 100%;
                 }
                 
+        
+                thead{
+                    // background-color: #191f28;
+                    color: #195c4b9f;
+
+                    th{
+                        padding: 20px  0;
+                        background-color: #4ccbab2c;
+                    }
+                }
+        
+                tbody{
+                    height: 45vh;
+                    display: block;
+                    overflow: auto;
+                    tr{
+                        background: #fff;
+                        font-weight: 600;
+                        
+                        &:hover{
+                            background: #4ccbab10;
+                            cursor: pointer;
+                        }
+        
+                        td{
+                            height: 40px;
+                            padding: 5px 0;
+                        }
+                        
+                    }
+                }
+        
             }
         }
-
     }
+
 }
 
 .chip{

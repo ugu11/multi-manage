@@ -27,29 +27,31 @@ class TablesManageComponent extends React.Component{
         return (
             <div id="content">
                 <ModalBox dataFields={this.state.dataFields} isShown={this.state.showModal} toggleModal={this.toggleModal}/>
+                <h1>Tables Manager</h1>
 
-                <h1>{ this.state.tableName }</h1>
-                <div className="actions">
-                    <button className="btn" onClick={this.toggleModal}>Add item</button>
-                    <input type="text" className="txt-field" placeholder="search"/>
+                <div id="table-container">
+                    <div className="actions">
+                        <button className="btn" onClick={this.toggleModal}>Add item</button>
+                        <input type="text" className="txt-field" placeholder="search"/>
+                    </div>
+                    <div id="table">
+                        {(this.props.tablesData !== undefined && this.props.tablesData !== null) ?
+                            <table>
+                                <thead>
+                                    <tr><th>Table name</th></tr>
+                                </thead>
+
+                                <tbody>
+                                    {this.props.tablesData.map((table, i) => 
+                                        <tr key={table.tableName} onClick={() => this.handleRowClick(table.tableId, table.tableName)}>
+                                            <td>{table.tableName}</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        : ""}
+                    </div>
                 </div>
-
-                {(this.props.tablesData !== undefined && this.props.tablesData !== null) ?
-                    <table>
-                        <thead>
-                            <tr><th>Table name</th></tr>
-                        </thead>
-
-                        <tbody>
-                            {this.props.tablesData.map((table, i) => 
-                                <tr key={table.tableName} onClick={() => this.handleRowClick(table.tableId, table.tableName)}>
-                                    <td>{table.tableName}</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                : ""}
-
             </div>
         )
     }
