@@ -159,43 +159,55 @@ class Register extends React.Component{
                 case 'org':
                     return(
                         <div className='auth-bg'>
-                            <div className="auth-container">
-                                <h1>Register Organization</h1>
-                                <form onSubmit={e => {
-                                    e.preventDefault();
-                                    this.setState({registerStep: 'user_register'}
-                                )}}>
-                                    <input type="text" className="txt-field" name="orgId" value={this.state.formData.orgId} placeholder="Organization id" onChange={this.formHandler} required />
-                                    {(this.state.nameIdUnique === false) ? <label className="alert-label">Organization name id already in use</label> : ""}
-                                    <input type="text" className="txt-field" name="orgName" value={this.state.formData.orgName} placeholder="Organization name" onChange={this.formHandler} required />
-                                    <input type="email" className="txt-field" name="orgEmail" value={this.state.formData.orgEmail} placeholder="Organization email" onChange={this.formHandler} required />
-                                    <input type="password" className="txt-field" name="orgPassword" value={this.state.formData.orgPassword} placeholder="Password" onChange={this.formHandler} required />
-                                    <input type="password" className="txt-field" name="orgConfPassword" value={this.state.formData.orgConfPassword} placeholder="Confirm Password" onChange={this.formHandler} required />
-                
-                                    <input type="submit" className="btn auth-submit" disabled={this.state.dataSubmited} value="Register organization"/>
-                                    <button className="button-label" onClick={() => {window.location = "/login"}}>New to the app? Register your organization now!</button>
-                                </form>
+                            <div className='container'>
+                                <div className="auth-image">
+                                    <img src={require('./assets/imgs/auth_manager.jpg')} alt="auth-manager" />
+                                </div>
+                                <div className="auth-separator"></div>
+                                <div className="auth-container">
+                                    <h1>Register Organization</h1>
+                                    <form onSubmit={e => {
+                                        e.preventDefault();
+                                        this.setState({registerStep: 'user_register'}
+                                    )}}>
+                                        <input type="text" className="txt-field" name="orgId" value={this.state.formData.orgId} placeholder="Organization id" onChange={this.formHandler} required />
+                                        {(this.state.nameIdUnique === false) ? <label className="alert-label">Organization name id already in use</label> : ""}
+                                        <input type="text" className="txt-field" name="orgName" value={this.state.formData.orgName} placeholder="Organization name" onChange={this.formHandler} required />
+                                        <input type="email" className="txt-field" name="orgEmail" value={this.state.formData.orgEmail} placeholder="Organization email" onChange={this.formHandler} required />
+                                        <input type="password" className="txt-field" name="orgPassword" value={this.state.formData.orgPassword} placeholder="Password" onChange={this.formHandler} required />
+                                        <input type="password" className="txt-field" name="orgConfPassword" value={this.state.formData.orgConfPassword} placeholder="Confirm Password" onChange={this.formHandler} required />
+                    
+                                        <input type="submit" className="btn auth-submit" disabled={this.state.dataSubmited} value="Register organization"/>
+                                        <button className="button-label" onClick={() => {window.location = "/login"}}>New to the app? Register your organization now!</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     )
                 case 'user_register':
                     return (
                         <div className='auth-bg'>
-                            <div class="auth-container">
-                                <ProcessingComponent radius="20" display={this.state.isProcessing}/>
-                                <h1>Create admin user</h1>
-                                <form onSubmit={this.submitUserRegister}>
-                                    <input type="text" className="txt-field" name="userFullName" value={this.state.formData.userFullName} placeholder="Full Name" onChange={this.formHandler} required/>
-                                    <input type="text" className="txt-field" name="username" value={this.state.formData.username} placeholder="Username" onChange={this.formHandler} required/>
-                                    <input type="email" className="txt-field" name="userEmail" value={this.state.formData.userEmail} placeholder="Email" onChange={this.formHandler} required/>
-                                    <input type="tel" className="txt-field" name="userPhone" value={this.state.formData.userPhone} placeholder="Phone" onChange={this.formHandler} required/>
-                                    <input type="text" className="txt-field" name="jobRole" value={this.state.formData.jobRole} placeholder="Job Role" onChange={this.formHandler} required/>
-                                    <input type="password" className="txt-field" name="userPassword" value={this.state.formData.userPassword} placeholder="Password" onChange={this.formHandler} required/>
-                                    <input type="password" className="txt-field" name="userConfPassword" value={this.state.formData.userConfPassword} placeholder="Confirm Password" onChange={this.formHandler} required/>
-            
-                                    <input type="submit" className="btn auth-submit"  disabled={this.state.dataSubmited} value="Create user"/>
-                                    {/* <button className="button-label" onClick={this.props.authTypeHandler}>New to the app? Register your organization now!</button> */}
-                                </form>
+                            <div className='container'>
+                                <div className="auth-image">
+                                    <img src={require('./assets/imgs/auth_manager.jpg')} alt="auth-manager" />
+                                </div>
+                                <div className="auth-separator"></div>
+                                <div class="auth-container">
+                                    <ProcessingComponent radius="20" display={this.state.isProcessing}/>
+                                    <h1>Create admin user</h1>
+                                    <form onSubmit={this.submitUserRegister}>
+                                        <input type="text" className="txt-field" name="userFullName" value={this.state.formData.userFullName} placeholder="Full Name" onChange={this.formHandler} required/>
+                                        <input type="text" className="txt-field" name="username" value={this.state.formData.username} placeholder="Username" onChange={this.formHandler} required/>
+                                        <input type="email" className="txt-field" name="userEmail" value={this.state.formData.userEmail} placeholder="Email" onChange={this.formHandler} required/>
+                                        <input type="tel" className="txt-field" name="userPhone" value={this.state.formData.userPhone} placeholder="Phone" onChange={this.formHandler} required/>
+                                        <input type="text" className="txt-field" name="jobRole" value={this.state.formData.jobRole} placeholder="Job Role" onChange={this.formHandler} required/>
+                                        <input type="password" className="txt-field" name="userPassword" value={this.state.formData.userPassword} placeholder="Password" onChange={this.formHandler} required/>
+                                        <input type="password" className="txt-field" name="userConfPassword" value={this.state.formData.userConfPassword} placeholder="Confirm Password" onChange={this.formHandler} required/>
+                
+                                        <input type="submit" className="btn auth-submit"  disabled={this.state.dataSubmited} value="Create user"/>
+                                        {/* <button className="button-label" onClick={this.props.authTypeHandler}>New to the app? Register your organization now!</button> */}
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     )

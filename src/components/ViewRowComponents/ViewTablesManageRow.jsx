@@ -59,22 +59,15 @@ class ViewTablesManageRowComponent extends React.Component{
                 return res
             })
             .then(res => {
-                let tableFields = res.fields
+                let tableFields = res.tableData.fields
 
-                if(tableFields.length > 10){
-                    let splitFieldData = []
-                    splitFieldData[1] = tableFields.splice(10)
-                    splitFieldData[0] = tableFields
-                    this.setState({
-                        tableFields: splitFieldData,
-                    })
-                }else{
-                    this.setState({
-                        tableFields: [[...tableFields]],
-                        tableName: res.name
-                    })
+                console.log(tableFields, res)
+                
 
-                }
+                this.setState({
+                    tableFields: [tableFields],
+                    tableName: res.name
+                })
 
             })
     }
@@ -133,6 +126,7 @@ class ViewTablesManageRowComponent extends React.Component{
 
     render(){
         return (
+            (this.state.tableFields !== undefined) ? 
             <div>
                 <ModalBox dataFields={
                     (this.state.modalTypeToShow === 'update') ?
@@ -207,6 +201,7 @@ class ViewTablesManageRowComponent extends React.Component{
                     </div>
                 </div>
             </div>
+            : ""
         )
     }
 }

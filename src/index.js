@@ -13,6 +13,8 @@ import {createStore} from 'redux'
 import rootReducer from './reducers/index'
 import {loadState, saveState} from './localStorage.js'
 
+import LandingPage from './LandingPage'
+
 const store = createStore(rootReducer, loadState())
 
 store.subscribe(() => {
@@ -32,6 +34,7 @@ function routing() {
         <Router>
             <div>
                 <PrivateRoute exact path="/" component={() => <Provider store={store}> <AppComponent/> </Provider>}/>
+                <Route path="/home" component={LandingPage}/>
                 <Route path="/login" component={Login}/>
                 <Route path="/register" component={Register}/>
                 <PrivateRoute path="/viewrow" component={() => <Provider store={store}> <ViewRow/> </Provider>}/>

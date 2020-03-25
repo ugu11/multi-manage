@@ -1,6 +1,6 @@
 import React from 'react'
 import { deleteSessionCookies, getSessionCookie, ORG_TOKEN, USER_TOKEN } from '../helpers/session/auth.js'
-
+import { FiLogOut } from "react-icons/fi";
 import {connect} from 'react-redux'
 import {updateUserData, updateTablesData} from '../actions.js'
 import '../localStorage.js'
@@ -112,7 +112,7 @@ class NavbarComponent extends React.Component{
                                 deleteSessionCookies()
                                 deleteState()
                             }
-                        }> Log out </a></li>
+                        }> {/* <FiLogOut /> */}Log out </a></li>
                     </ul>
                 : ""
                 }

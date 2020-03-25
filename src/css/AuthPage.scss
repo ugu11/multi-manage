@@ -2,47 +2,96 @@
     width: 100vw;
     height: 100vh;
     position: fixed;
-    background: linear-gradient(244.33deg, rgba(113, 130, 239, 0.81) 0%, rgba(4, 10, 44, 0) 95.2%), #0B1030;
+    // background: linear-gradient(244.33deg, rgba(113, 130, 239, 0.81) 0%, rgba(4, 10, 44, 0) 95.2%), #0B1030;
+    background: linear-gradient(256.64deg, #4ccbab -9.9%, #3e75c8 119.49%), #0B1030;
 
-    .auth-container{
-        display: flex;
-        flex-direction: column;
+    .container{
         position: absolute;
         transform: translate(-50%, -50%);
         top: 50%;
         left: 50%;
+        display: flex;
+        flex-direction: row;
         background-color: white;
-        border-radius: 20px;
-        width: 400px;
-        padding: 40px 20px;
+        padding: 30px 10px;
+        border-radius: 5px;
+
+        .auth-container{
+            display: flex;
+            flex-direction: column;
+            border-radius: 5px;
+            width: 400px;
+            padding: 40px 40px;
+        
+            h1{
+                text-align: center;
+                margin-bottom: 50px;
+                margin-top: 0;
+            }
+        
+            .btn{
+                margin-top: 20px;
+                margin-bottom: 5px;
+            }
     
-        h1{
-            text-align: center;
-            margin-bottom: 50px;
-            margin-top: 0;
-        }
-    
-        .btn{
-            margin-top: 10px;
+            .voltar-btn{
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                margin: 5px 0;
+                padding-left: 30px;
+                padding-bottom: 15px;
+            }
+        
+            .auth-submit{
+                font-size: 16px;
+                position: relative;
+                transform: translateX(-50%);
+                left: 50%;
+            }
+
+            .txt-field{
+                background: transparent;
+                transition: .3s;
+                
+                position: relative;
+                transform-origin: center;
+                left: 10px;
+
+                &:focus{
+                    width: 100%;
+                    left: 0;
+                }
+            }
+
+            .secondary-btn{
+                padding: 20px 40px !important;
+            }
         }
 
-        .voltar-btn{
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            margin: 5px 0;
-            padding-left: 30px;
-            padding-bottom: 15px;
+        .auth-separator{
+            height: 400px;
+            margin: auto;
+            width: 2px;
+            background-color: #dddddd;
         }
-    
-        .auth-submit{
-            margin: 5px;
-            font-size: 16px;
+
+        .auth-image{
+            width: 400px;
+            padding: 30px;
             position: relative;
-            transform: translateX(-50%);
-            left: 50%;
+
+            img{
+                width: 400px;
+
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+            }
         }
     }
+
 }
 
 .alert-label{
@@ -87,7 +136,7 @@
 
 .secondary-btn{
     width: auto;
-    color: #7182EF;
+    color: #4ccbab;
     background: transparent;//linear-gradient(256.64deg, #7182EF -9.9%, rgba(11, 16, 48, 0) 119.49%), #0B1030;
     padding: 10px 40px;
     border-radius: 10px;
@@ -114,7 +163,7 @@
 .button-label{
     background: transparent;
     border: 0;
-    color: rgb(27, 110, 187);
+    color: #1b6ebb;
     font-size: 13px;
     text-decoration: underline;
     transform: .2s;
