@@ -66,7 +66,7 @@ class ViewTablesManageRowComponent extends React.Component{
 
                 this.setState({
                     tableFields: [tableFields],
-                    tableName: res.name
+                    tableName: res.tableData.name
                 })
 
             })
@@ -169,30 +169,29 @@ class ViewTablesManageRowComponent extends React.Component{
                                             <li key={field.name} className="table-data-field-display-container">
                                                 <div className="content-header">
                                                     <h2>{field.name}</h2>
-                                                    <button className="btn" onClick={() => {
-                                                        this.setState({sectionIndex: sectionIndex, index: i})
-                                                        this.toggleModal('update')}}><MdEdit /></button>
-                                                    <button className="remove-btn" onClick={() => {
-                                                        this.setState({fieldToDeleteIndex: i})
-                                                        this.toggleModal('conf_delete_field')}}><MdDelete /></button>
-                                                </div>
-                                                <div className="content">
                                                     <DataContainerField label="Type" value={(field.type === 'tel') ? "phone" : field.type} />
                                                     <DataContainerField label="Display in table" value={(field.display_table) ? "Yes" : "No"} />
-                                                    {/* <label><b>Type:</b> </label> */}
-                                                    {/* <label><b>Display in table:</b> {(field.display_table) ? "Yes" : "No"}</label> */}
-                                                    {(field.type === 'select') ?
+                                                    <div className="field-actions">
+                                                        <button className="secondary-btn" onClick={() => {
+                                                            this.setState({sectionIndex: sectionIndex, index: i})
+                                                            this.toggleModal('update')}}><MdEdit /></button>
+                                                        <button className="remove-btn" onClick={() => {
+                                                            this.setState({fieldToDeleteIndex: i})
+                                                            this.toggleModal('conf_delete_field')}}><MdDelete /></button>
+                                                    </div>
+                                                </div>
+                                                {(field.type === 'select') ?
+                                                    <div className="content">
                                                         <div>
                                                             <label><b>Select field values</b></label>
                                                             <ul>
                                                                 {field.select_data.map(value => <li>{value}</li>)}
                                                             </ul>
                                                         </div>
-                                                    : ""}
-                                                </div>
+                                                    </div>
+                                                : ""}
                                             </li>
                                         )}
-                                        {/* {JSON.stringify(section)} */}
                                     </ul>
                                 )
                             : ""
