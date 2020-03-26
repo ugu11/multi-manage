@@ -126,7 +126,6 @@ class ViewCustomTableRowComponent extends React.Component{
                         <ModalBox dataFields={<UpdateCustomTableRowModal modalFieldData={this.state.modalFieldData} fields={this.state.fields} />} isShown={this.state.showModal} toggleModal={this.toggleModal}/>
                     : ""
                 }
-                <Navbar />
 
                 <div id="content-viewrow" style={{display: "flex"}}>
 

@@ -6,6 +6,7 @@ import {updateUserData} from './actions/updateUserData.js'
 import { ViewCustomTableRow } from './components/ViewRowComponents/ViewCustomTableRow';
 import { ViewTablesManageRow } from './components/ViewRowComponents/ViewTablesManageRow';
 import { ViewUsersManageRow } from './components/ViewRowComponents/ViewUsersManageRow';
+import {Navbar} from './components/Navbar'
 
 function getUrlParams(url) {
 	var params = {};
@@ -38,6 +39,8 @@ class ViewRowComponent extends React.Component{
 
     render(){
         return (
+          <div className="App">
+            <Navbar />
             <div id="dashboard-content">
                 {(this.state.params.type === 'manage_tables') ?
                   <ViewTablesManageRow />
@@ -45,6 +48,7 @@ class ViewRowComponent extends React.Component{
                   <ViewUsersManageRow />
                 : <ViewCustomTableRow />}
             </div>
+          </div>
         )
     }
 }

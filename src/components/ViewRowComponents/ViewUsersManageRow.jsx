@@ -81,7 +81,6 @@ class ViewUsersManageRowComponent extends React.Component{
                 <ModalBox dataFields={
                     <UpdateUserDataModal userData={this.state.userData} toggleModal={this.toggleModal}/>
                 } isShown={this.state.showModal} toggleModal={this.toggleModal}/>
-                <Navbar />
 
                 <div id="content-viewrow" style={{display: "flex"}}>
 
@@ -102,12 +101,6 @@ class ViewUsersManageRowComponent extends React.Component{
                                     <DataContainerField label="Email" value={this.state.userData.email} />
                                     <DataContainerField label="Job role" value={this.state.userData.jobRole} />
                                     <DataContainerField label="Admin" value={(this.state.userData.admin === true) ? "Yes" : "No"} />
-                                    {/* <label className="big-label"><b>Name: </b>{this.state.userData.name}</label>
-                                    <label><b>Username:</b> {}</label>
-                                    <label><b>Phone: </b> {this.state.userData.phone}</label>
-                                    <label><b>Email: </b> {this.state.userData.email}</label>
-                                    <label><b>Job Role: </b> {this.state.userData.jobRole}</label>
-                                    <label><b>Admin: </b> {(this.state.userData.) ? "Yes" : "No"}</label> */}
                                 </div>
                             : ""}
                         </div>

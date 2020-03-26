@@ -1,5 +1,4 @@
 import React from 'react'
-import {Navbar} from '../Navbar'
 import {IoIosAdd} from 'react-icons/io'
 import { MdEdit, MdDelete } from "react-icons/md";
 import '../../css/ViewRow.scss'
@@ -149,7 +148,6 @@ class ViewTablesManageRowComponent extends React.Component{
                         <DeleteTableModalData tableName={this.state.tableName} toggleModal={this.toggleModal}/>
                     : ""
                 } isShown={this.state.showModal} toggleModal={this.toggleModal}/>
-                <Navbar />
 
                 <div id="content-viewrow" style={{display: "flex"}}>
 

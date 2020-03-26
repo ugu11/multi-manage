@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import {updateUserData, updateTablesData} from '../actions.js'
 import '../localStorage.js'
 import { deleteState } from '../localStorage.js'
+import '../css/NavBar.scss'
 
 function getUrlParams(url) {
 	var params = {};
@@ -85,9 +86,21 @@ class NavbarComponent extends React.Component{
 
     render(){
         return (
-            <nav>
-                {(this.props.userData !== undefined && this.props.userData !== null) ?
-                    <ul>
+            (this.props.userData !== undefined && this.props.userData !== null) ?
+                <nav>
+                    <ul id="top-bar">
+
+                        <li onClick={() => {
+                            deleteSessionCookies()
+                            deleteState()
+                            window.location.href = "/login"
+                        }}> <label id="logout-icon"><label id="logout-label">Log out</label> <FiLogOut /></label> </li>
+
+                        <h1>Multi Manage</h1>
+
+                    </ul>
+
+                    <ul id="side-bar">
                         <li>
                             <h3 id="user-navbar">{this.props.userData.name}</h3>
                             <h5 id="job-role-navbar">{this.props.userData.jobRole}</h5>
@@ -97,26 +110,22 @@ class NavbarComponent extends React.Component{
                             <li className={(this.state.tableId === "manage_tables") ? "checked-section" : ""}> <a href="/?tableId=manage_tables"> Manage tables </a></li> : ""}
                         {(this.props.userData.admin) ?
                                 <li className={(this.state.tableId === "manage_users") ? "checked-section" : ""}> <a href="/?tableId=manage_users"> Users </a></li> : ""}
-                        <li className="separator"></li>
+                        <li className="separator">&nbsp;</li>
                             
                         {
                             (this.props.tablesData !== null && this.props.tablesData !== undefined) ?
                                 this.props.tablesData.map(table => 
-                                    <li key={table.tableId} className={(this.state.tableId === table.tableId) ? "checked-section" : ""}> <a href={"/?tableId="+table.tableId}>{table.tableName}</a></li>
+                                    <li key={table.tableId} className={(this.state.tableId === table.tableId) ? "checked-section" : ""} onClick={() => window.location.href = "/?tableId="+table.tableId}>
+                                        {table.tableName}
+                                    </li>
                                 )
                             : ""
                         }
                         
-                        <li> <a href="/login" onClick={
-                            () => {
-                                deleteSessionCookies()
-                                deleteState()
-                            }
-                        }> {/* <FiLogOut /> */}Log out </a></li>
                     </ul>
-                : ""
-                }
-            </nav>
+                </nav>
+
+            : ""
         )
     }
 }
