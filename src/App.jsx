@@ -71,16 +71,14 @@ class App extends React.Component {
    
         <Navbar />
         
-        <div id="dashboard-content">
-          {
-            (this.state.tableId === 'manage_tables') ?
-              <TablesManage/>
-            : (this.state.tableId === 'manage_users') ?
-              <UsersManage />
-            :
-              <CustomTable tableId={this.state.tableId}/>
-          }
-        </div>
+        {
+          (this.state.tableId === 'manage_tables') ?
+            <TablesManage/>
+          : (this.state.tableId === 'manage_users') ?
+            <UsersManage />
+          :
+            <CustomTable tableId={this.state.tableId}/>
+        }
       </div>
     );
   }

@@ -41,6 +41,7 @@ class ViewRowComponent extends React.Component{
         return (
           <div className="App">
             <Navbar />
+            
             <div id="dashboard-content">
                 {(this.state.params.type === 'manage_tables') ?
                   <ViewTablesManageRow />

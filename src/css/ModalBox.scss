@@ -1,8 +1,22 @@
+$mobileBreakpoint: 796px;
+
+@media (max-width: $mobileBreakpoint){
+    .modal-bg{
+        grid-template-columns: auto fit-content(90%) auto;
+        grid-template-rows: auto fit-content(calc(100% - 140px)) auto;
+    }
+}
+
+@media (min-width: $mobileBreakpoint){
+    .modal-bg{
+        grid-template-columns: auto fit-content(60%) auto;
+        grid-template-rows: auto fit-content(calc(100% - 140px)) auto;
+    }
+}
+
 
 .modal-bg{
     display: grid;
-    grid-template-columns: auto fit-content(60%) auto;
-    grid-template-rows: auto fit-content(calc(100vh - 140px)) auto;
     position: fixed;
     left: 0;
     top: 0;

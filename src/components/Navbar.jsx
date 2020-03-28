@@ -1,6 +1,7 @@
 import React from 'react'
 import { deleteSessionCookies, getSessionCookie, ORG_TOKEN, USER_TOKEN } from '../helpers/session/auth.js'
 import { FiLogOut } from "react-icons/fi";
+import { IoMdMenu, IoMdClose } from "react-icons/io";
 import {connect} from 'react-redux'
 import {updateUserData, updateTablesData} from '../actions.js'
 import '../localStorage.js'
@@ -26,7 +27,8 @@ class NavbarComponent extends React.Component{
         const params = getUrlParams(window.location.href)
         this.state = {
             navbarData: [],
-            tableId: params.tableId
+            tableId: params.tableId,
+            displaySmallScreenMenu: false
         }
     }
 
@@ -84,45 +86,98 @@ class NavbarComponent extends React.Component{
         // }
     }
 
+    toggleSmallScreenMenu = () => this.setState(prevState => ({displaySmallScreenMenu: !prevState.displaySmallScreenMenu}))
+
     render(){
         return (
             (this.props.userData !== undefined && this.props.userData !== null) ?
                 <nav>
-                    <ul id="top-bar">
 
-                        <li onClick={() => {
-                            deleteSessionCookies()
-                            deleteState()
-                            window.location.href = "/login"
-                        }}> <label id="logout-icon"><label id="logout-label">Log out</label> <FiLogOut /></label> </li>
+                    <div id="big-screen">
+                        <ul id="top-bar">
 
-                        <h1>Multi Manage</h1>
+                            <li onClick={() => {
+                                deleteSessionCookies()
+                                deleteState()
+                                window.location.href = "/login"
+                            }}> <label id="logout-icon"><label id="logout-label">Log out</label> <FiLogOut /></label> </li>
 
-                    </ul>
+                            <h1>Multi Manage</h1>
 
-                    <ul id="side-bar">
-                        <li>
-                            <h3 id="user-navbar">{this.props.userData.name}</h3>
-                            <h5 id="job-role-navbar">{this.props.userData.jobRole}</h5>
-                        </li>
+                        </ul>
 
-                        {(this.props.userData.admin) ?
-                            <li className={(this.state.tableId === "manage_tables") ? "checked-section" : ""}> <a href="/?tableId=manage_tables"> Manage tables </a></li> : ""}
-                        {(this.props.userData.admin) ?
-                                <li className={(this.state.tableId === "manage_users") ? "checked-section" : ""}> <a href="/?tableId=manage_users"> Users </a></li> : ""}
-                        <li className="separator">&nbsp;</li>
+                        <ul id="side-bar">
+                            <li id="user-info">
+                                <h3 id="user-navbar">{this.props.userData.name}</h3>
+                                <h5 id="job-role-navbar">{this.props.userData.jobRole}</h5>
+                            </li>
+
+                            {(this.props.userData.admin) ?
+                                <li id="manage-tables-item" className={(this.state.tableId === "manage_tables") ? "checked-section" : ""}> <a href="/?tableId=manage_tables"> Manage tables </a></li> : ""}
+                            {(this.props.userData.admin) ?
+                                    <li className={(this.state.tableId === "manage_users") ? "checked-section" : ""}> <a href="/?tableId=manage_users"> Users </a></li> : ""}
+                            <li className="separator">&nbsp;</li>
+                                
+                            {
+                                (this.props.tablesData !== null && this.props.tablesData !== undefined) ?
+                                    this.props.tablesData.map(table => 
+                                        <li key={table.tableId} className={(this.state.tableId === table.tableId) ? "checked-section" : ""} onClick={() => window.location.href = "/?tableId="+table.tableId}>
+                                            {table.tableName}
+                                        </li>
+                                    )
+                                : ""
+                            }
                             
+                        </ul>
+                    </div>
+
+                    <div id="small-screen">
+
+                        <div id="top-bar">
+                            <h1>Multi Manage</h1>
+                            <button onClick={this.toggleSmallScreenMenu}>
+                                {
+                                    (this.state.displaySmallScreenMenu === true)
+                                    ? <IoMdClose />
+                                    : <IoMdMenu />
+                                }
+                            </button>
+                        </div>
                         {
-                            (this.props.tablesData !== null && this.props.tablesData !== undefined) ?
-                                this.props.tablesData.map(table => 
-                                    <li key={table.tableId} className={(this.state.tableId === table.tableId) ? "checked-section" : ""} onClick={() => window.location.href = "/?tableId="+table.tableId}>
-                                        {table.tableName}
+                            (this.state.displaySmallScreenMenu === true) ?
+                                <ul id="side-bar">
+                                    <li id="user-info">
+                                        <h3 id="user-navbar">{this.props.userData.name}</h3>
+                                        <h5 id="job-role-navbar">{this.props.userData.jobRole}</h5>
                                     </li>
-                                )
+        
+                                    {(this.props.userData.admin) ?
+                                        <li id="manage-tables-item" className={(this.state.tableId === "manage_tables") ? "checked-section" : ""}> <a href="/?tableId=manage_tables"> Manage tables </a></li> : ""}
+                                    {(this.props.userData.admin) ?
+                                            <li className={(this.state.tableId === "manage_users") ? "checked-section" : ""}> <a href="/?tableId=manage_users"> Users </a></li> : ""}
+                                    <li className="separator">&nbsp;</li>
+                                        
+                                    {
+                                        (this.props.tablesData !== null && this.props.tablesData !== undefined) ?
+                                            this.props.tablesData.map(table => 
+                                                <li key={table.tableId} className={(this.state.tableId === table.tableId) ? "checked-section" : ""} onClick={() => window.location.href = "/?tableId="+table.tableId}>
+                                                    {table.tableName}
+                                                </li>
+                                            )
+                                        : ""
+                                    }
+                                    <li onClick={() => {
+                                        deleteSessionCookies()
+                                        deleteState()
+                                        window.location.href = "/login"
+                                    }}> <label id="logout-icon"><label id="logout-label">Log out</label> <FiLogOut /></label> </li>
+        
+                                </ul>
                             : ""
                         }
                         
-                    </ul>
+                    </div>
+
                 </nav>
 
             : ""
