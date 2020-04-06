@@ -37,7 +37,7 @@ class NavbarComponent extends React.Component{
             orgIdToken: getSessionCookie(ORG_TOKEN),
             userTokenId: getSessionCookie(USER_TOKEN)
         }
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/getLoggedInUserData', {
+        fetch('https://us-central1-multi-manage.cloudfunctions.net/users-getLoggedInUserData', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(reqData)})
@@ -62,7 +62,7 @@ class NavbarComponent extends React.Component{
                         throw err
                 })
             
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN))
+        fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN))
             .then(res => res.json())
             .then(res => {
                 if(res.status === "deauth"){

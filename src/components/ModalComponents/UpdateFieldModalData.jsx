@@ -72,7 +72,7 @@ class UpdateFieldModalData extends React.Component{
 
         if(this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('https://us-central1-multi-manage.cloudfunctions.net/updateTableFields', {
+            fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-updateFields', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

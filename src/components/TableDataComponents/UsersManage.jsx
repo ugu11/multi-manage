@@ -20,6 +20,7 @@ class UsersManageComponent extends React.Component{
     componentDidMount(){
         this.getTableRows(this.state.tablePage)
             .then(res => {
+                console.log(res, res.json())
                 switch(res.status){
                     case 200:
                         return res.json()
@@ -33,8 +34,8 @@ class UsersManageComponent extends React.Component{
             .then(res => {
                 if(res.status === "deauth"){
                     deleteSessionCookies()
-                    window.location.reload(false)
                     deleteState()
+                    window.location.reload(false)
                 }else{
                     this.setState({
                         usersData: {"1": res.usersData},
@@ -52,7 +53,7 @@ class UsersManageComponent extends React.Component{
     }
 
     getTableRows = (nPage) => {
-        return fetch('https://us-central1-multi-manage.cloudfunctions.net/getOrgUsers?page='+nPage+'&orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN))
+        return fetch('https://us-central1-multi-manage.cloudfunctions.net/users-getUsers?page='+nPage+'&orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN))
     }
     
     handleRowClick = (userId) => {

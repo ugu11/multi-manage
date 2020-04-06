@@ -118,7 +118,7 @@ class AddFields extends React.Component{
 
         if(this.state.dataSubmited === false){
             this.setState({processingRequest: true, dataSubmited: true})
-            fetch('https://us-central1-multi-manage.cloudfunctions.net/createTable', {
+            fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -165,11 +165,13 @@ class AddFields extends React.Component{
                         )}
                     </ul>
                     <div id="inputs-container" >
-                        <button className="btn" onClick={this.appendNewField}
-                            disabled={(this.state.fieldName === '' || (this.state.fieldType === 'select' && this.state.selectValues.length === 0))}><MdAdd /></button>
-                        <input type="text" className="txt-field"
-                            onChange={this.handleFieldNameInputChange} onKeyDown={this.handleOnEnterPressed}
-                            value={this.state.fieldName} placeholder="Field name"/>
+                        <div id="r1">
+                            <button className="btn" onClick={this.appendNewField}
+                                disabled={(this.state.fieldName === '' || (this.state.fieldType === 'select' && this.state.selectValues.length === 0))}><MdAdd /></button>
+                            <input type="text" className="txt-field"
+                                onChange={this.handleFieldNameInputChange} onKeyDown={this.handleOnEnterPressed}
+                                value={this.state.fieldName} placeholder="Field name"/>
+                        </div>
                         <div id="properties">
                             <div id="field-type-radio-group">
                                 <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}

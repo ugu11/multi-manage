@@ -48,7 +48,7 @@ class ViewTablesManageRowComponent extends React.Component{
 
     requestRowData = () => {
         const params = getUrlParams(window.location.href)
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/getOrgTableData?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+params.tableId+'&tokenId='+getSessionCookie(USER_TOKEN))
+        fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-getData?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+params.tableId+'&tokenId='+getSessionCookie(USER_TOKEN))
             .then(res => res.json())
             .then(res => {
                 if(res.status === "deauth"){
@@ -97,7 +97,7 @@ class ViewTablesManageRowComponent extends React.Component{
     handleFieldDeleteRequest = (index) => {
         if(this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('https://us-central1-multi-manage.cloudfunctions.net/deleteTableField', {
+            fetch('https://us-central1-multi-manage.cloudfunctions.net/table-deleteField', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

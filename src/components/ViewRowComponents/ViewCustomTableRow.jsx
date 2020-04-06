@@ -41,7 +41,7 @@ class ViewCustomTableRowComponent extends React.Component{
 
     componentDidMount(){
         const params = getUrlParams(window.location.href)
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/getOrgTableRowData?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+params.tableId+'&rowIndex='+params.rowIndex+'&tokenId='+getSessionCookie(USER_TOKEN))
+        fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-getRowData?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+params.tableId+'&rowIndex='+params.rowIndex+'&tokenId='+getSessionCookie(USER_TOKEN))
             .then(res => res.json())
             .then(res => {
                 if(res.status === "deauth"){
@@ -68,23 +68,6 @@ class ViewCustomTableRowComponent extends React.Component{
                     modalFieldData: fieldData,
                     fields: res.fieldsData
                 })
-
-                // if(this.state.fieldData.length > 10){
-                //     let {fieldData} = this.state
-                //     let splitFieldData = []
-                //     splitFieldData[1] = fieldData.splice(10)
-                //     splitFieldData[0] = fieldData
-                //     this.setState({
-                //         fieldData: splitFieldData
-                //     })
-                //     // console.log(this.state.fieldData)
-                // }else{
-                //     const {fieldData} = this.state
-                    
-                //     this.setState({
-                //         fieldData: [fieldData]
-                //     })
-                // }
             })
             .catch(err => {
                 if(err.status === "deauth")

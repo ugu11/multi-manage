@@ -35,7 +35,7 @@ class ViewUsersManageRowComponent extends React.Component{
 
     requestRowData = () => {
         const params = getUrlParams(window.location.href)
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/getOrgUserData?orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN)+"&userId="+params.userId)
+        fetch('https://us-central1-multi-manage.cloudfunctions.net/users-getUserData?orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN)+"&userId="+params.userId)
             .then(res => {
                 switch(res.status){
                     case 200:

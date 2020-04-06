@@ -26,7 +26,7 @@ class UpdateUserDataModal extends React.Component{
 
         if(this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('https://us-central1-multi-manage.cloudfunctions.net/updateOrgUser', {
+            fetch('https://us-central1-multi-manage.cloudfunctions.net/users-updateUser', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

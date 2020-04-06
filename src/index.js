@@ -25,7 +25,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={(props) => (
         isSessionCookieSet(USER_TOKEN) && isSessionCookieSet(ORG_TOKEN)
         ? <Component {...props} />
-        : <Redirect to='/login' />
+        : <Redirect to='/home' />
     )} />
 )
 

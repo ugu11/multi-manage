@@ -1,3 +1,42 @@
+$bigMediumBreakpoint: 973px;
+$mediumSmallBreakpoint: 865px;
+$smallMobileBreakpoint: 767px;
+
+@media (min-width: $bigMediumBreakpoint){
+    .auth-container{
+        width: 400px;
+    }
+}
+
+@media (max-width: $bigMediumBreakpoint) and (min-width: $mediumSmallBreakpoint){
+    .auth-container{
+        width: 300px;
+    }
+}
+
+
+@media (max-width: $mediumSmallBreakpoint) and (min-width: $smallMobileBreakpoint){
+    .auth-container{
+        width: 200px;
+    }
+}
+
+@media (max-width: $smallMobileBreakpoint){
+    .container{
+        width: calc(100% - 50px);
+
+        .auth-container{
+            padding: 40px 20px !important;
+        }
+
+        .auth-separator{display: none;}
+        .auth-image{display: none;}
+    }
+
+}
+
+
+
 .auth-bg{
     width: 100vw;
     height: 100vh;
@@ -15,12 +54,13 @@
         background-color: white;
         padding: 30px 10px;
         border-radius: 5px;
+        min-width: 268px;
+        max-height: 85vh;
 
         .auth-container{
             display: flex;
             flex-direction: column;
             border-radius: 5px;
-            width: 400px;
             padding: 40px 40px;
         
             h1{
@@ -56,11 +96,10 @@
                 
                 position: relative;
                 transform-origin: center;
-                left: 10px;
 
                 &:focus{
                     width: 100%;
-                    left: 0;
+                    left: -10px;
                 }
             }
 
@@ -170,6 +209,7 @@
     text-align: center;
     width: 100%;
     margin-bottom: 25px;
+    margin-top: 10px;
 
     &:hover{
         cursor: pointer;

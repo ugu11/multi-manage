@@ -4,13 +4,100 @@ $mobileBreakpoint: 796px;
     .modal-bg{
         grid-template-columns: auto fit-content(90%) auto;
         grid-template-rows: auto fit-content(calc(100% - 140px)) auto;
+
+        #inputs-container{
+            display: grid;
+            grid-template-columns: 40px 150px auto;
+            grid-gap: 20px;
+            
+
+            #r1{
+                display: flex;
+                flex-flow: row;
+                grid-column: 1;
+
+                .btn{
+                    padding: 0px;
+                    width: 40px;
+                    height: 40px;
+                }
+    
+                .txt-field{
+                    width: 100%;
+                    margin: 0;
+                }
+            }
+            
+
+            input[type="radio"]{
+                margin: 0 10px;
+            }
+
+            #properties{
+                display: flex;
+                flex-direction: row;
+                grid-column: 2;
+
+                #field-type-radio-group{
+                    width: 60%;
+                }
+
+                #table-disp{
+                    width: 40%;
+                }
+            }
+
+            
+        }
     }
 }
 
 @media (min-width: $mobileBreakpoint){
     .modal-bg{
-        grid-template-columns: auto fit-content(60%) auto;
-        grid-template-rows: auto fit-content(calc(100% - 140px)) auto;
+        grid-template-columns: auto fit-content(80%) auto;
+        grid-template-rows: auto fit-content(calc(100% - 100px)) auto;
+
+        #inputs-container{
+            display: grid;
+            grid-template-columns: 35% 65%;
+            
+            #r1{
+                grid-column: 1;
+                width: 100%;
+
+                .btn{
+                    padding: 0px;
+                    width: 40px;
+                    height: 40px;
+                }
+    
+                .txt-field{
+                    margin: 0;
+                    height: 20px;
+                }
+            }
+            
+
+            input[type="radio"]{
+                margin: 0 10px;
+            }
+
+            #properties{
+                display: flex;
+                flex-direction: row;
+                grid-column: 2;
+
+                #field-type-radio-group{
+                    width: 60%;
+                }
+
+                #table-disp{
+                    width: 40%;
+                }
+            }
+
+            
+        }
     }
 }
 
@@ -24,7 +111,6 @@ $mobileBreakpoint: 796px;
     height: 100vh;
     background-color: #444444f5;
     z-index: 999;
-    transition: .3s
 }
 
 .modal{
@@ -54,7 +140,8 @@ $mobileBreakpoint: 796px;
             li{
                 display: grid;
                 grid-gap: 30px;
-                grid-template-columns: 40px 150px calc(100% - 320px) 30px;
+                grid-template-columns: 10px 100px auto 30px;
+
                 label{
                     text-align: left;
                     word-wrap: break-word;
@@ -88,43 +175,7 @@ $mobileBreakpoint: 796px;
 
         }
         
-        #inputs-container{
-            display: grid;
-            grid-template-columns: 40px 150px auto;
-            grid-gap: 20px;
-            
-            
-            .btn{
-                padding: 0px;
-                width: 40px;
-                height: 40px;
-                margin: 0;
-            }
-
-            .txt-field{
-                width: 100%;
-                margin: 0;
-            }
-
-            input[type="radio"]{
-                margin: 0 10px;
-            }
-
-            #properties{
-                display: flex;
-                flex-direction: row;
-
-                #field-type-radio-group{
-                    width: 60%;
-                }
-
-                #table-disp{
-                    width: 40%;
-                }
-            }
-
-            
-        }
+        
     }
 }
 

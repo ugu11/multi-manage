@@ -61,7 +61,7 @@ class CustomTable extends React.Component{
     }
 
     getTableRows = (nPage) => {
-        return fetch('https://us-central1-multi-manage.cloudfunctions.net/getOrgTableData?page='+nPage+'&orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+this.props.tableId+'&tokenId='+getSessionCookie(USER_TOKEN))
+        return fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-getData?page='+nPage+'&orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+this.props.tableId+'&tokenId='+getSessionCookie(USER_TOKEN))
     }
     
     handleRowClick = (index) => {

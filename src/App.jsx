@@ -38,7 +38,7 @@ class App extends React.Component {
 
     if(this.state.tableId === undefined)
       if(this.props.tablesData[0] === undefined)
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN))
+        fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN))
           .then(res => res.json())
           .then(res => {
               if(res.status === "deauth"){

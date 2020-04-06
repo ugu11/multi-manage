@@ -25,7 +25,7 @@ class CreateUserModal extends React.Component{
         e.preventDefault()
         if(this.state.password === this.state.confPassword && this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('https://us-central1-multi-manage.cloudfunctions.net/registerUser', {
+            fetch('https://us-central1-multi-manage.cloudfunctions.net/users-register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

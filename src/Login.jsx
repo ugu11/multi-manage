@@ -112,7 +112,7 @@ class Login extends React.Component{
                                                 userPassword: this.state.userPassword
                                             }
                                             
-                                            fetch('https://us-central1-multi-manage.cloudfunctions.net/userLogin', {
+                                            fetch('https://us-central1-multi-manage.cloudfunctions.net/users-login', {
                                                 method: 'POST',
                                                 headers: { 'Content-Type': 'application/json' },
                                                 body: JSON.stringify(reqData)})

@@ -75,7 +75,7 @@ class UpdateCustomTableRowModal extends React.Component{
                     e.preventDefault()
                     this.setState({dataSubmited: true, processingRequest: true})
                     if(this.state.dataSubmited === false)
-                        fetch('https://us-central1-multi-manage.cloudfunctions.net/updateTableRow', {
+                        fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-updateRow', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
