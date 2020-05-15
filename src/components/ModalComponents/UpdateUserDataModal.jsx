@@ -26,7 +26,7 @@ class UpdateUserDataModal extends React.Component{
 
         if(this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('http://ugomes.com:8080/orgs/update_user', {
+            fetch('https://ugomes.com/mm-api/update_user', {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',

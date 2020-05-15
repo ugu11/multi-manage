@@ -73,7 +73,7 @@ class Login extends React.Component{
                                                 password: this.state.orgPassword
                                             }
                                             
-                                            fetch('http://ugomes.com:8080/orgs/org_signin', {
+                                            fetch('https://ugomes.com/mm-api/org_signin', {
                                                 method: 'POST',
                                                 headers: { 'Content-Type': 'application/json' },
                                                 body: JSON.stringify(reqData)})
@@ -112,7 +112,7 @@ class Login extends React.Component{
                                                 userPassword: this.state.userPassword
                                             }
                                             
-                                            fetch('http://ugomes.com:8080/orgs/user_signin', {
+                                            fetch('https://ugomes.com/mm-api/user_signin', {
                                                 method: 'POST',
                                                 headers: { 'Content-Type': 'application/json' },
                                                 body: JSON.stringify(reqData)})

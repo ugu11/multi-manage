@@ -42,7 +42,7 @@ class ViewCustomTableRowComponent extends React.Component{
     // '&tokenId='+getSessionCookie(USER_TOKEN)
     componentDidMount(){
         const params = getUrlParams(window.location.href)
-        fetch('http://ugomes.com:8080/orgs/get_table_row_data?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+params.tableId+'&rowIndex='+params.rowIndex,{
+        fetch('https://ugomes.com/mm-api/get_table_row_data?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+params.tableId+'&rowIndex='+params.rowIndex,{
             method: 'GET',
             headers: {"x-access-token": getSessionCookie(USER_TOKEN)}
         })

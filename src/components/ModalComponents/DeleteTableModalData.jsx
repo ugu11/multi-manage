@@ -34,7 +34,7 @@ class DeleteTableModalData extends React.Component{
     handleTableDeleteRequest = () => {
         if(this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('http://ugomes.com:8080/orgs/delete_table', {
+            fetch('https://ugomes.com/mm-api/delete_table', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -54,7 +54,7 @@ class UsersManageComponent extends React.Component{
     }
 
     getTableRows = (nPage) => {
-        return fetch('http://ugomes.com:8080/orgs/get_users?page='+nPage+'&orgId='+getSessionCookie(ORG_TOKEN),{
+        return fetch('https://ugomes.com/mm-api/get_users?page='+nPage+'&orgId='+getSessionCookie(ORG_TOKEN),{
             method: "GET",
             headers: {
                 'x-access-token': getSessionCookie(USER_TOKEN)

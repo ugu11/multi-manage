@@ -49,7 +49,7 @@ class ViewTablesManageRowComponent extends React.Component{
     // '&tokenId='+getSessionCookie(USER_TOKEN)
     requestRowData = () => {
         const params = getUrlParams(window.location.href)
-        fetch('http://ugomes.com:8080/orgs/get_table_data?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+params.tableId,{
+        fetch('https://ugomes.com/mm-api/get_table_data?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+params.tableId,{
             method: 'GET',
             headers: {"x-access-token": getSessionCookie(USER_TOKEN)}
         })
@@ -116,7 +116,7 @@ class ViewTablesManageRowComponent extends React.Component{
     handleFieldDeleteRequest = (index) => {
         if(this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('http://ugomes.com:8080/orgs/delete_table_field', {
+            fetch('https://ugomes.com/mm-api/delete_table_field', {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',

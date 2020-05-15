@@ -118,7 +118,7 @@ class AddFields extends React.Component{
 
         if(this.state.dataSubmited === false){
             this.setState({processingRequest: true, dataSubmited: true})
-            fetch('http://ugomes.com:8080/orgs/create_table', {
+            fetch('https://ugomes.com/mm-api/create_table', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

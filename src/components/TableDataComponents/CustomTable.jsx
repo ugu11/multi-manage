@@ -62,7 +62,7 @@ class CustomTable extends React.Component{
     }
 
     getTableRows = (nPage) => {
-        return fetch('http://ugomes.com:8080/orgs/get_table_data?page='+nPage+'&orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+this.props.tableId,{
+        return fetch('https://ugomes.com/mm-api/get_table_data?page='+nPage+'&orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+this.props.tableId,{
             method: 'GET',
             headers: {"x-access-token": getSessionCookie(USER_TOKEN)}
           })
