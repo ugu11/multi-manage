@@ -57,9 +57,9 @@ a{
     .actions{
         width: 100%;
         display: grid;
-        grid-template-columns: 100px auto 200px;
+        grid-template-columns: 30% auto 30%;
         margin-bottom: 10px;
-
+        height: 60px;
 
         .txt-field{
             width: calc(100% - 22px);
@@ -74,7 +74,13 @@ a{
             grid-column: 1;
             height: auto;
             margin: 10px 0;
+            width: fit-content;
         }
+
+        .search-field{
+            display:  none;
+        }
+        
 
     }
 

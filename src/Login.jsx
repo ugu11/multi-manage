@@ -73,7 +73,7 @@ class Login extends React.Component{
                                                 password: this.state.orgPassword
                                             }
                                             
-                                            fetch('https://us-central1-multi-manage.cloudfunctions.net/orgLogin', {
+                                            fetch('https://ugomes.com:8080/orgs/org_signin', {
                                                 method: 'POST',
                                                 headers: { 'Content-Type': 'application/json' },
                                                 body: JSON.stringify(reqData)})
@@ -112,7 +112,7 @@ class Login extends React.Component{
                                                 userPassword: this.state.userPassword
                                             }
                                             
-                                            fetch('https://us-central1-multi-manage.cloudfunctions.net/users-login', {
+                                            fetch('https://ugomes.com:8080/orgs/user_signin', {
                                                 method: 'POST',
                                                 headers: { 'Content-Type': 'application/json' },
                                                 body: JSON.stringify(reqData)})

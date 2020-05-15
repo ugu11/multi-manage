@@ -12,6 +12,7 @@ class Register extends React.Component{
             passwordEqual: false,
             dataSubmited: true,
             nameIdUnique: true,
+            emailUnique: true,
             formData: {
                 orgId: '',
                 orgName: '',
@@ -34,13 +35,13 @@ class Register extends React.Component{
 
     validateFields = (formData,) => {
         const {orgId, orgPassword, orgConfPassword, userPassword, userConfPassword, username} = formData
-        const {nameIdUnique} = this.state
+        const {nameIdUnique, emailUnique} = this.state
         let isPasswordValid
         
         switch(this.state.registerStep){
             case 'org':
                 isPasswordValid = (orgPassword === orgConfPassword && orgPassword.length >= 6)
-                const isOrgIdValid = (nameIdUnique === true && !orgId.trim().includes(' '))
+                const isOrgIdValid = (nameIdUnique === true && !orgId.trim().includes(' ') && emailUnique === true)
 
                 if(isPasswordValid && isOrgIdValid)
                     this.setState({
@@ -95,19 +96,20 @@ class Register extends React.Component{
         this.setState({
             formData: formData
         })
-        if(e.target.name === 'orgId')
-            this.checkForNameIdUniqueness(formData.orgId)
+        if(e.target.name === 'orgId' || e.target.name === 'orgEmail')
+            this.checkForNameIdUniqueness(formData.orgId, formData.orgEmail)
 
         this.validateFields(formData, e.target.name)
     }
 
-    checkForNameIdUniqueness = (nameId) => {
-        return fetch('https://us-central1-multi-manage.cloudfunctions.net/checkOrgNameIdUnique?name_id='+nameId)
+    checkForNameIdUniqueness = (nameId, email) => {
+        return fetch('https://ugomes.com:8080/orgs/check_nameid_email_unique?name_id='+nameId+'&email='+email)
             .then(res => res.json())
             .then(resp => {
                 console.log(resp)
                 this.setState({
-                    nameIdUnique: resp.unique
+                    nameIdUnique: resp.name_id,
+                    emailUnique: resp.email
                 })
             })
     }
@@ -125,7 +127,7 @@ class Register extends React.Component{
             username: formData.username,
             fullName: formData.userFullName,
             email: formData.userEmail,
-            password: formData.userPassword,
+            userPassword: formData.userPassword,
             phone: formData.userPhone,
             jobRole: formData.jobRole
         }
@@ -137,7 +139,7 @@ class Register extends React.Component{
         console.log(reqData)
         if(isPasswordValid && isOrgIdValid && isUserIdValid && isUserPasswordValid && this.state.dataSubmited === false){
             this.setState({isProcessing: true, dataSubmited: true})
-            fetch('https://us-central1-multi-manage.cloudfunctions.net/registerOrg', {
+            fetch('https://ugomes.com:8080/orgs/register_org', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(reqData)})

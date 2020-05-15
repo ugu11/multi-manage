@@ -72,15 +72,32 @@ class UpdateFieldModalData extends React.Component{
 
         if(this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-updateFields', {
+            fetch('https://ugomes.com:8080/orgs/update_table_fields', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                         'Content-Type': 'application/json',
+                        'x-access-token':  getSessionCookie(USER_TOKEN)},
                     body: JSON.stringify({
                         orgId: getSessionCookie(ORG_TOKEN),
                         tableId: getUrlParams(window.location.href).tableId,
-                        tokenId: getSessionCookie(USER_TOKEN),
                         fieldsData: JSON.stringify(tableFields)
                     }),
+                })
+                .then(res => {
+                    switch(res.status){
+                        case 200:
+                            return res
+                        case 401:
+                            deleteSessionCookies()
+                            deleteState()
+                            window.location.reload(false)
+                            break
+                        case 403:
+                            window.location = "/"
+                            break
+                        default:
+                            window.location = "/"
+                    }
                 })
                 .then(res => {
                     if(res.json().status === "deauth"){

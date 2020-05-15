@@ -4,6 +4,7 @@ import { deleteState } from '../../localStorage.js'
 import {connect} from 'react-redux'
 import ModalBox from '../ModalBox'
 import CreateUserModal from '../ModalComponents/CreateUserModal'
+import { FiThumbsDown } from 'react-icons/fi'
 
 class UsersManageComponent extends React.Component{
     constructor(props){
@@ -20,7 +21,6 @@ class UsersManageComponent extends React.Component{
     componentDidMount(){
         this.getTableRows(this.state.tablePage)
             .then(res => {
-                console.log(res, res.json())
                 switch(res.status){
                     case 200:
                         return res.json()
@@ -37,6 +37,7 @@ class UsersManageComponent extends React.Component{
                     deleteState()
                     window.location.reload(false)
                 }else{
+                    console.log(res)
                     this.setState({
                         usersData: {"1": res.usersData},
                         nPages: res.nPages
@@ -53,7 +54,12 @@ class UsersManageComponent extends React.Component{
     }
 
     getTableRows = (nPage) => {
-        return fetch('https://us-central1-multi-manage.cloudfunctions.net/users-getUsers?page='+nPage+'&orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN))
+        return fetch('https://ugomes.com:8080/orgs/get_users?page='+nPage+'&orgId='+getSessionCookie(ORG_TOKEN),{
+            method: "GET",
+            headers: {
+                'x-access-token': getSessionCookie(USER_TOKEN)
+            }
+        })
     }
     
     handleRowClick = (userId) => {
@@ -78,6 +84,11 @@ class UsersManageComponent extends React.Component{
                             case 200:
                                 return res.json()
                             case 401:
+                                deleteSessionCookies()
+                                deleteState()
+                                window.location.reload(false)
+                                break
+                            case 403:
                                 window.location = "/"
                                 break
                             default:
@@ -124,6 +135,11 @@ class UsersManageComponent extends React.Component{
                             case 200:
                                 return res.json()
                             case 401:
+                                deleteSessionCookies()
+                                deleteState()
+                                window.location.reload(false)
+                                break
+                            case 403:
                                 window.location = "/"
                                 break
                             default:
@@ -166,11 +182,11 @@ class UsersManageComponent extends React.Component{
                 <h1>Users Manager</h1>
                 <div id="table-container">
                     <div className="actions">
-                        <button className="btn" onClick={this.toggleModal}>Add item</button>
-                        <input type="text" className="txt-field" placeholder="search"/>
+                        <button className="btn" onClick={this.toggleModal}>Create user</button>
+                        <input type="text" className="txt-field search-field" placeholder="search"/>
                     </div>
 
-                    {(this.state.usersData !== null && this.state.usersData !== undefined) ?
+                    {(this.state.usersData !== null && this.state.usersData !== undefined ) ?
                         <div id="table">
                             <table>
                                 <thead>

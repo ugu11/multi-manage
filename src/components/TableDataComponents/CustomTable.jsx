@@ -19,6 +19,7 @@ class CustomTable extends React.Component{
     }
 
     componentDidMount(){
+        console.log("HELL")
         this.getTableRows(this.state.tablePage)
             .then(res => res.json())
             .then(res => {
@@ -61,7 +62,10 @@ class CustomTable extends React.Component{
     }
 
     getTableRows = (nPage) => {
-        return fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-getData?page='+nPage+'&orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+this.props.tableId+'&tokenId='+getSessionCookie(USER_TOKEN))
+        return fetch('https://ugomes.com:8080/orgs/get_table_data?page='+nPage+'&orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+this.props.tableId,{
+            method: 'GET',
+            headers: {"x-access-token": getSessionCookie(USER_TOKEN)}
+          })
     }
     
     handleRowClick = (index) => {
@@ -114,6 +118,22 @@ class CustomTable extends React.Component{
         if(tablePage > 1){
             if(tableData.data[(tablePage-1)+""] === undefined){
                 this.getTableRows((tablePage-1))
+                    .then(res => {
+                        switch(res.status){
+                            case 200:
+                                return res
+                            case 401:
+                                deleteSessionCookies()
+                                deleteState()
+                                window.location.reload(false)
+                                break
+                            case 403:
+                                window.location = "/"
+                                break
+                            default:
+                                window.location = "/"
+                        }
+                    })
                     .then(res => res.json())
                     .then(res => {
                         if(res.status === "deauth"){
@@ -156,7 +176,7 @@ class CustomTable extends React.Component{
                 <div id="table-container">
                     <div className="actions">
                         <button className="btn" onClick={this.toggleModal}>Add item</button>
-                        <input type="text" className="txt-field" placeholder="search"/>
+                        <input type="text" className="txt-field search-field" placeholder="search"/>
                     </div>
                     <div id="table">
                         {

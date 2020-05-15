@@ -3,8 +3,8 @@ import {Navbar} from '../Navbar'
 import { MdEdit } from "react-icons/md";
 import '../../css/ViewRow.scss'
 import ModalBox from '../ModalBox'
-import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
-
+import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies} from '../../helpers/session/auth'
+import { deleteState } from '../../localStorage'
 import {connect} from 'react-redux'
 import {updateUserData} from '../../actions/updateUserData.js'
 import UpdateUserDataModal from '../ModalComponents/UpdateUserDataModal'
@@ -35,12 +35,20 @@ class ViewUsersManageRowComponent extends React.Component{
 
     requestRowData = () => {
         const params = getUrlParams(window.location.href)
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/users-getUserData?orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN)+"&userId="+params.userId)
+        fetch('https://ugomes.com:8080/orgs/get_user_data?orgId='+getSessionCookie(ORG_TOKEN)+"&userId="+params.userId,{
+            method: "GET",
+            headers: {'x-access-token': getSessionCookie(USER_TOKEN)}
+        })
             .then(res => {
                 switch(res.status){
                     case 200:
                         return res.json()
                     case 401:
+                        deleteSessionCookies()
+                        deleteState()
+                        window.location.reload(false)
+                        break
+                    case 403:
                         window.location = "/"
                         break
                     default:

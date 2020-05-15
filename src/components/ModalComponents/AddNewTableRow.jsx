@@ -59,15 +59,33 @@ class AddNewTableRow extends React.Component{
                     e.preventDefault()
                     this.setState({dataSubmited: true, processingData: true})
                     if(this.state.dataSubmited === false)
-                        fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-addRow', {
+                        fetch('https://ugomes.com:8080/orgs/add_table_row', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 
+                                'Content-Type': 'application/json',
+                                'x-access-token': getSessionCookie(USER_TOKEN)
+                             },
                             body: JSON.stringify({
                                 orgId: getSessionCookie(ORG_TOKEN),
-                                tokenId: getSessionCookie(USER_TOKEN),
                                 tableId: this.state.tableData._id,
                                 tableData: JSON.stringify(this.state.fieldController)
                             }),
+                        })
+                        .then(res => {
+                            switch(res.status){
+                                case 200:
+                                    return res
+                                case 401:
+                                    deleteSessionCookies()
+                                    deleteState()
+                                    window.location.reload(false)
+                                    break
+                                case 403:
+                                    window.location = "/"
+                                    break
+                                default:
+                                    window.location = "/"
+                            }
                         })
                         .then(res => {
                             if(res.json().status === "deauth"){

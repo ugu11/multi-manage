@@ -4,6 +4,7 @@ import '../../css/ViewRow.scss'
 import { MdEdit } from "react-icons/md";
 import ModalBox from '../ModalBox'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
+import { deleteState } from '../../localStorage'
 
 import UpdateCustomTableRowModal from '../ModalComponents/UpdateCustomTableRowModal'
 import DataContainerField from '../DataContainerField'
@@ -38,10 +39,29 @@ class ViewCustomTableRowComponent extends React.Component{
             dataSubmited: false
         }
     }
-
+    // '&tokenId='+getSessionCookie(USER_TOKEN)
     componentDidMount(){
         const params = getUrlParams(window.location.href)
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-getRowData?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+params.tableId+'&rowIndex='+params.rowIndex+'&tokenId='+getSessionCookie(USER_TOKEN))
+        fetch('https://ugomes.com:8080/orgs/get_table_row_data?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+params.tableId+'&rowIndex='+params.rowIndex,{
+            method: 'GET',
+            headers: {"x-access-token": getSessionCookie(USER_TOKEN)}
+        })
+            .then(res => {
+                switch(res.status){
+                    case 200:
+                        return res
+                    case 401:
+                        deleteSessionCookies()
+                        deleteState()
+                        window.location.reload(false)
+                        break
+                    case 403:
+                        window.location = "/"
+                        break
+                    default:
+                        window.location = "/"
+                }
+            })
             .then(res => res.json())
             .then(res => {
                 if(res.status === "deauth"){

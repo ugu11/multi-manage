@@ -26,12 +26,14 @@ class UpdateUserDataModal extends React.Component{
 
         if(this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('https://us-central1-multi-manage.cloudfunctions.net/users-updateUser', {
+            fetch('https://ugomes.com:8080/orgs/update_user', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-access-token': getSessionCookie(USER_TOKEN)
+                    },
                     body: JSON.stringify({
                         orgId: getSessionCookie(ORG_TOKEN),
-                        tokenId: getSessionCookie(USER_TOKEN),
                         userData: JSON.stringify(this.state.userData)
                     }),
                 })
@@ -40,6 +42,11 @@ class UpdateUserDataModal extends React.Component{
                         case 200:
                             return res.json()
                         case 401:
+                            deleteSessionCookies()
+                            deleteState()
+                            window.location.reload(false)
+                            break
+                        case 403:
                             window.location = "/"
                             break
                         default:

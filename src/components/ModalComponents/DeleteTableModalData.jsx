@@ -1,6 +1,7 @@
 import React from 'react'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 import ProcessingComponent from '../ProcessingComponent';
+import { deleteState } from '../../localStorage'
 
 function getUrlParams(url) {
 	var params = {};
@@ -33,20 +34,34 @@ class DeleteTableModalData extends React.Component{
     handleTableDeleteRequest = () => {
         if(this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-delete', {
+            fetch('https://ugomes.com:8080/orgs/delete_table', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': getSessionCookie(USER_TOKEN)
+                     },
                     body: JSON.stringify({
                         orgId: getSessionCookie(ORG_TOKEN),
                         tableId: getUrlParams(window.location.href).tableId,
-                        tokenId: getSessionCookie(USER_TOKEN),
                         adminPass: this.state.adminPassword
                     }),
                 })
-                .then(res => {
+                .then(async (res) => {
                     switch(res.status){
                         case 401:
-                            this.setState({displayError: true, dataSubmited: false, processingRequest: false})
+                            res =  await res.json()
+                            console.log(res)
+                            switch(res.message){
+                                case 'Unauthorized':
+                                    deleteSessionCookies()
+                                    deleteState()
+                                    window.location.reload(false)
+                                    break
+                                case 'wrong_password':
+                                    this.setState({displayError: true, dataSubmited: false, processingRequest: false})
+                                    break
+                                default:
+                            }
                             break
                         case 200:
                             console.log(res)
@@ -55,6 +70,9 @@ class DeleteTableModalData extends React.Component{
                                 window.location.reload(false)
                             }else
                                 window.location = "/?table=manage_tables"
+                            break
+                        case 403:
+                            window.location = "/"
                             break
                         default:
                             window.location = "/"
@@ -65,7 +83,7 @@ class DeleteTableModalData extends React.Component{
                 })
         }
     }
-
+    
     render(){
         return (
             <div id="deleteModalAlert">

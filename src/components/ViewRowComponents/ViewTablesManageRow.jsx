@@ -4,6 +4,7 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import '../../css/ViewRow.scss'
 import ModalBox from '../ModalBox'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
+import { deleteState } from '../../localStorage'
 
 import {connect} from 'react-redux'
 import {updateUserData} from '../../actions/updateUserData.js'
@@ -45,10 +46,29 @@ class ViewTablesManageRowComponent extends React.Component{
             processingRequest: false
         }
     }
-
+    // '&tokenId='+getSessionCookie(USER_TOKEN)
     requestRowData = () => {
         const params = getUrlParams(window.location.href)
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-getData?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+params.tableId+'&tokenId='+getSessionCookie(USER_TOKEN))
+        fetch('https://ugomes.com:8080/orgs/get_table_data?orgId='+getSessionCookie(ORG_TOKEN)+'&tableId='+params.tableId,{
+            method: 'GET',
+            headers: {"x-access-token": getSessionCookie(USER_TOKEN)}
+        })
+            .then(res => {
+                switch(res.status){
+                    case 200:
+                        return res
+                    case 401:
+                        deleteSessionCookies()
+                        deleteState()
+                        window.location.reload(false)
+                        break
+                    case 403:
+                        window.location = "/"
+                        break
+                    default:
+                        window.location = "/"
+                }
+            })
             .then(res => res.json())
             .then(res => {
                 if(res.status === "deauth"){
@@ -60,9 +80,8 @@ class ViewTablesManageRowComponent extends React.Component{
             .then(res => {
                 let tableFields = res.tableData.fields
 
-                console.log(tableFields, res)
+                console.log([tableFields] > 0 && tableFields !== null, res)
                 
-
                 this.setState({
                     tableFields: [tableFields],
                     tableName: res.tableData.name
@@ -97,15 +116,33 @@ class ViewTablesManageRowComponent extends React.Component{
     handleFieldDeleteRequest = (index) => {
         if(this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('https://us-central1-multi-manage.cloudfunctions.net/table-deleteField', {
+            fetch('https://ugomes.com:8080/orgs/delete_table_field', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-access-token': getSessionCookie(USER_TOKEN)
+                 },
                     body: JSON.stringify({
                         orgId: getSessionCookie(ORG_TOKEN),
                         tableId: getUrlParams(window.location.href).tableId,
-                        tokenId: getSessionCookie(USER_TOKEN),
                         fieldIndex: this.state.fieldToDeleteIndex
                     }),
+                })
+                .then(res => {
+                    switch(res.status){
+                        case 200:
+                            return res
+                        case 401:
+                            deleteSessionCookies()
+                            deleteState()
+                            window.location.reload(false)
+                            break
+                        case 403:
+                            window.location = "/"
+                            break
+                        default:
+                            window.location = "/"
+                    }
                 })
                 .then(res => {
                     if(res.json().status === "deauth"){
@@ -125,7 +162,7 @@ class ViewTablesManageRowComponent extends React.Component{
 
     render(){
         return (
-            (this.state.tableFields !== undefined) ? 
+            (this.state.tableFields !== null && this.state.tableFields !== undefined && this.state.tableFields.length > 0) ? 
             <div>
                 <ModalBox dataFields={
                     (this.state.modalTypeToShow === 'update') ?
@@ -160,7 +197,7 @@ class ViewTablesManageRowComponent extends React.Component{
                         </div>
                         <div style={{display: "flex"}}>
                             
-                            {(this.state.tableFields !== null) ?
+                            {(this.state.tableFields !== null && this.state.tableFields.length > 0) ?
                                 this.state.tableFields.map((section, sectionIndex) => 
                                     <ul key={sectionIndex} className="table-data-ul">
                                         {Array.from(section).map((field, i) => 

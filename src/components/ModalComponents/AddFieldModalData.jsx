@@ -3,6 +3,7 @@ import {IoIosRemoveCircleOutline} from 'react-icons/io'
 import Checkbox from 'react-checkbox-component'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 import ProcessingComponent from '../ProcessingComponent'
+import { deleteState } from '../../localStorage'
 
 function getUrlParams(url) {
 	var params = {};
@@ -55,18 +56,36 @@ class AddFieldModalData extends React.Component{
 
         if(this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-addField', {
+            fetch('https://ugomes.com:8080/orgs/add_table_field', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-access-token': getSessionCookie(USER_TOKEN)
+                    },
                     body: JSON.stringify({
                         orgId: getSessionCookie(ORG_TOKEN),
                         tableId: getUrlParams(window.location.href).tableId,
-                        tokenId: getSessionCookie(USER_TOKEN),
                         fieldName: this.state.fieldName,
                         fieldType: this.state.fieldType,
                         selectData: this.state.selectData,
                         displayTable: this.state.displayTable,
                     }),
+                })
+                .then(res => {
+                    switch(res.status){
+                        case 200:
+                            return res
+                        case 401:
+                            deleteSessionCookies()
+                            deleteState()
+                            window.location.reload(false)
+                            break
+                        case 403:
+                            window.location = "/"
+                            break
+                        default:
+                            window.location = "/"
+                    }
                 })
                 .then(res => {
                     console.log(res)

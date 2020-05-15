@@ -33,14 +33,32 @@ class NavbarComponent extends React.Component{
     }
 
     componentDidMount(){
-        const reqData = {
-            orgIdToken: getSessionCookie(ORG_TOKEN),
-            userTokenId: getSessionCookie(USER_TOKEN)
-        }
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/users-getLoggedInUserData', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(reqData)})
+        // const reqData = {
+        //     orgIdToken: ,
+        //     userTokenId: getSessionCookie(USER_TOKEN)
+        // }
+        fetch('https://ugomes.com:8080/orgs/get_logged_in_user_data?orgId='+getSessionCookie(ORG_TOKEN), {
+            method: 'GET',
+            headers: {"x-access-token": getSessionCookie(USER_TOKEN)},
+            // headers: { 'Content-Type': 'application/json' },
+            // body: JSON.stringify(reqData)
+        })
+            .then(res => {
+                switch(res.status){
+                    case 200:
+                        return res
+                    case 401:
+                        deleteSessionCookies()
+                        deleteState()
+                        window.location.reload(false)
+                        break
+                    case 403:
+                        window.location = "/"
+                        break
+                    default:
+                        window.location = "/"
+                }
+            })
                 .then(resp => resp.json())
                 .then(res => {
                     if(res.status === "deauth"){
@@ -62,7 +80,26 @@ class NavbarComponent extends React.Component{
                         throw err
                 })
             
-        fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN)+'&tokenId='+getSessionCookie(USER_TOKEN))
+        fetch('https://ugomes.com:8080/orgs/getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN), {
+            method: 'GET',
+            headers: {"x-access-token": getSessionCookie(USER_TOKEN)},
+          })
+            .then(res => {
+                switch(res.status){
+                    case 200:
+                        return res
+                  case 401:
+                      deleteSessionCookies()
+                      deleteState()
+                      window.location.reload(false)
+                      break
+                  case 403:
+                      window.location = "/"
+                      break
+                    default:
+                        window.location = "/"
+                }
+            })
             .then(res => res.json())
             .then(res => {
                 if(res.status === "deauth"){

@@ -118,14 +118,32 @@ class AddFields extends React.Component{
 
         if(this.state.dataSubmited === false){
             this.setState({processingRequest: true, dataSubmited: true})
-            fetch('https://us-central1-multi-manage.cloudfunctions.net/tables-create', {
+            fetch('https://ugomes.com:8080/orgs/create_table', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': getSessionCookie(USER_TOKEN),
+                    },
                     body: JSON.stringify({
                         orgId: getSessionCookie(ORG_TOKEN),
-                        tokenId: getSessionCookie(USER_TOKEN),
-                        tableData: tableModel,
+                        tableData: JSON.stringify(tableModel),
                     }),
+                })
+                .then(res => {
+                    switch(res.status){
+                        case 200:
+                            return res
+                        case 401:
+                            deleteSessionCookies()
+                            deleteState()
+                            window.location.reload(false)
+                            break
+                        case 403:
+                            window.location = "/"
+                            break
+                        default:
+                            window.location = "/"
+                    }
                 })
                 .then(res => {
                     if(res.json().status === "deauth"){

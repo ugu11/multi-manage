@@ -25,12 +25,14 @@ class CreateUserModal extends React.Component{
         e.preventDefault()
         if(this.state.password === this.state.confPassword && this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('https://us-central1-multi-manage.cloudfunctions.net/users-register', {
+            fetch('https://ugomes.com:8080/orgs/register_user', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'x-access-token': getSessionCookie(USER_TOKEN),
+                 },
                 body: JSON.stringify({
                     orgId: getSessionCookie(ORG_TOKEN),
-                    tokenId: getSessionCookie(USER_TOKEN),
                     fullName: this.state.name,
                     username: this.state.username,
                     phone: this.state.phone,
@@ -39,6 +41,22 @@ class CreateUserModal extends React.Component{
                     isAdmin: this.state.admin,
                     jobRole: this.state.jobRole,
                 }),
+            })
+            .then(res => {
+                switch(res.status){
+                    case 200:
+                        return res
+                    case 401:
+                        deleteSessionCookies()
+                        deleteState()
+                        window.location.reload(false)
+                        break
+                    case 403:
+                        window.location = "/"
+                        break
+                    default:
+                        window.location = "/"
+                }
             })
             .then(res => {
                 console.log(res)

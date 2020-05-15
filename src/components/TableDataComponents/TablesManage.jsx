@@ -31,8 +31,8 @@ class TablesManageComponent extends React.Component{
 
                 <div id="table-container">
                     <div className="actions">
-                        <button className="btn" onClick={this.toggleModal}>Add item</button>
-                        <input type="text" className="txt-field" placeholder="search"/>
+                        <button className="btn" onClick={this.toggleModal}>Create table</button>
+                        <input type="text" className="txt-field search-field" placeholder="search"/>
                     </div>
                     <div id="table">
                         {(this.props.tablesData !== undefined && this.props.tablesData !== null) ?
