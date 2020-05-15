@@ -37,7 +37,7 @@ class NavbarComponent extends React.Component{
         //     orgIdToken: ,
         //     userTokenId: getSessionCookie(USER_TOKEN)
         // }
-        fetch('https://ugomes.com:8080/orgs/get_logged_in_user_data?orgId='+getSessionCookie(ORG_TOKEN), {
+        fetch('http://ugomes.com:8080/orgs/get_logged_in_user_data?orgId='+getSessionCookie(ORG_TOKEN), {
             method: 'GET',
             headers: {"x-access-token": getSessionCookie(USER_TOKEN)},
             // headers: { 'Content-Type': 'application/json' },
@@ -80,7 +80,7 @@ class NavbarComponent extends React.Component{
                         throw err
                 })
             
-        fetch('https://ugomes.com:8080/orgs/getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN), {
+        fetch('http://ugomes.com:8080/orgs/getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN), {
             method: 'GET',
             headers: {"x-access-token": getSessionCookie(USER_TOKEN)},
           })

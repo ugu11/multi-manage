@@ -38,7 +38,7 @@ class App extends React.Component {
 
     if(this.state.tableId === undefined)
       if(this.props.tablesData[0] === undefined)
-      fetch('https://ugomes.com:8080/orgs/getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN), {
+      fetch('http://ugomes.com:8080/orgs/getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN), {
           method: 'GET',
           headers: {"x-access-token": getSessionCookie(USER_TOKEN)},
         })

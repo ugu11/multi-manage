@@ -75,7 +75,7 @@ class UpdateCustomTableRowModal extends React.Component{
                     e.preventDefault()
                     this.setState({dataSubmited: true, processingRequest: true})
                     if(this.state.dataSubmited === false)
-                        fetch('https://ugomes.com:8080/orgs/update_table_row', {
+                        fetch('http://ugomes.com:8080/orgs/update_table_row', {
                             method: 'POST',
                             headers: { 
                                 'Content-Type': 'application/json',

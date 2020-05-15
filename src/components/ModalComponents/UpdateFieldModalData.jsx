@@ -72,7 +72,7 @@ class UpdateFieldModalData extends React.Component{
 
         if(this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('https://ugomes.com:8080/orgs/update_table_fields', {
+            fetch('http://ugomes.com:8080/orgs/update_table_fields', {
                     method: 'POST',
                     headers: {
                          'Content-Type': 'application/json',

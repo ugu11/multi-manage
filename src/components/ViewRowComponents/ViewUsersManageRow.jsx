@@ -35,7 +35,7 @@ class ViewUsersManageRowComponent extends React.Component{
 
     requestRowData = () => {
         const params = getUrlParams(window.location.href)
-        fetch('https://ugomes.com:8080/orgs/get_user_data?orgId='+getSessionCookie(ORG_TOKEN)+"&userId="+params.userId,{
+        fetch('http://ugomes.com:8080/orgs/get_user_data?orgId='+getSessionCookie(ORG_TOKEN)+"&userId="+params.userId,{
             method: "GET",
             headers: {'x-access-token': getSessionCookie(USER_TOKEN)}
         })

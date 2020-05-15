@@ -103,7 +103,7 @@ class Register extends React.Component{
     }
 
     checkForNameIdUniqueness = (nameId, email) => {
-        return fetch('https://ugomes.com:8080/orgs/check_nameid_email_unique?name_id='+nameId+'&email='+email)
+        return fetch('http://ugomes.com:8080/orgs/check_nameid_email_unique?name_id='+nameId+'&email='+email)
             .then(res => res.json())
             .then(resp => {
                 console.log(resp)
@@ -139,7 +139,7 @@ class Register extends React.Component{
         console.log(reqData)
         if(isPasswordValid && isOrgIdValid && isUserIdValid && isUserPasswordValid && this.state.dataSubmited === false){
             this.setState({isProcessing: true, dataSubmited: true})
-            fetch('https://ugomes.com:8080/orgs/register_org', {
+            fetch('http://ugomes.com:8080/orgs/register_org', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(reqData)})

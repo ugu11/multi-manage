@@ -25,7 +25,7 @@ class CreateUserModal extends React.Component{
         e.preventDefault()
         if(this.state.password === this.state.confPassword && this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('https://ugomes.com:8080/orgs/register_user', {
+            fetch('http://ugomes.com:8080/orgs/register_user', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',

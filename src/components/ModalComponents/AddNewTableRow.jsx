@@ -59,7 +59,7 @@ class AddNewTableRow extends React.Component{
                     e.preventDefault()
                     this.setState({dataSubmited: true, processingData: true})
                     if(this.state.dataSubmited === false)
-                        fetch('https://ugomes.com:8080/orgs/add_table_row', {
+                        fetch('http://ugomes.com:8080/orgs/add_table_row', {
                             method: 'POST',
                             headers: { 
                                 'Content-Type': 'application/json',

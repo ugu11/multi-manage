@@ -56,7 +56,7 @@ class AddFieldModalData extends React.Component{
 
         if(this.state.dataSubmited === false){
             this.setState({dataSubmited: true, processingRequest: true})
-            fetch('https://ugomes.com:8080/orgs/add_table_field', {
+            fetch('http://ugomes.com:8080/orgs/add_table_field', {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
