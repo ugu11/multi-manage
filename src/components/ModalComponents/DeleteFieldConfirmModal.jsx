@@ -66,10 +66,8 @@ class DeleteFieldConfirmModal extends React.Component{
                         deleteSessionCookies()
                         window.location.reload(false)
                     }
-                    return res
-                })
-                .then(() => {
                     this.props.toggleModal('conf_delete_field')
+                    return res
                 })
                 .catch(err => {
                     throw err

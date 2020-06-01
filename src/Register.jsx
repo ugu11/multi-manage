@@ -207,7 +207,6 @@ class Register extends React.Component{
                                         <input type="password" className="txt-field" name="userConfPassword" value={this.state.formData.userConfPassword} placeholder="Confirm Password" onChange={this.formHandler} required/>
                 
                                         <input type="submit" className="btn auth-submit"  disabled={this.state.dataSubmited} value="Create user"/>
-                                        {/* <button className="button-label" onClick={this.props.authTypeHandler}>New to the app? Register your organization now!</button> */}
                                     </form>
                                 </div>
                             </div>
@@ -215,7 +214,6 @@ class Register extends React.Component{
                     )
                 default:
                     this.setState({registerStep: "org"})
-
             }
     }
 }

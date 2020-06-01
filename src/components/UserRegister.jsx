@@ -7,19 +7,12 @@ class UserRegister extends React.Component{
     }
     
     validateFields = (formData) => {
-        const {orgId, orgName, orgEmail, orgPassword, orgConfPassword} = formData
         const {nameIdUnique} = this.state
-        
         this.checkForNameIdUniqueness(formData.org_id)
-
         if(password === confPassword && password !== '' && nameIdUnique === true)
-            this.setState({
-                isSubmitDisabled: false
-            })
+            this.setState({ isSubmitDisabled: false })
         else
-            this.setState({
-                isSubmitDisabled: true
-            })
+            this.setState({ isSubmitDisabled: true })
     }
 
     render(){
@@ -36,7 +29,6 @@ class UserRegister extends React.Component{
                         <input type="password" className="txt-field" name="userConfPassword" placeholder="Confirm Password" onChange={this.props.formHandler}/>
 
                         <input type="submit" className="btn auth-submit"  disabled={this.state.isSubmitDisabled} value="Create user"/>
-                        {/* <button className="button-label" onClick={this.props.authTypeHandler}>New to the app? Register your organization now!</button> */}
                     </form>
                 </div>
             </div>

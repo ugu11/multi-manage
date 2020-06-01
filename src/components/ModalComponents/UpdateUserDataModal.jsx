@@ -70,7 +70,6 @@ class UpdateUserDataModal extends React.Component{
 
     handleFieldUpdate = (e) => {
         let {userData} = this.state
-        // userData[e.target.name] = e.target.value
         switch(e.target.name){
             case 'email':
             case 'username':
@@ -101,7 +100,7 @@ class UpdateUserDataModal extends React.Component{
                 <h1>Update user data</h1>
                 <form onSubmit={this.submitUpdate}>
                     {
-                        (this.state.userData !== null && this.state.userData !== undefined) ?
+                        (this.state.userData !== null && this.state.userData !== undefined) &&
                             <div>
                                 <input type="text" className="txt-field" onChange={this.handleFieldUpdate} name="name" placeholder="Name" value={this.state.userData.name}/>
                                 <input type="text" className="txt-field" onChange={this.handleFieldUpdate} name="username" placeholder="Username" value={this.state.userData.username}/>
@@ -111,9 +110,7 @@ class UpdateUserDataModal extends React.Component{
                                     <option value={true}>Yes</option>
                                     <option value={false}>No</option>
                                 </select>
-                            </div>
-                        : ""
-                    }
+                            </div>}
 
                     <input type="submit" className="btn" value="Apply changes"/>
                 </form>

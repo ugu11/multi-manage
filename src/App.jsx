@@ -88,9 +88,7 @@ class App extends React.Component {
   render(){
     return (
       <div className="App">
-   
         <Navbar />
-        
         {
           (this.state.tableId === 'manage_tables') ?
             <TablesManage/>

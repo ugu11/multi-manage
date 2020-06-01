@@ -2,7 +2,7 @@ import React from 'react'
 import { deleteSessionCookies, getSessionCookie, ORG_TOKEN, USER_TOKEN } from '../../helpers/session/auth.js'
 import ProcessingComponent from '../ProcessingComponent.jsx'
 import { deleteState } from '../../localStorage.js'
-import {validatePhoneField, validateNumberField} from '../../helpers/inputValidation.js'
+import {validatePhoneField} from '../../helpers/inputValidation.js'
 
 class CreateUserModal extends React.Component{
     constructor(props){
@@ -59,7 +59,6 @@ class CreateUserModal extends React.Component{
                 }
             })
             .then(res => {
-                console.log(res)
                 if(res.json().status === "deauth"){
                     deleteSessionCookies()
                     deleteState()
@@ -78,7 +77,6 @@ class CreateUserModal extends React.Component{
 
     handleInputChange = (e) => {
         let currState = this.state
-        // currState[e.target.name] = e.target.value
 
         switch(e.target.name){
             case 'email':

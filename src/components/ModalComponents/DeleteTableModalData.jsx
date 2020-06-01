@@ -87,31 +87,26 @@ class DeleteTableModalData extends React.Component{
             <div id="deleteModalAlert">
                 <ProcessingComponent radius="0" display={this.state.processingRequest} />
                 <h1>Warning</h1>
-                {
-                    (this.state.step === 'conf_delete') ? 
-                        <div>
-                            <h3>Are you sure you wanna delete this table? ({this.props.tableName})</h3>
-                            <label><b>ALL THE DATA</b> in this table will be <b>DELETED</b>!</label>
-                            <div className="two-btn-confirm-container">
-                                <button className="secondary-btn" onClick={() => this.props.toggleModal('conf_delete_table')}>Cancel</button>
-                                <button className="btn" onClick={this.goToAdminPassStep}>Delete</button>
-                            </div>
+                {(this.state.step === 'conf_delete') ? 
+                    <div>
+                        <h3>Are you sure you wanna delete this table? ({this.props.tableName})</h3>
+                        <label><b>ALL THE DATA</b> in this table will be <b>DELETED</b>!</label>
+                        <div className="two-btn-confirm-container">
+                            <button className="secondary-btn" onClick={() => this.props.toggleModal('conf_delete_table')}>Cancel</button>
+                            <button className="btn" onClick={this.goToAdminPassStep}>Delete</button>
                         </div>
-                    : (this.state.step === 'ask_for_admin_pass') ?
+                    </div>
+                : (this.state.step === 'ask_for_admin_pass') &&
+                    <div>
+                        <h3>Insert your password to confirm this action</h3>
+                        <label>You're about to delete the table <b>{this.props.tableName}</b></label><br/>
+                        <input type="password" placeholder="Admin password" className="txt-field" value={this.state.adminPassword}
+                            onChange={this.handleAdminPasswordChange} />
+                        {(this.state.displayError === true) && <label className="error-message">Wrong password!</label> }
                         <div>
-                            <h3>Insert your password to confirm this action</h3>
-                            <label>You're about to delete the table <b>{this.props.tableName}</b></label><br/>
-                            <input type="password" placeholder="Admin password" className="txt-field" value={this.state.adminPassword}
-                                onChange={this.handleAdminPasswordChange} />
-                            {(this.state.displayError === true) ?
-                                <label className="error-message">Wrong password!</label>
-                            : ""}
-                            <div>
-                                <button className="btn" onClick={this.handleTableDeleteRequest} disabled={this.state.adminPassword === ''}>Confirm Deletion</button>
-                            </div>
+                            <button className="btn" onClick={this.handleTableDeleteRequest} disabled={this.state.adminPassword === ''}>Confirm Deletion</button>
                         </div>
-                    : ""
-                }
+                    </div> }
             </div>
         )
     }

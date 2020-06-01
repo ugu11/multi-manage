@@ -150,8 +150,6 @@ class AddFields extends React.Component{
                         deleteSessionCookies()
                         window.location.reload(false)
                     }
-                    return res
-                }).then(e => {
                     window.location.reload(false)
                 }).catch(err => {
                     if(err.status === "deauth"){
@@ -181,8 +179,7 @@ class AddFields extends React.Component{
                                     this.removeItem(i)
                                 }}><IoIosRemoveCircleOutline /></button>
                                 <div className="field-separator"></div>
-                            </li>
-                        )}
+                            </li> )}
                     </ul>
                     <div id="inputs-container" >
                         <div id="r1">
@@ -201,28 +198,6 @@ class AddFields extends React.Component{
                         </div>
                         <div id="properties">
                             <div id="field-type-radio-group">
-                                {/* <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
-                                    checked={(this.state.fieldType === 'text')} value="text" id="text" name="field-type"/>
-                                <label htmlFor="text">Text</label>
-                                <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
-                                    checked={(this.state.fieldType === 'date')} value="date" id="date" name="field-type"/>
-                                <label htmlFor="date">Date</label>
-                                <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
-                                    checked={(this.state.fieldType === 'time')} value="time" id="time" name="field-type"/>
-                                <label htmlFor="time">Time</label>
-                                <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
-                                    checked={(this.state.fieldType === 'number')} value="number" id="number" name="field-type"/>
-                                <label htmlFor="number">Number</label>
-                                <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
-                                    checked={(this.state.fieldType === 'select')} value="select" id="select" name="field-type"/>
-                                <label htmlFor="select">Select</label>
-                                <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
-                                    checked={(this.state.fieldType === 'checkbox')} value="checkbox" id="checkbox" name="field-type"/>
-                                <label htmlFor="checkbox">Checkbox</label>
-                                <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
-                                    checked={(this.state.fieldType === 'tel')} value="tel" id="tel" name="field-type"/>
-                                <label htmlFor="tel">Phone</label> */}
-
                                 <RadioButtonComponent onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
                                     checkedFieldType={this.state.fieldType} fieldType='text' label="Text"/>
                                 <RadioButtonComponent onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
@@ -240,26 +215,23 @@ class AddFields extends React.Component{
                             </div>
                         </div>
 
-                        {
-                            (this.state.fieldType === 'select') ? 
-                                <div id="select-values">
-                                    <div id="select-values-container">
-                                        {this.state.selectValues.map((value, i) => 
-                                            <div className="chip">{value}
-                                                <button className="remove-btn" onClick={() => {
-                                                    this.removeSelectValue(i)
-                                                }}><IoIosRemoveCircleOutline /></button></div>
-                                        )}
-                                    </div>
-                                    <div id="select-values-inputs">
-                                        <input type="text" className="txt-field" placeholder="Select value" value={this.state.selectFieldValue}
-                                            onKeyDown={this.handleSelectValueKeyDown} onChange={this.handleSelectFieldValueInputChange}/>
-                                        <button className="btn" onClick={this.appendSelectValue}>Add value</button>
-                                    </div>
-                                    
+                        {(this.state.fieldType === 'select') &&
+                            <div id="select-values">
+                                <div id="select-values-container">
+                                    {this.state.selectValues.map((value, i) => 
+                                        <div className="chip">{value}
+                                            <button className="remove-btn" onClick={() => {
+                                                this.removeSelectValue(i)
+                                            }}><IoIosRemoveCircleOutline /></button></div>
+                                    )}
                                 </div>
-                            : ""
-                        }
+                                <div id="select-values-inputs">
+                                    <input type="text" className="txt-field" placeholder="Select value" value={this.state.selectFieldValue}
+                                        onKeyDown={this.handleSelectValueKeyDown} onChange={this.handleSelectFieldValueInputChange}/>
+                                    <button className="btn" onClick={this.appendSelectValue}>Add value</button>
+                                </div>
+                                
+                            </div> }
                     </div>
                     </div>
                     <input type="button" onClick={this.submitNewTable} className="btn" disabled={(this.state.tableName === '' || this.state.newFieldsData.length === 0 || this.state.dataSubmited === true)} value="Add new item"/>

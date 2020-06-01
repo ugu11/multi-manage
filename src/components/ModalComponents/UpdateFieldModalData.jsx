@@ -35,7 +35,6 @@ class UpdateFieldModalData extends React.Component{
     }
     
     addSelectValue = () => {
-        console.log("add")
         let {tableFields, selectFieldValue} = this.state
         if(selectFieldValue !== ''){
             if(tableFields[this.props.sectionIndex][this.props.index].type === 'select'){
@@ -66,7 +65,9 @@ class UpdateFieldModalData extends React.Component{
         })
     }
  
-    submitUpdate = () => {
+    submitUpdate = e => {
+        e.preventDefault()
+
         let tableFields = (this.state.tableFields.length === 2) ? [...this.state.tableFields[0], ...this.state.tableFields[1]] : this.state.tableFields[0]
 
         if(this.state.dataSubmited === false){
@@ -136,10 +137,8 @@ class UpdateFieldModalData extends React.Component{
             <div>
                 <ProcessingComponent radius="0" display={this.state.processingRequest} />
                 <h1>Update field</h1>
-                <form onSubmit={async (e) =>  {
-                    e.preventDefault()
-                }}>
-                    {(this.state.tableFields !== null) ? 
+                <form onSubmit={this.submitUpdate}>
+                    {(this.state.tableFields !== null) &&
                         <div>
                             <h3>Field type</h3>
                             <div id="field-type-radio-group">
@@ -166,38 +165,33 @@ class UpdateFieldModalData extends React.Component{
                                 <label htmlFor="tel">Phone</label>
                             </div>
     
-                            {
-                                (this.state.tableFields[this.props.sectionIndex][this.props.index].type === 'select') ? 
-                                    <div>
-                                        <h3>Select Field Values</h3>
-                                            <div id="select-values">
-                                                <div id="select-values-container">
-                                                    {this.state.tableFields[this.props.sectionIndex][this.props.index].select_data.map((value, i) => 
-                                                        <div className="chip">{value}
-                                                            <button className="remove-btn" onClick={() => {
-                                                                this.removeSelectDataValue(i)
-                                                            }}><IoIosRemoveCircleOutline /></button></div>
-                                                    )}
-                                                </div>
-                                                <div id="select-values-inputs">
-                                                    <input type="text" className="txt-field" placeholder="Select value" value={this.state.selectFieldValue}
-                                                        /* onKeyDown={this.handleSelectValueKeyDown} */ onChange={this.handleSelectFieldValueInputChange}/>
-                                                    <button className="btn" onClick={this.addSelectValue}>Add value</button>
-                                                </div>
+                            {(this.state.tableFields[this.props.sectionIndex][this.props.index].type === 'select') &&
+                                <div>
+                                    <h3>Select Field Values</h3>
+                                        <div id="select-values">
+                                            <div id="select-values-container">
+                                                {this.state.tableFields[this.props.sectionIndex][this.props.index].select_data.map((value, i) => 
+                                                    <div className="chip" key={value}>{value}
+                                                        <button className="remove-btn" onClick={() => {
+                                                            this.removeSelectDataValue(i)
+                                                        }}><IoIosRemoveCircleOutline /></button></div> )}
                                             </div>
-                                    </div>
-                                : ""
-                            }
+                                            <div id="select-values-inputs">
+                                                <input type="text" className="txt-field" placeholder="Select value" value={this.state.selectFieldValue}
+                                                    onChange={this.handleSelectFieldValueInputChange}/>
+                                                <button className="btn" onClick={this.addSelectValue}>Add value</button>
+                                            </div>
+                                        </div>
+                                </div>}
     
                             <div className="table-display">
                                 <Checkbox size="small" onChange={this.handleCheckbox} color="#11152f" isChecked={this.state.tableFields[this.props.sectionIndex][this.props.index].display_table}/>
                                 <label>Display in dashboard table</label>
                             </div>
-                        </div>
-                    : ""}
+                        </div>}
     
                         
-                    <input type="submit" className="btn" disabled={this.state.dataSubmited} onClick={this.submitUpdate} value="Submit changes"/>
+                    <input type="submit" className="btn" disabled={this.state.dataSubmited} value="Submit changes"/>
                 </form>
             </div>
         )

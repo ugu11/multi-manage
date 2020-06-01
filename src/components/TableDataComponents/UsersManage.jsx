@@ -4,7 +4,6 @@ import { deleteState } from '../../localStorage.js'
 import {connect} from 'react-redux'
 import ModalBox from '../ModalBox'
 import CreateUserModal from '../ModalComponents/CreateUserModal'
-import { FiThumbsDown } from 'react-icons/fi'
 
 class UsersManageComponent extends React.Component{
     constructor(props){
@@ -126,7 +125,6 @@ class UsersManageComponent extends React.Component{
 
     prevPage = () => {
         let {tablePage, usersData} = this.state
-        // console.log(tableData[tablePage+1+""])
         if(tablePage > 1){
             if(usersData[(tablePage-1)+""] === undefined){
                 this.getTableRows((tablePage-1))
@@ -186,7 +184,7 @@ class UsersManageComponent extends React.Component{
                         <input type="text" className="txt-field search-field" placeholder="search"/>
                     </div>
 
-                    {(this.state.usersData !== null && this.state.usersData !== undefined ) ?
+                    {(this.state.usersData !== null && this.state.usersData !== undefined ) &&
                         <div id="table">
                             <table>
                                 <thead>
@@ -199,27 +197,23 @@ class UsersManageComponent extends React.Component{
                                 </thead>
 
                                     <tbody>
-                                            {this.state.usersData[this.state.tablePage+""].map(user => 
-                                                <tr key={user._id} onClick={() => this.handleRowClick(user._id)}>
-                                                    <td>{user.name}</td>
-                                                    <td>{user.username}</td>
-                                                    <td>{user.jobRole}</td>
-                                                    <td>{(user.admin === true) ? "Yes" : "No"}</td>
-                                                </tr>
-                                            )}
+                                        {this.state.usersData[this.state.tablePage+""].map(user => 
+                                            <tr key={user._id} onClick={() => this.handleRowClick(user._id)}>
+                                                <td>{user.name}</td>
+                                                <td>{user.username}</td>
+                                                <td>{user.jobRole}</td>
+                                                <td>{(user.admin === true) ? "Yes" : "No"}</td>
+                                            </tr>
+                                        )}
                                     </tbody>
                             </table>
-                        </div>
-                    : ""}
-                    {
-                        (this.state.nPages !== 1) ? 
-                            <div id="pagination-container">
-                                <button className="btn" onClick={this.prevPage}> &lt; </button>
-                                <label>{this.state.tablePage} of {this.state.nPages}</label>
-                                <button className="btn" onClick={this.nextPage}>&gt;</button>
-                            </div>
-                        : ""
-                    }
+                        </div>}
+                    {(this.state.nPages !== 1) &&
+                        <div id="pagination-container">
+                            <button className="btn" onClick={this.prevPage}> &lt; </button>
+                            <label>{this.state.tablePage} of {this.state.nPages}</label>
+                            <button className="btn" onClick={this.nextPage}>&gt;</button>
+                        </div> }
                 </div>
             </div>
         )

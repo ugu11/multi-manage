@@ -122,7 +122,7 @@ class CustomTable extends React.Component{
                         alert("THEN")
                         switch(res.status){
                             case 200:
-                                return res
+                                return res.json()
                             case 401:
                                 deleteSessionCookies()
                                 deleteState()
@@ -133,7 +133,6 @@ class CustomTable extends React.Component{
                                 window.location = "/"
                         }
                     })
-                    .then(res => res.json())
                     .then(res => {
                         if(res.status === "deauth"){
                             deleteSessionCookies()
@@ -161,8 +160,6 @@ class CustomTable extends React.Component{
         }
     }
 
-    // prevPage = () => (this.state.tablePage > 0) ? this.setState(prevState => ({tablePage: prevState.tablePage-1})) : ""
-    
     render(){
         return (
 
@@ -178,40 +175,28 @@ class CustomTable extends React.Component{
                         <input type="text" className="txt-field search-field" placeholder="search"/>
                     </div>
                     <div id="table">
-                        {
-                            (this.state.tableData !== null) ?
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            {this.state.tableData.fields.map(field => 
-                                                (field.display_table) ?
-                                                    <th key={field.name}>{field.name}</th> : "")
-                                            }
-                                        </tr>
-                                    </thead>
+                        {(this.state.tableData !== null) &&
+                            <table>
+                                <thead>
+                                    <tr>
+                                        {this.state.tableData.fields.map(field => (field.display_table) && <th key={field.name}>{field.name}</th>)}
+                                    </tr>
+                                </thead>
 
-                                    <tbody>
-                                        {this.state.tableData.data[this.state.tablePage+""].map((row, i) => 
-                                            <tr key={i} onClick={() => this.handleRowClick(i)}>
-                                                {this.state.tableData.fields.map(field => 
-                                                    (field.display_table) ? 
-                                                        <td key={row[field.name]+"-"+i}>{row[field.name]}</td> : "")}
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            : ""
-                        }
+                                <tbody>
+                                    {this.state.tableData.data[this.state.tablePage+""].map((row, i) => 
+                                        <tr key={i} onClick={() => this.handleRowClick(i)}>
+                                            {this.state.tableData.fields.map(field => (field.display_table) && <td key={row[field.name]+"-"+i}>{row[field.name]}</td> )}
+                                        </tr> )}
+                                </tbody>
+                            </table>}
                     </div>
-                    {
-                        (this.state.nPages !== 1) ? 
-                            <div id="pagination-container">
-                                <button className="secondary-btn" onClick={this.prevPage}> &lt; </button>
-                                <label>{this.state.tablePage} of {this.state.nPages}</label>
-                                <button className="secondary-btn" onClick={this.nextPage}>&gt;</button>
-                            </div>
-                        : ""
-                    }
+                    { (this.state.nPages !== 1) &&
+                        <div id="pagination-container">
+                            <button className="secondary-btn" onClick={this.prevPage}> &lt; </button>
+                            <label>{this.state.tablePage} of {this.state.nPages}</label>
+                            <button className="secondary-btn" onClick={this.nextPage}>&gt;</button>
+                        </div> }
                 </div>
 
             </div>

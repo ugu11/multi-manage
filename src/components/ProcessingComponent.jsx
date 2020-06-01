@@ -14,5 +14,4 @@ const ProcessingComponent = (props) => {
     }
 }
 
-
 export default ProcessingComponent

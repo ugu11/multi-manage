@@ -31,7 +31,6 @@ class LandingPage extends React.Component{
             return (400*widthDif)/350 * (-1)
         else
             return 0
-
     }
 
     render(){
@@ -45,7 +44,6 @@ class LandingPage extends React.Component{
                 <h1>Multi<br/>Manage</h1>
                 <h4>Customizable Management<br/>Web Platform</h4>
             </div>
-
         </div>
     }
 }

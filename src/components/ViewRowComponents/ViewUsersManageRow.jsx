@@ -1,5 +1,4 @@
 import React from 'react'
-import {Navbar} from '../Navbar'
 import { MdEdit } from "react-icons/md";
 import '../../css/ViewRow.scss'
 import ModalBox from '../ModalBox'
@@ -67,7 +66,10 @@ class ViewUsersManageRowComponent extends React.Component{
                 return res
             })
             .catch(err => {
-                throw err
+                if(err.status === "deauth")
+                    deleteSessionCookies()
+                else
+                    throw err
             })
     }
 
@@ -91,26 +93,21 @@ class ViewUsersManageRowComponent extends React.Component{
                 } isShown={this.state.showModal} toggleModal={this.toggleModal}/>
 
                 <div id="content-viewrow" style={{display: "flex"}}>
-
                     <div id="field-data-containers">
                         <div id="header">
                             <h1>User</h1>
                             <button className="btn" onClick={this.toggleModal}><MdEdit /></button>
-                            {/* <button className="btn" onClick={() => {this.toggleModal('add')}} style={{fontSize: "20px"}}><IoIosAdd /></button>
-                            <button className="remove-btn" onClick={() => {
-                                this.toggleModal('conf_delete_table')}}><MdDelete /></button> */}
                         </div>
 
                         <div className="content">
-                            {(this.state.userData !== null && this.state.userData !== undefined) ?
+                            {(this.state.userData !== null && this.state.userData !== undefined) &&
                                 <div className="field-display-container">
                                     <DataContainerField label="Username" value={this.state.userData.username} />
                                     <DataContainerField label="Phone" value={this.state.userData.phone} />
                                     <DataContainerField label="Email" value={this.state.userData.email} />
                                     <DataContainerField label="Job role" value={this.state.userData.jobRole} />
                                     <DataContainerField label="Admin" value={(this.state.userData.admin === true) ? "Yes" : "No"} />
-                                </div>
-                            : ""}
+                                </div> }
                         </div>
                     </div>
                 </div>

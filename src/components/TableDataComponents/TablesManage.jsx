@@ -35,7 +35,7 @@ class TablesManageComponent extends React.Component{
                         <input type="text" className="txt-field search-field" placeholder="search"/>
                     </div>
                     <div id="table">
-                        {(this.props.tablesData !== undefined && this.props.tablesData !== null) ?
+                        {(this.props.tablesData !== undefined && this.props.tablesData !== null) &&
                             <table>
                                 <thead>
                                     <tr><th>Table name</th></tr>
@@ -48,8 +48,7 @@ class TablesManageComponent extends React.Component{
                                         </tr>
                                     )}
                                 </tbody>
-                            </table>
-                        : ""}
+                            </table>}
                     </div>
                 </div>
             </div>

@@ -33,15 +33,9 @@ class NavbarComponent extends React.Component{
     }
 
     componentDidMount(){
-        // const reqData = {
-        //     orgIdToken: ,
-        //     userTokenId: getSessionCookie(USER_TOKEN)
-        // }
         fetch('https://ugomes.com/mm-api/get_logged_in_user_data?orgId='+getSessionCookie(ORG_TOKEN), {
             method: 'GET',
             headers: {"x-access-token": getSessionCookie(USER_TOKEN)},
-            // headers: { 'Content-Type': 'application/json' },
-            // body: JSON.stringify(reqData)
         })
             .then(res => {
                 switch(res.status){
@@ -87,30 +81,24 @@ class NavbarComponent extends React.Component{
             .then(res => {
                 switch(res.status){
                     case 200:
-                        return res
-                  case 401:
-                      deleteSessionCookies()
-                      deleteState()
-                      window.location.reload(false)
-                      break
-                  case 403:
-                    console.log("dsad")
-                    window.location = "/"
-                      break
+                        return res.json()
+                    case 401:
+                        deleteSessionCookies()
+                        deleteState()
+                        window.location.reload(false)
+                        break
+                    case 403:
+                        window.location = "/"
+                        break
                 default:
-                    console.log("dsad")
                 }
             })
-            .then(res => res.json())
             .then(res => {
                 if(res.status === "deauth"){
                     deleteSessionCookies()
                     window.location.reload(false)
                     deleteState()
                 }
-                return res
-            })
-            .then(res => {
                 this.props.updateTables(res)
             })
             .catch(err => {
@@ -122,19 +110,16 @@ class NavbarComponent extends React.Component{
                 }else
                     throw err
             })
-        // }
     }
 
     toggleSmallScreenMenu = () => this.setState(prevState => ({displaySmallScreenMenu: !prevState.displaySmallScreenMenu}))
 
     render(){
         return (
-            (this.props.userData !== undefined && this.props.userData !== null) ?
+            (this.props.userData !== undefined && this.props.userData !== null) &&
                 <nav>
-
                     <div id="big-screen">
                         <ul id="top-bar">
-
                             <li onClick={() => {
                                 deleteSessionCookies()
                                 deleteState()
@@ -142,7 +127,6 @@ class NavbarComponent extends React.Component{
                             }}> <label id="logout-icon"><label id="logout-label">Log out</label> <FiLogOut /></label> </li>
 
                             <h1>Multi Manage</h1>
-
                         </ul>
 
                         <ul id="side-bar">
@@ -150,54 +134,36 @@ class NavbarComponent extends React.Component{
                                 <h3 id="user-navbar">{this.props.userData.name}</h3>
                                 <h5 id="job-role-navbar">{this.props.userData.jobRole}</h5>
                             </li>
-
                             <AdminPanelNavbarItemsComponent userData={this.props.userData} tableId={this.state.tableId} />
-                                
                             <TablesListComponent tablesData={this.props.tablesData} tableId={this.state.tableId} />
-                            
                         </ul>
                     </div>
 
                     <div id="small-screen">
-
                         <div id="top-bar">
                             <h1>Multi Manage</h1>
                             <button onClick={this.toggleSmallScreenMenu}>
-                                {
-                                    (this.state.displaySmallScreenMenu === true)
-                                    ? <IoMdClose />
-                                    : <IoMdMenu />
-                                }
+                                {(this.state.displaySmallScreenMenu === true) ? <IoMdClose /> : <IoMdMenu />}
                             </button>
                         </div>
-                        {
-                            (this.state.displaySmallScreenMenu === true) ?
-                                <ul id="side-bar">
-                                    <li id="user-info">
-                                        <h3 id="user-navbar">{this.props.userData.name}</h3>
-                                        <h5 id="job-role-navbar">{this.props.userData.jobRole}</h5>
-                                    </li>
-        
-                                    <AdminPanelNavbarItemsComponent userData={this.props.userData} tableId={this.state.tableId} />
-                                        
-                                    <TablesListComponent tablesData={this.props.tablesData} tableId={this.state.tableId} />
+                        {(this.state.displaySmallScreenMenu === true) &&
+                        <ul id="side-bar">
+                            <li id="user-info">
+                                <h3 id="user-navbar">{this.props.userData.name}</h3>
+                                <h5 id="job-role-navbar">{this.props.userData.jobRole}</h5>
+                            </li>
 
-                                    <li onClick={() => {
-                                        deleteSessionCookies()
-                                        deleteState()
-                                        window.location.href = "/login"
-                                    }}> <label id="logout-icon"><label id="logout-label">Log out</label> <FiLogOut /></label> </li>
-        
-                                </ul>
-                            : ""
-                        }
-                        
+                            <AdminPanelNavbarItemsComponent userData={this.props.userData} tableId={this.state.tableId} />
+                            <TablesListComponent tablesData={this.props.tablesData} tableId={this.state.tableId} />
+
+                            <li onClick={() => {
+                                deleteSessionCookies()
+                                deleteState()
+                                window.location.href = "/login"
+                            }}> <label id="logout-icon"><label id="logout-label">Log out</label> <FiLogOut /></label> </li>
+                        </ul>}
                     </div>
-
-                </nav>
-
-            : ""
-        )
+                </nav>)
     }
 }
 

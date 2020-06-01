@@ -60,7 +60,7 @@ class ViewTablesManageRowComponent extends React.Component{
             .then(res => {
                 switch(res.status){
                     case 200:
-                        return res
+                        return res.json()
                     case 401:
                         deleteSessionCookies()
                         deleteState()
@@ -73,24 +73,23 @@ class ViewTablesManageRowComponent extends React.Component{
                         window.location = "/"
                 }
             })
-            .then(res => res.json())
             .then(res => {
                 if(res.status === "deauth"){
                     deleteSessionCookies()
                     window.location.reload(false)
                 }
-                return res
-            })
-            .then(res => {
-                let tableFields = res.tableData.fields
-
-                console.log([tableFields] > 0 && tableFields !== null, res)
                 
+                let tableFields = res.tableData.fields
                 this.setState({
                     tableFields: [tableFields],
                     tableName: res.tableData.name
                 })
-
+            })
+            .catch(err => {
+                if(err.status === "deauth")
+                    deleteSessionCookies()
+                else
+                    throw err
             })
     }
 
@@ -99,7 +98,6 @@ class ViewTablesManageRowComponent extends React.Component{
     }
     
     toggleModal = (type) => {
-
         switch(type){
             case 'update':
                 const {showUpdateFieldModal} = this.state
@@ -129,6 +127,7 @@ class ViewTablesManageRowComponent extends React.Component{
 
                 this.setState({showConfDeleteTableModal: !showConfDeleteTableModal})
                 break
+            default:
         }
     }
     
@@ -141,7 +140,7 @@ class ViewTablesManageRowComponent extends React.Component{
 
     render(){
         return (
-            (this.state.tableFields !== null && this.state.tableFields !== undefined && this.state.tableFields.length > 0) ? 
+            (this.state.tableFields !== null && this.state.tableFields !== undefined && this.state.tableFields.length > 0) &&
             <div>
                 <ModalBox dataFields={
                     <UpdateFieldModalData tableFields={this.state.tableFields} toggleModal={() => {this.toggleModal('update')}}
@@ -167,46 +166,40 @@ class ViewTablesManageRowComponent extends React.Component{
                                 this.toggleModal('conf_delete_table')}}><MdDelete /></button>
                         </div>
                         <div style={{display: "flex"}}>
-                            
-                            {(this.state.tableFields !== null && this.state.tableFields.length > 0) ?
+                            {(this.state.tableFields !== null && this.state.tableFields.length > 0) &&
                               this.state.tableFields.map((section, sectionIndex) => 
-                                    <ul key={sectionIndex} className="table-data-ul">
-                                        {Array.from(section).map((field, i) => 
-                                            <li key={field.name} className="table-data-field-display-container">
-                                                <div className="content-header">
-                                                    <h2>{field.name}</h2>
-                                                    <DataContainerField label="Type" value={(field.type === 'tel') ? "phone" : field.type} />
-                                                    <DataContainerField label="Display in table" value={(field.display_table) ? "Yes" : "No"} />
-                                                    <div className="field-actions">
-                                                        <button className="secondary-btn" onClick={() => {
-                                                            this.setState({sectionIndex: sectionIndex, index: i})
-                                                            this.toggleModal('update')}}><MdEdit /></button>
-                                                        <button className="remove-btn" onClick={() => {
-                                                            this.setState({fieldToDeleteIndex: i})
-                                                            this.toggleModal('conf_delete_field')}}><MdDelete /></button>
-                                                    </div>
+                                <ul key={sectionIndex} className="table-data-ul">
+                                    {Array.from(section).map((field, i) => 
+                                        <li key={field.name} className="table-data-field-display-container">
+                                            <div className="content-header">
+                                                <h2>{field.name}</h2>
+                                                <DataContainerField label="Type" value={(field.type === 'tel') ? "phone" : field.type} />
+                                                <DataContainerField label="Display in table" value={(field.display_table) ? "Yes" : "No"} />
+                                                <div className="field-actions">
+                                                    <button className="secondary-btn" onClick={() => {
+                                                        this.setState({sectionIndex: sectionIndex, index: i})
+                                                        this.toggleModal('update')}}><MdEdit /></button>
+                                                    <button className="remove-btn" onClick={() => {
+                                                        this.setState({fieldToDeleteIndex: i})
+                                                        this.toggleModal('conf_delete_field')}}><MdDelete /></button>
                                                 </div>
-                                                {(field.type === 'select') ?
-                                                    <div className="content">
-                                                        <div>
-                                                            <label><b>Select field values</b></label>
-                                                            <ul>
-                                                                {field.select_data.map(value => <li>{value}</li>)}
-                                                            </ul>
-                                                        </div>
+                                            </div>
+                                            {(field.type === 'select') &&
+                                                <div className="content">
+                                                    <div>
+                                                        <label><b>Select field values</b></label>
+                                                        <ul>
+                                                            {field.select_data.map((value, i) => <li key={i}>{value}</li>)}
+                                                        </ul>
                                                     </div>
-                                                : ""}
-                                            </li>
-                                        )}
-                                    </ul>
-                                )
-                            : ""
-                            }
+                                                </div> }
+                                        </li>
+                                    )}
+                                </ul>)}
                         </div>
                     </div>
                 </div>
             </div>
-            : ""
         )
     }
 }

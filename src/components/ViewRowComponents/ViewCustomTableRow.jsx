@@ -1,14 +1,10 @@
 import React from 'react'
-import {Navbar} from '../Navbar'
 import '../../css/ViewRow.scss'
 import { MdEdit } from "react-icons/md";
 import ModalBox from '../ModalBox'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 import { deleteState } from '../../localStorage'
-
 import UpdateCustomTableRowModal from '../ModalComponents/UpdateCustomTableRowModal'
-import DataContainerField from '../DataContainerField'
-
 import {connect} from 'react-redux'
 import {updateUserData} from '../../actions/updateUserData.js'
 
@@ -49,7 +45,7 @@ class ViewCustomTableRowComponent extends React.Component{
             .then(res => {
                 switch(res.status){
                     case 200:
-                        return res
+                        return res.json()
                     case 401:
                         deleteSessionCookies()
                         deleteState()
@@ -62,16 +58,12 @@ class ViewCustomTableRowComponent extends React.Component{
                         window.location = "/"
                 }
             })
-            .then(res => res.json())
             .then(res => {
                 if(res.status === "deauth"){
                     deleteSessionCookies()
                     window.location.reload(false)
                 }
-                return res
-            })
-            .then(res => {
-                console.log(res.data)
+
                 let fieldData = []
 
                 for(let field in res.data){
@@ -124,15 +116,11 @@ class ViewCustomTableRowComponent extends React.Component{
     render(){
         return (
             <div>
-                {
-                    (this.state.modalFieldData !== null && this.state.modalFieldData !== undefined) ?
+                {(this.state.modalFieldData !== null && this.state.modalFieldData !== undefined) &&
                         <ModalBox dataFields={<UpdateCustomTableRowModal modalFieldData={this.state.modalFieldData} fields={this.state.fields} />} 
-                            isShown={this.state.showModal} toggleModal={this.toggleModal}/>
-                    : ""
-                }
+                            isShown={this.state.showModal} toggleModal={this.toggleModal}/>}
 
                 <div id="content-viewrow" style={{display: "flex"}}>
-
                     <div id="field-data-containers">
                         <div id="header">
                             <h1>{this.state.tableName}</h1>
@@ -141,18 +129,12 @@ class ViewCustomTableRowComponent extends React.Component{
                         <div style={{display: "flex"}}>
                             {this.state.fieldData.map((section, sectionIndex) => 
                                 <div className="field-display-container" key={sectionIndex}>
-                                    {/* <ul> */}
-                                        {Array.from(section).map(field => 
-                                            // <li key={field.fieldName}>
-                                                <div className="field-display">
-                                                    <label className="field-label">{field.fieldName}</label>
-                                                    <label className="field-value">{field.fieldValue}</label>
-                                                </div>
-                                            // </li>
-                                        )}
-                                    {/* </ul> */}
-                                </div>
-                            )}
+                                    {Array.from(section).map(field => 
+                                        <div className="field-display" key={field}>
+                                            <label className="field-label">{field.fieldName}</label>
+                                            <label className="field-value">{field.fieldValue}</label>
+                                        </div> )}
+                                </div> )}
                         </div>
                     </div>
                 </div>

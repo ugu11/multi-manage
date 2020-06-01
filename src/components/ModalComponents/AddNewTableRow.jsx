@@ -1,5 +1,4 @@
 import React from 'react'
-import AddFieldModalData from './AddFieldModalData'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 import ProcessingComponent from '../ProcessingComponent'
 import { deleteState } from '../../localStorage'
@@ -113,7 +112,7 @@ class AddNewTableRow extends React.Component{
                 <h1>Add new item</h1>
                 <form onSubmit={this.submitNewRow}>
                     {
-                        (this.state.tableData !== null) ?
+                        (this.state.tableData !== null) &&
                             this.state.tableData.fields.map(field => 
                                 (field.type === 'select') ?
                                     <select key={field.name} className="txt-field" onChange={this.handleInputChange} name={field.name}>
@@ -123,9 +122,7 @@ class AddNewTableRow extends React.Component{
                                 :
                                     <input key={field.name} type={field.type} value={this.state.fieldController[field.name]} onChange={e => this.handleInputChange(e, field.type)} name={field.name} className="txt-field" placeholder={field.name}/>
         
-                            )
-                        : ""
-                    }
+                            )}
                     <input type="submit" className="btn" disabled={this.state.dataSubmited} value="Add new item"/>
                 </form>
             </div>
