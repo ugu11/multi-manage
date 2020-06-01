@@ -56,7 +56,6 @@ class NavbarComponent extends React.Component{
                         window.location = "/"
                         break
                     default:
-                        window.location = "/"
                 }
             })
                 .then(resp => resp.json())
@@ -73,6 +72,7 @@ class NavbarComponent extends React.Component{
                 })
                 .catch(err => {
                     if(err.status === "deauth"){
+                        console.log("dsad")
                         deleteSessionCookies()
                         deleteState()
                         window.location.reload(false)
@@ -94,10 +94,11 @@ class NavbarComponent extends React.Component{
                       window.location.reload(false)
                       break
                   case 403:
-                      window.location = "/"
+                    console.log("dsad")
+                    window.location = "/"
                       break
-                    default:
-                        window.location = "/"
+                default:
+                    console.log("dsad")
                 }
             })
             .then(res => res.json())
@@ -114,6 +115,7 @@ class NavbarComponent extends React.Component{
             })
             .catch(err => {
                 if(err.status === "deauth"){
+                    console.log("dsad")
                     deleteSessionCookies()
                     deleteState()
                     window.location.reload(false)
@@ -149,21 +151,9 @@ class NavbarComponent extends React.Component{
                                 <h5 id="job-role-navbar">{this.props.userData.jobRole}</h5>
                             </li>
 
-                            {(this.props.userData.admin) ?
-                                <li id="manage-tables-item" className={(this.state.tableId === "manage_tables") ? "checked-section" : ""}> <a href="/?tableId=manage_tables"> Manage tables </a></li> : ""}
-                            {(this.props.userData.admin) ?
-                                    <li className={(this.state.tableId === "manage_users") ? "checked-section" : ""}> <a href="/?tableId=manage_users"> Users </a></li> : ""}
-                            <li className="separator">&nbsp;</li>
+                            <AdminPanelNavbarItemsComponent userData={this.props.userData} tableId={this.state.tableId} />
                                 
-                            {
-                                (this.props.tablesData !== null && this.props.tablesData !== undefined) ?
-                                    this.props.tablesData.map(table => 
-                                        <li key={table.tableId} className={(this.state.tableId === table.tableId) ? "checked-section" : ""} onClick={() => window.location.href = "/?tableId="+table.tableId}>
-                                            {table.tableName}
-                                        </li>
-                                    )
-                                : ""
-                            }
+                            <TablesListComponent tablesData={this.props.tablesData} tableId={this.state.tableId} />
                             
                         </ul>
                     </div>
@@ -188,21 +178,10 @@ class NavbarComponent extends React.Component{
                                         <h5 id="job-role-navbar">{this.props.userData.jobRole}</h5>
                                     </li>
         
-                                    {(this.props.userData.admin) ?
-                                        <li id="manage-tables-item" className={(this.state.tableId === "manage_tables") ? "checked-section" : ""}> <a href="/?tableId=manage_tables"> Manage tables </a></li> : ""}
-                                    {(this.props.userData.admin) ?
-                                            <li className={(this.state.tableId === "manage_users") ? "checked-section" : ""}> <a href="/?tableId=manage_users"> Users </a></li> : ""}
-                                    <li className="separator">&nbsp;</li>
+                                    <AdminPanelNavbarItemsComponent userData={this.props.userData} tableId={this.state.tableId} />
                                         
-                                    {
-                                        (this.props.tablesData !== null && this.props.tablesData !== undefined) ?
-                                            this.props.tablesData.map(table => 
-                                                <li key={table.tableId} className={(this.state.tableId === table.tableId) ? "checked-section" : ""} onClick={() => window.location.href = "/?tableId="+table.tableId}>
-                                                    {table.tableName}
-                                                </li>
-                                            )
-                                        : ""
-                                    }
+                                    <TablesListComponent tablesData={this.props.tablesData} tableId={this.state.tableId} />
+
                                     <li onClick={() => {
                                         deleteSessionCookies()
                                         deleteState()
@@ -220,6 +199,28 @@ class NavbarComponent extends React.Component{
             : ""
         )
     }
+}
+
+function AdminPanelNavbarItemsComponent(props){
+    return (
+        <>
+            {(props.userData.admin) ?
+                <li id="manage-tables-item" className={(props.tableId === "manage_tables") ? "checked-section" : ""}> <a href="/?tableId=manage_tables"> Manage tables </a></li> : ""}
+            {(props.userData.admin) ?
+                <li className={(props.tableId === "manage_users") ? "checked-section" : ""}> <a href="/?tableId=manage_users"> Users </a></li> : ""}
+            <li className="separator">&nbsp;</li>
+        </>
+    )
+}
+
+function TablesListComponent(props){
+    return  (props.tablesData !== null && props.tablesData !== undefined && props.tablesData.length > 0) ?
+            props.tablesData.map(table => 
+                <li key={table.tableId} className={(props.tableId === table.tableId) ? "checked-section" : ""} onClick={() => window.location.href = "/?tableId="+table.tableId}>
+                    {table.tableName}
+                </li>
+            )
+        : <label>No tables available</label>
 }
 
 

@@ -126,7 +126,8 @@ class ViewCustomTableRowComponent extends React.Component{
             <div>
                 {
                     (this.state.modalFieldData !== null && this.state.modalFieldData !== undefined) ?
-                        <ModalBox dataFields={<UpdateCustomTableRowModal modalFieldData={this.state.modalFieldData} fields={this.state.fields} />} isShown={this.state.showModal} toggleModal={this.toggleModal}/>
+                        <ModalBox dataFields={<UpdateCustomTableRowModal modalFieldData={this.state.modalFieldData} fields={this.state.fields} />} 
+                            isShown={this.state.showModal} toggleModal={this.toggleModal}/>
                     : ""
                 }
 

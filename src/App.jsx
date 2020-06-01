@@ -37,25 +37,24 @@ class App extends React.Component {
       window.location = "/"
 
     if(this.state.tableId === undefined)
-      if(this.props.tablesData[0] === undefined)
+      if(this.props.tablesData.length === 0)
       fetch('https://ugomes.com/mm-api/getNavbarTablesData?orgId='+getSessionCookie(ORG_TOKEN), {
           method: 'GET',
           headers: {"x-access-token": getSessionCookie(USER_TOKEN)},
         })
           .then(res => {
               switch(res.status){
-                  case 200:
-                      return res
-                  case 401:
-                      deleteSessionCookies()
-                      deleteState()
-                      window.location.reload(false)
-                      break
-                  case 403:
-                      window.location = "/"
-                      break
-                  default:
-                      window.location = "/"
+                case 200:
+                    return res
+                case 401:
+                    deleteSessionCookies()
+                    deleteState()
+                    window.location.reload(false)
+                    break
+                case 403:
+                    window.location = "/"
+                    break
+                default:
               }
           })
          .then(res => res.json())
@@ -69,10 +68,12 @@ class App extends React.Component {
           })
           .then(res => {
               this.props.updateTables(res)
-              window.location.reload(false)
+              if(this.props.tablesData.length > 0)
+                window.location = "/?tableId="+this.props.tablesData[0].tableId
           })
           .catch(err => {
               if(err.status === "deauth"){
+                console.log("dsad")
                 deleteSessionCookies()
                 deleteState()
                 window.location.reload(false)
@@ -95,8 +96,11 @@ class App extends React.Component {
             <TablesManage/>
           : (this.state.tableId === 'manage_users') ?
             <UsersManage />
-          :
-            <CustomTable tableId={this.state.tableId}/>
+          : (this.state.tableId === undefined) ?
+            <div id="content">
+              <h1 style={{"margin": "auto"}}>No tables available</h1>
+            </div>
+          : <CustomTable tableId={this.state.tableId}/>
         }
       </div>
     );

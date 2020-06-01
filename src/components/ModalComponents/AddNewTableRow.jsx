@@ -19,10 +19,21 @@ class AddNewTableRow extends React.Component{
     }
 
     componentDidUpdate(pP, prevState){
-        if(prevState.tableData === null && this.props.tableData !== prevState.tableData)
-            this.setState({tableData: this.props.tableData})
-        if(prevState.fieldController === null && this.props.fieldController !== prevState.fieldController)
-            this.setState({fieldController: this.props.fieldController})
+        if(prevState.tableData === null && this.props.tableData !== prevState.tableData){
+            let fieldController = {}
+
+            this.props.tableData.fields.forEach((field) => {
+                fieldController[field.name] = 
+                    (field.type === 'select') ? field.select_data[0] 
+                    : (field.type === 'num') ? 0
+                    : ""
+            })
+
+            this.setState({
+                tableData: this.props.tableData,
+                fieldController: fieldController
+            })
+        }
     }
 
     handleInputChange = (e, type) => {
@@ -41,8 +52,6 @@ class AddNewTableRow extends React.Component{
                 break
             default:
                 fieldController[e.target.name] = e.target.value
-
-                
         }
 
         this.setState({
@@ -50,57 +59,59 @@ class AddNewTableRow extends React.Component{
         })
     }
 
+    submitNewRow = async (e) =>  {
+        e.preventDefault()
+        this.setState({dataSubmited: true, processingData: true})
+        if(this.state.dataSubmited === false)
+            fetch('https://ugomes.com/mm-api/add_table_row', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'x-access-token': getSessionCookie(USER_TOKEN)
+                 },
+                body: JSON.stringify({
+                    orgId: getSessionCookie(ORG_TOKEN),
+                    tableId: this.state.tableData._id,
+                    tableData: JSON.stringify(this.state.fieldController)
+                }),
+            })
+            .then(res => {
+                switch(res.status){
+                    case 200:
+                        return res
+                    case 401:
+                        deleteSessionCookies()
+                        deleteState()
+                        window.location.reload(false)
+                        break
+                    case 403:
+                        window.location = "/"
+                        break
+                    default:
+                        window.location = "/"
+                }
+            })
+            .then(res => {
+                if(res.json().status === "deauth"){
+                    deleteSessionCookies()
+                    deleteState()
+                }
+                window.location.reload(false)
+                return res
+            }).catch(err => {
+                if(err.status === "deauth")
+                    deleteSessionCookies()
+                else
+                    throw err
+            })
+    }
+
     render(){
         return (
             <div>
                 <ProcessingComponent  radius="0" display={this.state.processingData} />
                 <h1>Add new item</h1>
-                <form onSubmit={async (e) =>  {
-                    e.preventDefault()
-                    this.setState({dataSubmited: true, processingData: true})
-                    if(this.state.dataSubmited === false)
-                        fetch('https://ugomes.com/mm-api/add_table_row', {
-                            method: 'POST',
-                            headers: { 
-                                'Content-Type': 'application/json',
-                                'x-access-token': getSessionCookie(USER_TOKEN)
-                             },
-                            body: JSON.stringify({
-                                orgId: getSessionCookie(ORG_TOKEN),
-                                tableId: this.state.tableData._id,
-                                tableData: JSON.stringify(this.state.fieldController)
-                            }),
-                        })
-                        .then(res => {
-                            switch(res.status){
-                                case 200:
-                                    return res
-                                case 401:
-                                    deleteSessionCookies()
-                                    deleteState()
-                                    window.location.reload(false)
-                                    break
-                                case 403:
-                                    window.location = "/"
-                                    break
-                                default:
-                                    window.location = "/"
-                            }
-                        })
-                        .then(res => {
-                            if(res.json().status === "deauth"){
-                                deleteSessionCookies()
-                                deleteState()
-                            }
-                            window.location.reload(false)
-                            return res
-                        }).catch(err => {
-                            if(err.status === "deauth")
-                                deleteSessionCookies()
-                            else
-                                throw err
-                        })
-                }}>
+                <form onSubmit={this.submitNewRow}>
                     {
                         (this.state.tableData !== null) ?
                             this.state.tableData.fields.map(field => 

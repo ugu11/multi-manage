@@ -72,6 +72,7 @@ class AddFieldModalData extends React.Component{
                     }),
                 })
                 .then(res => {
+                    this.setState({dataSubmited: false, processingRequest: false})
                     switch(res.status){
                         case 200:
                             return res
@@ -92,7 +93,9 @@ class AddFieldModalData extends React.Component{
                     if(res.json().status === "deauth"){
                         deleteSessionCookies()
                     }
-                    window.location.reload(false)
+
+                    this.props.toggleModal('add')
+                    // window.location.reload(false)
                 })
                 .catch(err => {
                     throw err

@@ -13,6 +13,8 @@ class Login extends React.Component{
             userEmail: "",
             userPassword: "",
             loginState: "org_login",
+            userLoginWrongPass: false,
+            orgLoginWrongPass: false,
             isProcessing: false
         }
         
@@ -65,7 +67,7 @@ class Login extends React.Component{
                                         <h1>Organization Log in</h1>
 
         
-                                        <form onSubmit={async e =>  {
+                                        <form id="org-log-in" onSubmit={async e =>  {
                                             e.preventDefault();
                                             this.setState({isProcessing: true})
                                             const reqData = {
@@ -84,26 +86,27 @@ class Login extends React.Component{
                                                         this.setState({
                                                             cred: orgLoginResp.cred,
                                                             loginState: 'user_login',
+                                                            orgLoginWrongPass: false
                                                         })
-                                                    }
+                                                    }else
+                                                        this.setState({orgLoginWrongPass: true})
                                                     this.setState({isProcessing: false})
                                                 })
-                                                .catch(e => this.setState({isProcessing: false}))
+                                                .catch(e => this.setState({isProcessing: false, orgLoginWrongPass: true}))
                                             }}>
                                             <input type="text" className="txt-field" value={this.state.orgId} onChange={this.orgIdHandlerOnChange} placeholder="Organization id"/>
+                                            {this.state.orgLoginWrongPass && <label className="wrong-password">Wrong organization id and/or password!</label>}
                                             <input type="password" className="txt-field" value={this.state.orgPassword} onChange={this.orgPasswordHandlerOnChange} placeholder="Password"/>
                     
                                             <input type="submit" className="btn auth-submit" value="Log in organization"/>
                                         </form>
                                         <button className="button-label" onClick={this.authTypeHandler}>New to the app? Register your organization now!</button>
                                     </div>
-                                : (this.state.loginState === 'user_login') ?
+                                : (this.state.loginState === 'user_login') &&
                                     <div>
                                         <h1>User Log in</h1>
-
-
         
-                                        <form onSubmit={e => {
+                                        <form id="user-log-in" onSubmit={e => {
                                             e.preventDefault();
                                             this.setState({isProcessing: true})
                                             const reqData = {
@@ -118,20 +121,21 @@ class Login extends React.Component{
                                                 body: JSON.stringify(reqData)})
                                                 .then(res => res.json())
                                                 .then(userLoginResp => {
-                                                    console.log(userLoginResp)
                                                     if(userLoginResp.status === 'success'){
                                                         setSessionCookie(USER_TOKEN, userLoginResp.userIdToken)
                                                         setSessionCookie(ORG_TOKEN, reqData.orgId)
                                                         window.location = "/"
                                                     }else{
-                                                        this.setState({isProcessing: false})
+                                                        this.setState({isProcessing: false, userLoginWrongPass: true})
                                                     }
                                                     // Manage session here!!!
                                                 })
-                                                .catch(e => this.setState({isProcessing: false}))
+                                                .catch(e => this.setState({isProcessing: false, userLoginWrongPass: true}))
                                             }}>
-                                            <input type="email" className="txt-field" value={this.state.userEmail} onChange={this.userEmailHandlerOnChange} placeholder="User email" required/>
-                                            <input type="password" className="txt-field" value={this.state.userPassword} onChange={this.userPasswordHandlerOnChange} placeholder="User Password" required/>
+                                            <input type="text" className="txt-field" value={this.state.userEmail} onChange={this.userEmailHandlerOnChange} placeholder="User email/username" autofocus/>
+                                            
+                                            {(this.state.userLoginWrongPass) && <label className="wrong-password">Wrong email/username and/or password!</label>}
+                                            <input type="password" className="txt-field" value={this.state.userPassword} onChange={this.userPasswordHandlerOnChange} placeholder="User Password" />
                     
                                             <input type="submit" className="btn auth-submit" value="Log in organization"/>
                                             <button className="button-label" onClick={(e) => {
@@ -141,8 +145,6 @@ class Login extends React.Component{
                                             <button className="secondary-btn voltar-btn" onClick={this.goToPrevLoginStep}>Voltar</button>
                                         </form>
                                     </div>
-                                : ""
-        
                             }
                         </div>
                         <div className="auth-separator"></div>

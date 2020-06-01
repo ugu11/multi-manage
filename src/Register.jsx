@@ -180,7 +180,7 @@ class Register extends React.Component{
                                         <input type="password" className="txt-field" name="orgConfPassword" value={this.state.formData.orgConfPassword} placeholder="Confirm Password" onChange={this.formHandler} required />
                     
                                         <input type="submit" className="btn auth-submit" disabled={this.state.dataSubmited} value="Register organization"/>
-                                        <button className="button-label" onClick={() => {window.location = "/login"}}>New to the app? Register your organization now!</button>
+                                        <button className="button-label" onClick={() => {window.location = "/login"}}>Already have an account? Sign in now!</button>
                                     </form>
                                 </div>
                             </div>

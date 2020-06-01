@@ -50,7 +50,6 @@ class DeleteTableModalData extends React.Component{
                     switch(res.status){
                         case 401:
                             res =  await res.json()
-                            console.log(res)
                             switch(res.message){
                                 case 'Unauthorized':
                                     deleteSessionCookies()
@@ -64,12 +63,11 @@ class DeleteTableModalData extends React.Component{
                             }
                             break
                         case 200:
-                            console.log(res)
                             if(res.json().status === "deauth"){
                                 deleteSessionCookies()
                                 window.location.reload(false)
                             }else
-                                window.location = "/?table=manage_tables"
+                                window.location = "/?tableId=manage_tables"
                             break
                         case 403:
                             window.location = "/"
@@ -94,8 +92,8 @@ class DeleteTableModalData extends React.Component{
                         <div>
                             <h3>Are you sure you wanna delete this table? ({this.props.tableName})</h3>
                             <label><b>ALL THE DATA</b> in this table will be <b>DELETED</b>!</label>
-                            <div>
-                                <button className="secondary-btn" onClick={this.toggleModal}>Cancel</button>
+                            <div className="two-btn-confirm-container">
+                                <button className="secondary-btn" onClick={() => this.props.toggleModal('conf_delete_table')}>Cancel</button>
                                 <button className="btn" onClick={this.goToAdminPassStep}>Delete</button>
                             </div>
                         </div>

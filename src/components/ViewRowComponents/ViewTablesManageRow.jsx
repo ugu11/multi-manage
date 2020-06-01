@@ -12,8 +12,8 @@ import {updateUserData} from '../../actions/updateUserData.js'
 import UpdateFieldModalData from '../ModalComponents/UpdateFieldModalData'
 import AddFieldModalData from '../ModalComponents/AddFieldModalData'
 import DeleteTableModalData from '../ModalComponents/DeleteTableModalData'
-import ProcessingComponent from '../ProcessingComponent';
 import DataContainerField from '../DataContainerField';
+import DeleteFieldConfirmModal from '../ModalComponents/DeleteFieldConfirmModal'
 
 function getUrlParams(url) {
 	var params = {};
@@ -33,7 +33,11 @@ class ViewTablesManageRowComponent extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-            showModal: false,
+            showUpdateFieldModal: false,
+            showAddFieldModal: false,
+            showConfDeleteFieldModal: false,
+            showConfDeleteTableModal: false,
+
             dataSubmited: false,
             sectionIndex: 0,
             index: 0,
@@ -95,15 +99,37 @@ class ViewTablesManageRowComponent extends React.Component{
     }
     
     toggleModal = (type) => {
-        const { showModal } = this.state
-        let newState = {
-            showModal: !showModal
+
+        switch(type){
+            case 'update':
+                const {showUpdateFieldModal} = this.state
+                if(showUpdateFieldModal)
+                    this.requestRowData()
+
+                this.setState({showUpdateFieldModal: !showUpdateFieldModal})
+                break
+            case 'add':
+                const {showAddFieldModal} = this.state
+                if(showAddFieldModal)
+                    this.requestRowData()
+
+                this.setState({showAddFieldModal: !showAddFieldModal})
+                break
+            case 'conf_delete_field':
+                const {showConfDeleteFieldModal} = this.state
+                if(showConfDeleteFieldModal)
+                    this.requestRowData()
+
+                this.setState({showConfDeleteFieldModal: !showConfDeleteFieldModal})
+                break
+            case 'conf_delete_table':
+                const {showConfDeleteTableModal} = this.state
+                if(showConfDeleteTableModal)
+                    this.requestRowData()
+
+                this.setState({showConfDeleteTableModal: !showConfDeleteTableModal})
+                break
         }
-        if(newState.showModal === false)
-            this.requestRowData()
-        else
-            newState.modalTypeToShow = type
-        this.setState(newState)
     }
     
     handleEditField = (sectionIndex, i) => {
@@ -113,78 +139,23 @@ class ViewTablesManageRowComponent extends React.Component{
         })
     }
 
-    handleFieldDeleteRequest = (index) => {
-        if(this.state.dataSubmited === false){
-            this.setState({dataSubmited: true, processingRequest: true})
-            fetch('https://ugomes.com/mm-api/delete_table_field', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'x-access-token': getSessionCookie(USER_TOKEN)
-                 },
-                    body: JSON.stringify({
-                        orgId: getSessionCookie(ORG_TOKEN),
-                        tableId: getUrlParams(window.location.href).tableId,
-                        fieldIndex: this.state.fieldToDeleteIndex
-                    }),
-                })
-                .then(res => {
-                    switch(res.status){
-                        case 200:
-                            return res
-                        case 401:
-                            deleteSessionCookies()
-                            deleteState()
-                            window.location.reload(false)
-                            break
-                        case 403:
-                            window.location = "/"
-                            break
-                        default:
-                            window.location = "/"
-                    }
-                })
-                .then(res => {
-                    if(res.json().status === "deauth"){
-                        deleteSessionCookies()
-                        window.location.reload(false)
-                    }
-                    return res
-                })
-                .then(res => {
-                    this.toggleModal()
-                })
-                .catch(err => {
-                    throw err
-                })
-        }
-    }
-
     render(){
         return (
             (this.state.tableFields !== null && this.state.tableFields !== undefined && this.state.tableFields.length > 0) ? 
             <div>
                 <ModalBox dataFields={
-                    (this.state.modalTypeToShow === 'update') ?
-                        <UpdateFieldModalData tableFields={this.state.tableFields} toggleModal={this.toggleModal}
-                            sectionIndex={this.state.sectionIndex} index={this.state.index} />
-                    : (this.state.modalTypeToShow === 'add') ? 
-                        <AddFieldModalData />
-                    : (this.state.modalTypeToShow === 'conf_delete_field') ? 
-                        <div id="deleteModalAlert">
-                            <ProcessingComponent radius="0" display={this.state.processingRequest} />
-                            <h1>Warning</h1>
-                            <h3>Are you sure you wanna delete this field?</h3>
-                            <label><b>ALL THE DATA</b> associated with this field will be <b>DELETED</b>!</label>
-                            <div>
-                                <button className="secondary-btn" onClick={this.toggleModal}>Cancel</button>
-                                <button className="btn" onClick={this.handleFieldDeleteRequest}>Delete</button>
-                            </div>
-                        </div>
-                    : (this.state.modalTypeToShow === 'conf_delete_table') ? 
-                        <DeleteTableModalData tableName={this.state.tableName} toggleModal={this.toggleModal}/>
-                    : ""
-                } isShown={this.state.showModal} toggleModal={this.toggleModal}/>
+                    <UpdateFieldModalData tableFields={this.state.tableFields} toggleModal={() => {this.toggleModal('update')}}
+                            sectionIndex={this.state.sectionIndex} index={this.state.index} />}
+                    isShown={this.state.showUpdateFieldModal}  toggleModal={() => {this.toggleModal('update')}}/>
+                <ModalBox dataFields={ <AddFieldModalData toggleModal={this.toggleModal}/> } 
+                    isShown={this.state.showAddFieldModal} toggleModal={() => {this.toggleModal('add')}}/>
+                <ModalBox dataFields={
+                        <DeleteFieldConfirmModal fieldToDeleteIndex={this.state.fieldToDeleteIndex} toggleModal={() => {this.toggleModal('conf_delete_field')}}/>
+                    }
+                    isShown={this.state.showConfDeleteFieldModal}  toggleModal={() => {this.toggleModal('conf_delete_field')}}/>
+                <ModalBox dataFields={
+                    <DeleteTableModalData tableName={this.state.tableName} toggleModal={() => {this.toggleModal('conf_delete_table')}}/>} 
+                isShown={this.state.showConfDeleteTableModal} toggleModal={() => {this.toggleModal('conf_delete_table')}}/>
 
                 <div id="content-viewrow" style={{display: "flex"}}>
 
@@ -198,7 +169,7 @@ class ViewTablesManageRowComponent extends React.Component{
                         <div style={{display: "flex"}}>
                             
                             {(this.state.tableFields !== null && this.state.tableFields.length > 0) ?
-                                this.state.tableFields.map((section, sectionIndex) => 
+                              this.state.tableFields.map((section, sectionIndex) => 
                                     <ul key={sectionIndex} className="table-data-ul">
                                         {Array.from(section).map((field, i) => 
                                             <li key={field.name} className="table-data-field-display-container">

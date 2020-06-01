@@ -175,24 +175,33 @@ class AddFields extends React.Component{
                     <ul id="fields-list">
                         {this.state.newFieldsData.map((field, i) => 
                             <li key={field.fieldName}>
-                                <label>{field.fieldName}</label> <label>{(field.fieldType === 'tel') ? "phone": field.fieldType} {(field.fieldType === 'select') ? '['+field.selectValues.join(', ')+']' : ""} &nbsp; {(field.displayInTable) ? "Display in table" : ""}</label>
+                                <label className="field-name">{field.fieldName}</label>
+                                <label className="field-desc">{(field.fieldType === 'tel') ? "phone": field.fieldType} {(field.fieldType === 'select') ? '['+field.selectValues.join(', ')+']' : ""} &nbsp; {(field.displayInTable) ? "Display in table" : ""}</label>
                                 <button className="remove-btn" onClick={() => {
                                     this.removeItem(i)
                                 }}><IoIosRemoveCircleOutline /></button>
+                                <div className="field-separator"></div>
                             </li>
                         )}
                     </ul>
                     <div id="inputs-container" >
                         <div id="r1">
-                            <button className="btn" onClick={this.appendNewField}
-                                disabled={(this.state.fieldName === '' || (this.state.fieldType === 'select' && this.state.selectValues.length === 0))}><MdAdd /></button>
-                            <input type="text" className="txt-field"
-                                onChange={this.handleFieldNameInputChange} onKeyDown={this.handleOnEnterPressed}
-                                value={this.state.fieldName} placeholder="Field name"/>
+                            <div className="input-row">
+                                <input type="text" className="txt-field"
+                                    onChange={this.handleFieldNameInputChange} onKeyDown={this.handleOnEnterPressed}
+                                    value={this.state.fieldName} placeholder="Field name"/>
+                                <button className="btn" onClick={this.appendNewField}
+                                    disabled={(this.state.fieldName === '' || (this.state.fieldType === 'select' && this.state.selectValues.length === 0))}><MdAdd /></button>
+                                
+                            </div>
+                            <div id="table-display">
+                                <Checkbox size="small" onChange={this.handleTableDispCheckbox} color="#11152f" isChecked={this.state.cbChecked}/>
+                                <label>Display in dashboard table</label>
+                            </div>
                         </div>
                         <div id="properties">
                             <div id="field-type-radio-group">
-                                <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
+                                {/* <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
                                     checked={(this.state.fieldType === 'text')} value="text" id="text" name="field-type"/>
                                 <label htmlFor="text">Text</label>
                                 <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
@@ -212,11 +221,22 @@ class AddFields extends React.Component{
                                 <label htmlFor="checkbox">Checkbox</label>
                                 <input type="radio" onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
                                     checked={(this.state.fieldType === 'tel')} value="tel" id="tel" name="field-type"/>
-                                <label htmlFor="tel">Phone</label>
-                            </div>
-                            <div id="table-display">
-                                <Checkbox size="small" onChange={this.handleTableDispCheckbox} color="#11152f" isChecked={this.state.cbChecked}/>
-                                <label>Display in dashboard table</label>
+                                <label htmlFor="tel">Phone</label> */}
+
+                                <RadioButtonComponent onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
+                                    checkedFieldType={this.state.fieldType} fieldType='text' label="Text"/>
+                                <RadioButtonComponent onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
+                                    checkedFieldType={this.state.fieldType} fieldType='date' label="Date"/>
+                                <RadioButtonComponent onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
+                                    checkedFieldType={this.state.fieldType} fieldType='time' label="Time"/>
+                                <RadioButtonComponent onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
+                                    checkedFieldType={this.state.fieldType} fieldType='number' label="Number"/>
+                                <RadioButtonComponent onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
+                                    checkedFieldType={this.state.fieldType} fieldType='select' label="Select"/>
+                                <RadioButtonComponent onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
+                                    checkedFieldType={this.state.fieldType} fieldType='checkbox' label="Checkbox"/>
+                                <RadioButtonComponent onChange={this.handleRadioButtonsChange} onKeyDown={this.handleOnEnterPressed}
+                                    checkedFieldType={this.state.fieldType} fieldType='tel' label="Phone"/>
                             </div>
                         </div>
 
@@ -247,6 +267,14 @@ class AddFields extends React.Component{
             </div>
         )
     }
+}
+
+function RadioButtonComponent(props){
+    return <div className="radio-component">
+            <input type="radio" onChange={props.onChange} onKeyDown={props.onKeyDown}
+                checked={(props.checkedFieldType === props.fieldType)} value={props.fieldType} id={props.fieldType} name="field-type"/>
+            <label htmlFor={props.fieldType}>{props.label}</label>
+        </div>
 }
 
 export default AddFields

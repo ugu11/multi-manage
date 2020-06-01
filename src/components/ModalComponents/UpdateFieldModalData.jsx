@@ -22,7 +22,6 @@ class UpdateFieldModalData extends React.Component{
         super(props)
 
         this.state = {
-            // tableFields: null,
             selectFieldValue: "",
             dataSubmited: false,
             tableFields: null,
@@ -84,6 +83,7 @@ class UpdateFieldModalData extends React.Component{
                     }),
                 })
                 .then(res => {
+                    this.setState({processingRequest: false, dataSubmited: false})
                     switch(res.status){
                         case 200:
                             return res
@@ -105,7 +105,7 @@ class UpdateFieldModalData extends React.Component{
                         window.location.reload(false)
                         deleteState()
                     }
-                    this.props.toggleModal()
+                    this.props.toggleModal('update')
                 })
                 .catch(err => {
                     throw err

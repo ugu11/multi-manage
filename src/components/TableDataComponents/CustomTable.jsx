@@ -19,7 +19,6 @@ class CustomTable extends React.Component{
     }
 
     componentDidMount(){
-        console.log("HELL")
         this.getTableRows(this.state.tablePage)
             .then(res => res.json())
             .then(res => {
@@ -51,12 +50,12 @@ class CustomTable extends React.Component{
                     nPages: res.nPages
                 })
             }).catch(err => {
-                // console.log(err)
                 if(err.status === "deauth"){
                     deleteSessionCookies()
                     deleteState()
                     window.location.reload(false)
-                }
+                }else
+                    window.location = "/"
                 // throw err
             })
     }
@@ -106,7 +105,8 @@ class CustomTable extends React.Component{
                             deleteSessionCookies()
                             deleteState()
                             window.location.reload(false)
-                        }
+                        }else
+                            window.location = "/"
                     })
             }else
                 this.setState(prevState => ({tablePage: prevState.tablePage+1}))
@@ -119,6 +119,7 @@ class CustomTable extends React.Component{
             if(tableData.data[(tablePage-1)+""] === undefined){
                 this.getTableRows((tablePage-1))
                     .then(res => {
+                        alert("THEN")
                         switch(res.status){
                             case 200:
                                 return res
@@ -128,8 +129,6 @@ class CustomTable extends React.Component{
                                 window.location.reload(false)
                                 break
                             case 403:
-                                window.location = "/"
-                                break
                             default:
                                 window.location = "/"
                         }
@@ -141,9 +140,7 @@ class CustomTable extends React.Component{
                             deleteState()
                             window.location.reload(false)
                         }
-                        return res
-                    })
-                    .then(res => {
+
                         tableData.data[(tablePage-1)+""] = res.tableData.data
         
                         this.setState({
@@ -156,7 +153,8 @@ class CustomTable extends React.Component{
                             deleteSessionCookies()
                             deleteState()
                             window.location.reload(false)
-                        }
+                        }else
+                            window.location = "/"
                     })
             }else
                 this.setState(prevState => ({tablePage: prevState.tablePage-1}))
@@ -169,7 +167,8 @@ class CustomTable extends React.Component{
         return (
 
             <div id="content">
-                <ModalBox dataFields={<AddNewTableRow tableData={this.state.tableData} fieldController={this.state.fieldController}/>} isShown={this.state.showModal} toggleModal={this.toggleModal}/>
+                <ModalBox dataFields={<AddNewTableRow tableData={this.state.tableData}/>}
+                isShown={this.state.showModal} toggleModal={this.toggleModal}/>
 
                 <h1>{ this.state.tableName }</h1>
 
@@ -207,9 +206,9 @@ class CustomTable extends React.Component{
                     {
                         (this.state.nPages !== 1) ? 
                             <div id="pagination-container">
-                                <button className="btn" onClick={this.prevPage}> &lt; </button>
+                                <button className="secondary-btn" onClick={this.prevPage}> &lt; </button>
                                 <label>{this.state.tablePage} of {this.state.nPages}</label>
-                                <button className="btn" onClick={this.nextPage}>&gt;</button>
+                                <button className="secondary-btn" onClick={this.nextPage}>&gt;</button>
                             </div>
                         : ""
                     }

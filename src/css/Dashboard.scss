@@ -114,17 +114,16 @@ a{
                 table-layout: fixed;
     
                 tr{
-                    width: 100%;
+                    width: 100% !important;
                     border-top: 1px solid #4ccbabaf;
                     display: table;
                     table-layout: fixed;
-                    width: fit-content;
+                    // width: fit-content;
                 }
                 
         
                 thead{
                     color: #195c4b9f;
-    
                     th{
                         width: 150px;
                         padding: 20px  10px;
@@ -135,7 +134,6 @@ a{
                 tbody{
                     height: 45vh;
                     display: inline-block;
-                    width: fit-content;
                     overflow: hidden;
                     overflow-y: auto;
     
