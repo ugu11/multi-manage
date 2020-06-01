@@ -34,7 +34,8 @@ class UpdateFieldModalData extends React.Component{
             this.setState({tableFields: this.props.tableFields})
     }
     
-    addSelectValue = () => {
+    addSelectValue = e => {
+        e.preventDefault()
         let {tableFields, selectFieldValue} = this.state
         if(selectFieldValue !== ''){
             if(tableFields[this.props.sectionIndex][this.props.index].type === 'select'){
