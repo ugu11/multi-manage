@@ -3,6 +3,7 @@ import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '.
 import ProcessingComponent from '../ProcessingComponent'
 import { deleteState } from '../../localStorage'
 import {validatePhoneField} from '../../helpers/inputValidation.js'
+import Checkbox from 'react-checkbox-component'
 
 function getUrlParams(url) {
 	var params = {};
@@ -25,15 +26,31 @@ class UpdateCustomTableRowModal extends React.Component{
             modalFieldData: null,
             fields: null,
             processingRequest: false,
-            dataSubmited: false
+            dataSubmited: false,
+            checkboxState: {}
         }
     }
 
     componentDidUpdate(pP, prevState){
-        if(prevState.modalFieldData === null && this.props.modalFieldData !== prevState.modalFieldData)
-            this.setState({modalFieldData: this.props.modalFieldData})
-        if((prevState.fields === null && prevState.fields !== this.props.fields ) || prevState.fields.length === 0)
-            this.setState({fields: this.props.fields})
+        // if(prevState.modalFieldData === null && this.props.modalFieldData !== prevState.modalFieldData){
+        //     this.setState({modalFieldData: this.props.modalFieldData})
+        // }
+        if(((prevState.fields === null && prevState.fields !== this.props.fields ) || prevState.fields.length === 0) &&
+            (prevState.modalFieldData === null && this.props.modalFieldData !== prevState.modalFieldData)){
+            const cbFields = this.props.fields.filter(field => field.type==='checkbox')
+            // const cbFieldsData = 
+            let cbState = {};
+
+            cbFields.forEach(cbField => {
+                cbState[cbField.name] = (this.props.modalFieldData.filter(field => field.fieldName === cbField.name)[0].fieldValue === true) ? true : false
+            })
+            
+            this.setState({
+                modalFieldData: this.props.modalFieldData,
+                fields: this.props.fields,
+                checkboxState: cbState
+            })
+        }
     }
     
     updateFieldValue = (e, type) => {
@@ -54,11 +71,18 @@ class UpdateCustomTableRowModal extends React.Component{
                 if(e.target.value !== '')
                     modalFieldData[index].fieldValue  = parseInt(e.target.value)
                 break
+            case 'checkbox':
             default:
                 modalFieldData[index].fieldValue  = e.target.value
         }
 
-        this.setState({modalFieldData: modalFieldData})
+    }
+
+    handleCheckboxCheck = (modalFieldIndex, cbVal) => {
+        let {modalFieldData, checkboxState} = this.state
+        modalFieldData[modalFieldIndex].fieldValue = cbVal
+        checkboxState[modalFieldData[modalFieldIndex].fieldName] = cbVal
+        this.setState({modalFieldData: modalFieldData, checkboxState: checkboxState})
     }
 
     handleFormSubmit = async (e) =>  {
@@ -129,6 +153,9 @@ class UpdateCustomTableRowModal extends React.Component{
                                         {fieldData.select_data.map((selectValue, selectIndex) => 
                                             <option key={selectValue+"-"+selectIndex} value={selectValue} >{selectValue}</option>)}
                                     </select>
+                                : (fieldData.type === 'checkbox') ?
+                                    <div key={fieldData.name} ><Checkbox size="small" name={i} onChange={cbVal =>{this.handleCheckboxCheck(i, cbVal)}} color="#11152f" isChecked={this.state.checkboxState[field.fieldName]}/>
+                                    <label>{field.fieldName}</label></div>
                                 :
                                     <input key={fieldData.name} type={fieldData.type} className="txt-field"
                                         name={i} placeholder={field.fieldName} value={this.state.modalFieldData[i].fieldValue}

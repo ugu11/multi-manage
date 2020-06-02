@@ -1,6 +1,7 @@
 import React from 'react'
 import '../../css/ViewRow.scss'
 import { MdEdit } from "react-icons/md";
+import { FiCheckSquare, FiXSquare } from "react-icons/fi";
 import ModalBox from '../ModalBox'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 import { deleteState } from '../../localStorage'
@@ -130,9 +131,12 @@ class ViewCustomTableRowComponent extends React.Component{
                             {this.state.fieldData.map((section, sectionIndex) => 
                                 <div className="field-display-container" key={sectionIndex}>
                                     {Array.from(section).map(field => 
-                                        <div className="field-display" key={field}>
-                                            <label className="field-label">{field.fieldName}</label>
-                                            <label className="field-value">{field.fieldValue}</label>
+                                        <div className="field-display" key={field.fieldName.toString()}>
+                                            <label className="field-label">{field.fieldName.toString()}</label>
+                                            <label className="field-value">
+                                                {(field.fieldValue === true) ? <FiCheckSquare />
+                                                : (field.fieldValue === false) ? <FiXSquare />
+                                                : field.fieldValue.toString()}</label>
                                         </div> )}
                                 </div> )}
                         </div>
