@@ -95,7 +95,7 @@ class ViewUsersManageRowComponent extends React.Component{
                 <div id="content-viewrow" style={{display: "flex"}}>
                     <div id="field-data-containers">
                         <div id="header">
-                            <h1>User</h1>
+                            <h1>{this.state.userData.name}</h1>
                             <button className="btn" onClick={this.toggleModal}><MdEdit /></button>
                         </div>
 
