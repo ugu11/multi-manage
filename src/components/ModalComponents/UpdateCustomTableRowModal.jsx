@@ -69,13 +69,13 @@ class UpdateCustomTableRowModal extends React.Component{
                 break
             case 'number':
                 if(e.target.value !== '')
-                    modalFieldData[index].fieldValue  = parseInt(e.target.value)
+                    modalFieldData[index].fieldValue = parseInt(e.target.value)
                 break
-            case 'checkbox':
             default:
                 modalFieldData[index].fieldValue  = e.target.value
         }
 
+        this.setState({modalFieldData: modalFieldData})
     }
 
     handleCheckboxCheck = (modalFieldIndex, cbVal) => {
