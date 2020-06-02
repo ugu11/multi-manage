@@ -68,8 +68,7 @@ class UpdateCustomTableRowModal extends React.Component{
                     modalFieldData[index].fieldValue  = e.target.value
                 break
             case 'number':
-                if(e.target.value !== '')
-                    modalFieldData[index].fieldValue = parseInt(e.target.value)
+                modalFieldData[index].fieldValue = parseInt(e.target.value)
                 break
             default:
                 modalFieldData[index].fieldValue  = e.target.value
