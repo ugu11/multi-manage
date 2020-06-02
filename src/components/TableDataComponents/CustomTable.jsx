@@ -3,6 +3,7 @@ import ModalBox from '../ModalBox'
 import { getSessionCookie, ORG_TOKEN, USER_TOKEN, deleteSessionCookies } from '../../helpers/session/auth'
 import AddNewTableRow from '../ModalComponents/AddNewTableRow'
 import { deleteState } from '../../localStorage'
+import { FiCheckSquare, FiXSquare } from "react-icons/fi";
 
 class CustomTable extends React.Component{
     constructor(props){
@@ -186,7 +187,11 @@ class CustomTable extends React.Component{
                                 <tbody>
                                     {this.state.tableData.data[this.state.tablePage+""].map((row, i) => 
                                         <tr key={i} onClick={() => this.handleRowClick(i)}>
-                                            {this.state.tableData.fields.map(field => (field.display_table) && <td key={row[field.name]+"-"+i}>{row[field.name]}</td> )}
+                                            {this.state.tableData.fields.map(field => (field.display_table) && <td key={row[field.name]+"-"+i}>
+                                                {(row[field.name] === true) ? <FiCheckSquare />
+                                                : (row[field.name] === false) ? <FiXSquare />
+                                                : row[field.name].toString()}
+                                            </td> )}
                                         </tr> )}
                                 </tbody>
                             </table>}
